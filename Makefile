@@ -11,7 +11,7 @@ SHELL := bash
 
 .PHONY: test
 test:
-	pub run test test/rimu_dart_test.dart
+	pub run test test/rimu_test.dart
 
 build/rimuc: bin/rimuc.dart
 	dart2native bin/rimuc.dart -o build/rimuc

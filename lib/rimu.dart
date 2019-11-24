@@ -1,1 +1,1 @@
-export 'package:rimu_dart/src/rimu.dart';
+export 'package:rimu/src/rimu.dart';
