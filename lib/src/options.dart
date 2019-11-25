@@ -10,6 +10,8 @@ class RenderOptions {
   String htmlReplacement;
   bool reset;
   // CallbackFunction? callback;
+
+  RenderOptions({this.safeMode, this.htmlReplacement, this.reset});
 }
 
 /*
