@@ -10,11 +10,7 @@ import 'options.dart' as options;
 
 // export {RenderOptions as Options, CallbackMessage, CallbackFunction} from './options'
 
-/*
-  The single public API which translates Rimu Markup to HTML:
-
-    render(source [, options])
- */
+///  The single public API which translates Rimu Markup to HTML.
 String render(String source, [options.RenderOptions opts]) {
   opts ??= options.RenderOptions();
   // options.updateOptions(opts);

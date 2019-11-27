@@ -6,7 +6,7 @@ void main() {
   test('default nulls', () {
     var v;
     expect(v,  null);
-    num n;
+    int n;
     expect(n,  null);
     Map m;
     expect(m,  null);

@@ -1,136 +1,136 @@
-// import * as Api from './api'
-// import * as Utils from './utils'
+import 'api.dart' as api;
+import 'utils.dart' as utils;
 
-/**
- * An object with zero or more optional properties to control Rimu Markup
- * translation in the render() API.
- */
 class RenderOptions {
-  num safeMode;
+  int safeMode;
   String htmlReplacement;
   bool reset;
-  // CallbackFunction? callback;
+  CallbackFunction callback;
 
-  RenderOptions({this.safeMode, this.htmlReplacement, this.reset});
+  RenderOptions(
+      {this.safeMode, this.htmlReplacement, this.reset, this.callback});
 }
 
-/*
-export interface CallbackMessage {
-  type: string
-  text: string
+class CallbackMessage {
+  String type;
+  String text;
+
+  CallbackMessage(this.type, this.text);
 }
 
-export type CallbackFunction = (message: CallbackMessage) => void
+typedef CallbackFunction = Function(CallbackMessage message);
 
 // Global option values.
-let safeMode: number
-let htmlReplacement: string
-let callback: CallbackFunction | undefined
+int safeMode;
+String htmlReplacement;
+CallbackFunction callback;
 
 // Reset options to default values.
-export function init(): void {
-  safeMode = 0
-  htmlReplacement = '<mark>replaced HTML</mark>'
-  callback = undefined
+init() {
+  safeMode = 0;
+  htmlReplacement = '<mark>replaced HTML</mark>';
+  callback = null;
 }
 
 // Return true if safeMode is non-zero.
-export function isSafeModeNz(): boolean {
-  return safeMode !== 0
+bool isSafeModeNz() {
+  return safeMode != 0;
 }
 
-export function getSafeMode(): number {
-  return safeMode
+int getSafeMode() {
+  return safeMode;
 }
 
 // Return true if Block Attribute elements are ignored.
-export function skipBlockAttributes(): boolean {
-  /* tslint:disable:no-bitwise */
-  return safeMode !== 0 && !!(safeMode & 0x4)
-  /* tslint:enable:no-bitwise */
+bool skipBlockAttributes() {
+  return safeMode != 0 && (safeMode & 0x4) != 0;
 }
 
-function setSafeMode(value: number | string | undefined): void {
-  let n = Number(value)
-  if (isNaN(n) || n < 0 || n > 15) {
-    errorCallback('illegal safeMode API option value: ' + value)
-    return
+setSafeMode(var value) {
+  int n = int.tryParse(value.toString());
+  if (n == null || n < 0 || n > 15) {
+    errorCallback('illegal safeMode API option value: ' + value);
+    return;
   }
-  safeMode = n
+  safeMode = n;
 }
 
-function setHtmlReplacement(value: string | undefined): void {
-  if (value === undefined) return
-  htmlReplacement = value
+setHtmlReplacement(String value) {
+  htmlReplacement = value;
 }
 
-function setReset(value: boolean | string | undefined): void {
-  if (value === false || value === 'false') {
-    return
-  }
-  else if (value === true || value === 'true') {
-    Api.init()
-  }
-  else {
-    errorCallback('illegal reset API option value: ' + value)
+setReset(var value) {
+  if (value == false || value == 'false') {
+    return;
+  } else if (value == true || value == 'true') {
+    api.init();
+  } else {
+    errorCallback('illegal reset API option value: ' + value);
   }
 }
 
-export function updateOptions(options: RenderOptions): void {
-  for (let key in options) {
-    switch (key) {
-      case 'reset':
-      case 'safeMode':
-      case 'htmlReplacement':
-      case 'callback':
-        break
-      default:
-        errorCallback('illegal API option name: ' + key)
-        return
-    }
-  }
-  if ('callback' in options) callback = options.callback 	// Install callback first to ensure option errors are logged.
-  if ('reset' in options) setReset(options.reset)         // Reset takes priority.
-  if ('callback' in options) callback = options.callback 	// Install callback again in case it has been reset.
-  if ('safeMode' in options) setSafeMode(options.safeMode)
-  if ('htmlReplacement' in options) setHtmlReplacement(options.htmlReplacement)
+updateOptions(RenderOptions options) {
+  callback ??= options
+      .callback; // Install callback first to ensure option errors are logged.
+  if (options.reset) api.init(); // Reset takes priority.
+  callback ??=
+      options.callback; // Install callback again in case it has been reset.
+  // Only update specified (non-null) options.
+  if (options.safeMode != null)
+    setOption('safeMode', options.safeMode.toString());
+  htmlReplacement ??= options.htmlReplacement;
 }
 
 // Set named option value.
-export function setOption(name: string, value: any): void {
-  let option: any = {}
-  option[name] = value
-  updateOptions(option)
-}
-
-// Filter HTML based on current safeMode.
-export function htmlSafeModeFilter(html: string): string {
-  /* tslint:disable:no-bitwise */
-  switch (safeMode & 0x3) {
-    /* tslint:enable:no-bitwise */
-    case 0:   // Raw HTML (default behavior).
-      return html
-    case 1:   // Drop HTML.
-      return ''
-    case 2:   // Replace HTML with 'htmlReplacement' option string.
-      return htmlReplacement
-    case 3:   // Render HTML as text.
-      return Utils.replaceSpecialChars(html)
+setOption(String name, var value) {
+  switch (name) {
+    case 'safeMode':
+      int n = int.tryParse(value);
+      if (n == null || n < 0 || n > 15) {
+        errorCallback('illegal safeMode API option value: ' + value);
+      } else {
+        safeMode = n;
+      }
+      break;
+    case 'reset':
+      if (value == 'true')
+        api.init();
+      else if (value != 'false')
+        errorCallback('illegal reset API option value: ' + value);
+      break;
+    case 'htmlReplacement':
+      htmlReplacement = value;
+      break;
     default:
-      return ''
+      errorCallback('illegal API option name: ' + name);
   }
 }
 
-export function errorCallback(message: string): void {
-  if (callback) {
-    callback({type: 'error', text: message})
+// Filter HTML based on current safeMode.
+String htmlSafeModeFilter(String html) {
+  switch (safeMode & 0x3) {
+    case 0: // Raw HTML (default behavior).
+      return html;
+    case 1: // Drop HTML.
+      return '';
+    case 2: // Replace HTML with 'htmlReplacement' option string.
+      return htmlReplacement;
+    case 3: // Render HTML as text.
+      return utils.replaceSpecialChars(html);
+    default:
+      return '';
+  }
+}
+
+errorCallback(String message) {
+  if (callback != null) {
+    callback(CallbackMessage('error', message));
   }
 }
 
 // Called when an unexpected program error occurs.
-export function panic(message: string): void {
-  let msg = 'panic: ' + message
-  console.error(msg)
-  errorCallback(msg)
+panic(String message) {
+  String msg = 'panic: ' + message;
+  print(msg);
+  errorCallback(msg);
 }
-*/
