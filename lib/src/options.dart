@@ -43,42 +43,31 @@ int getSafeMode() {
 
 // Return true if Block Attribute elements are ignored.
 bool skipBlockAttributes() {
-  return safeMode != 0 && (safeMode & 0x4) != 0;
+  return safeMode & 0x4 != 0;
 }
 
-setSafeMode(var value) {
-  int n = int.tryParse(value.toString());
-  if (n == null || n < 0 || n > 15) {
-    errorCallback('illegal safeMode API option value: ' + value);
-    return;
-  }
-  safeMode = n;
+// Return true if Macro Definitions are ignored.
+bool skipMacroDefs() {
+  return safeMode != 0 && safeMode & 0x8 == 0;
 }
 
-setHtmlReplacement(String value) {
-  htmlReplacement = value;
-}
-
-setReset(var value) {
-  if (value == false || value == 'false') {
-    return;
-  } else if (value == true || value == 'true') {
-    api.init();
-  } else {
-    errorCallback('illegal reset API option value: ' + value);
-  }
-}
-
+// Update specified (non-null) options.
 updateOptions(RenderOptions options) {
-  callback ??= options
-      .callback; // Install callback first to ensure option errors are logged.
-  if (options.reset) api.init(); // Reset takes priority.
-  callback ??=
-      options.callback; // Install callback again in case it has been reset.
-  // Only update specified (non-null) options.
-  if (options.safeMode != null)
+  // Install callback first to ensure option errors are logged.
+  if (options.callback != null) {
+    callback = options.callback;
+  }
+  setOption('reset', options.reset); // Reset takes priority.
+  // Install callback again in case it has been reset.
+  if (options.callback != null) {
+    callback = options.callback;
+  }
+  if (options.safeMode != null) {
     setOption('safeMode', options.safeMode.toString());
-  htmlReplacement ??= options.htmlReplacement;
+  }
+  if (options.htmlReplacement != null) {
+    setOption('htmlReplacement', options.htmlReplacement);
+  }
 }
 
 // Set named option value.
@@ -93,10 +82,13 @@ setOption(String name, var value) {
       }
       break;
     case 'reset':
-      if (value == 'true')
+      if (value == null || value == false || value == 'false') {
+        return;
+      } else if (value == true || value == 'true') {
         api.init();
-      else if (value != 'false')
+      } else {
         errorCallback('illegal reset API option value: ' + value);
+      }
       break;
     case 'htmlReplacement':
       htmlReplacement = value;

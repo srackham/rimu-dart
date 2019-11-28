@@ -8,72 +8,64 @@ void main() {
     expect(htmlReplacement, '<mark>replaced HTML</mark>');
     expect(callback, null);
   });
+
   test('isSafeModeNz', () {
     init();
-    expect(isSafeModeNz(), false);
-    safeMode=1;
-    expect(isSafeModeNz(), true);
+    expect(isSafeModeNz(), isFalse);
+    safeMode = 1;
+    expect(isSafeModeNz(), isTrue);
+  });
+
+  test('skipMacroDefs', () {
+    init();
+    expect(skipMacroDefs(), isFalse);
+    safeMode = 1;
+    expect(skipMacroDefs(), isTrue);
+    safeMode = 1 + 8;
+    expect(skipMacroDefs(), isFalse);
+  });
+
+  test('skipBlockAttributes', () {
+    init();
+    expect(skipBlockAttributes(), isFalse);
+    safeMode = 1;
+    expect(skipBlockAttributes(), isFalse);
+    safeMode = 1 + 4;
+    expect(skipBlockAttributes(), isTrue);
+  });
+
+  test('updateOptions', () {
+    init();
+    updateOptions(RenderOptions(safeMode: 1));
+    expect(safeMode, 1);
+    expect(htmlReplacement, '<mark>replaced HTML</mark>');
+    updateOptions(RenderOptions(htmlReplacement: 'foo'));
+    expect(safeMode, 1);
+    expect(htmlReplacement, 'foo');
+  });
+
+  test('setOption', () {
+    init();
+    // Illegal values do not update options.
+    setOption('safeMode', 'qux');
+    expect(safeMode, 0);
+    setOption('safeMode', '42');
+    expect(safeMode, 0);
+    setOption('safeMode', '1');
+    setOption('reset', 'qux');
+    expect(safeMode, 1);
+  });
+
+  test('htmlSafeModeFilter', () {
+    init();
+    expect(htmlSafeModeFilter('foo'), 'foo');
+    safeMode = 1;
+    expect(htmlSafeModeFilter('foo'), '');
+    safeMode = 2;
+    expect(htmlSafeModeFilter('foo'), '<mark>replaced HTML</mark>');
+    safeMode = 3;
+    expect(htmlSafeModeFilter('<br>'),'&lt;br&gt;');
+    safeMode = 0 + 4;
+    expect(htmlSafeModeFilter('foo'), 'foo');
   });
 }
-
-/*
-func TestIsSafeModeNz(t *testing.T) {
-	Init()
-	assert.False(t, IsSafeModeNz())
-	safeMode = 1
-	assert.True(t, IsSafeModeNz())
-}
-
-func TestSkipMacroDefs(t *testing.T) {
-	Init()
-	assert.False(t, SkipMacroDefs())
-	safeMode = 1
-	assert.True(t, SkipMacroDefs())
-	safeMode = 1 + 8
-	assert.False(t, SkipMacroDefs())
-}
-
-func TestSkipBlockAttributes(t *testing.T) {
-	Init()
-	assert.False(t, SkipBlockAttributes())
-	safeMode = 1
-	assert.False(t, SkipBlockAttributes())
-	safeMode = 1 + 4
-	assert.True(t, SkipBlockAttributes())
-}
-
-func TestUpdateOptions(t *testing.T) {
-	Init()
-	UpdateOptions(RenderOptions{SafeMode: 1})
-	assert.Equal(t, 1, safeMode)
-	assert.Equal(t, "<mark>replaced HTML</mark>", htmlReplacement)
-	UpdateOptions(RenderOptions{HtmlReplacement: "foo"})
-	assert.Equal(t, 1, safeMode)
-	assert.Equal(t, "foo", htmlReplacement)
-}
-
-func TestSetOption(t *testing.T) {
-	Init()
-	// Illegal values do not update options.
-	SetOption("safeMode", "qux")
-	assert.Equal(t, 0, safeMode)
-	SetOption("safeMode", "42")
-	assert.Equal(t, 0, safeMode)
-	SetOption("safeMode", "1")
-	SetOption("reset", "qux")
-	assert.Equal(t, 1, safeMode)
-}
-
-func TestHtmlSafeModeFilter(t *testing.T) {
-	Init()
-	assert.Equal(t, "foo", HtmlSafeModeFilter("foo"))
-	safeMode = 1
-	assert.Equal(t, "", HtmlSafeModeFilter("foo"))
-	safeMode = 2
-	assert.Equal(t, "<mark>replaced HTML</mark>", HtmlSafeModeFilter("foo"))
-	safeMode = 3
-	assert.Equal(t, "&lt;br&gt;", HtmlSafeModeFilter("<br>"))
-	safeMode = 0 + 4
-	assert.Equal(t, "foo", HtmlSafeModeFilter("foo"))
-}
-*/
