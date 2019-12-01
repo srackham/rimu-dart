@@ -18,7 +18,7 @@ class CallbackMessage {
   CallbackMessage(this.type, this.text);
 }
 
-typedef CallbackFunction = Function(CallbackMessage message);
+typedef CallbackFunction = Function(CallbackMessage);
 
 // Global option values.
 int safeMode;
