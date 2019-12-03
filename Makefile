@@ -11,10 +11,10 @@ SHELL := bash
 .SILENT:
 
 .PHONY: test
-test: bin/resources.dart
+test: lib/src/resources.dart
 	pub run test test/rimu_test.dart
 
-build/rimuc: bin/rimuc.dart bin/resources.dart
+build/rimuc: bin/rimuc.dart lib/src/resources.dart
 	echo "Building executable $@"
 	dart2native $< -o $@
 
@@ -23,7 +23,7 @@ build: build/rimuc
 
 # .PHONY: resources
 # resources:
-bin/resources.dart: bin/resources/*
+lib/src/resources.dart: lib/resources/*
 	# Build resources.dart containing Map<filename,contents> of rimuc resource files.
 	echo "Building resources $@"
 	echo "// Generated automatically from resource files. Do not edit." > $@

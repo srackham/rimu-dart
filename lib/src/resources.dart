@@ -1,4 +1,4 @@
-// Generated automatically. Do not edit.
+// Generated automatically from resource files. Do not edit.
 Map<String, String> resources = {
 'classic-header.rmu':
 r'''/*
