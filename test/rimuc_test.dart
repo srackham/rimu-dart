@@ -8,5 +8,6 @@ void main() {
       readResource('$style-header.rmu');
       readResource('$style-footer.rmu');
     }
+    readResource('manpage.txt');
   });
 }
