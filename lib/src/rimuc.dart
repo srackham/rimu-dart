@@ -34,6 +34,7 @@ String importLayoutFile(String name) {
   return '';
 }
 
+// Application body.
 rimuc(List<String> args) {
   const RESOURCE_TAG = 'resource:'; // Tag for resource files.
   const PREPEND = '--prepend options';
@@ -54,10 +55,7 @@ rimuc(List<String> args) {
     return args.removeAt(0);
   };
 
-// Skip executable and script paths.
-  args.removeAt(0); // Skip executable path.
-
-// Parse command-line options.
+  // Parse command-line options.
   String prepend = '';
   String outfile;
   String arg;
@@ -68,7 +66,7 @@ rimuc(List<String> args) {
     switch (arg) {
       case '--help':
       case '-h':
-        print(readResource('manpage.txt'));
+        print('\n' + readResource('manpage.txt'));
         return;
       case '--version':
         print(VERSION + '\n');
@@ -143,7 +141,7 @@ rimuc(List<String> args) {
         break outer;
     }
   }
-// process.argv contains the list of source files.
+  // process.argv contains the list of source files.
   var files = args;
   if (files.isEmpty) {
     files.add(STDIN);
@@ -159,7 +157,7 @@ rimuc(List<String> args) {
     files.insert(0, '${RESOURCE_TAG}${layout}-header.rmu');
     files.add('${RESOURCE_TAG}${layout}-footer.rmu');
   }
-// Prepend $HOME/.rimurc file if it exists.
+  // Prepend $HOME/.rimurc file if it exists.
   if (!no_rimurc && File(RIMURC).existsSync()) {
     prepend_files.insert(0, RIMURC);
   }
@@ -168,7 +166,7 @@ rimuc(List<String> args) {
   }
   files = List<String>.from(prepend_files);
   files.addAll(files);
-// Convert Rimu source files to HTML.
+  // Convert Rimu source files to HTML.
   String output = '';
   int errors = 0;
   RenderOptions options = RenderOptions();
