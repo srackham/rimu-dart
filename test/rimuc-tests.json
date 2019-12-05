@@ -1,0 +1,324 @@
+[
+  {
+    "description": "rimuc basic test",
+    "args": "",
+    "input": "*Hello World!*",
+    "expectedOutput": "<p><em>Hello World!</em></p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --prepend",
+    "args": "--prepend \"{x}='X'\"",
+    "input": "{x}",
+    "expectedOutput": "<p>X</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --safe-mode 0",
+    "args": "--safe-mode 0",
+    "input": "<br>",
+    "expectedOutput": "<p><br></p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --safe-mode 1",
+    "args": "--safe-mode 1",
+    "input": "<br>",
+    "expectedOutput": "<p></p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --safe-mode 2",
+    "args": "--safe-mode 2",
+    "input": "<br>",
+    "expectedOutput": "<p><mark>replaced HTML</mark></p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --safe-mode 3",
+    "args": "--safe-mode 3",
+    "input": "<br>",
+    "expectedOutput": "<p>&lt;br&gt;</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --safe-mode 5",
+    "args": "--safe-mode 5",
+    "input": ".\"color:red\"\nHello World!",
+    "expectedOutput": "<p>Hello World!</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --html-replacement",
+    "args": "--safe-mode 2 --html-replacement X",
+    "input": "<br>",
+    "expectedOutput": "<p>X</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --title",
+    "args": "--title X",
+    "input": "",
+    "expectedOutput": "<title>X</title>",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --lang",
+    "args": "--lang fr",
+    "input": "",
+    "expectedOutput": "<html lang=\"fr\">",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --highlightjs",
+    "args": "--highlightjs",
+    "input": "",
+    "expectedOutput": "hljs.configure({languages: []});",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --mathjax",
+    "args": "--mathjax",
+    "input": "",
+    "expectedOutput": "<script async src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --toc (DEPRECATED)",
+    "args": "--toc",
+    "input": "",
+    "expectedOutput": "<div id=\"toc\"",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --section-numbers",
+    "args": "--section-numbers",
+    "input": "",
+    "expectedOutput": "body,h1 { counter-reset: h2-counter; }",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "hello world",
+    "args": "",
+    "input": "_Hello World!_",
+    "expectedOutput": "<p><em>Hello World!</em></p",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "static header ids",
+    "args": "--header-ids",
+    "input": "",
+    "expectedOutput": "function setHeaderId(heading)",
+    "predicate": "!contains",
+    "layouts": true
+  },
+  {
+    "description": "static header ids and no TOC",
+    "args": "--no-toc --header-ids",
+    "input": "",
+    "expectedOutput": "window.onload = function()",
+    "predicate": "!contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --help",
+    "args": "--help",
+    "input": "",
+    "expectedOutput": "\nNAME\n  rimu",
+    "predicate": "startsWith"
+  },
+  {
+    "description": "rimuc --version",
+    "args": "--version",
+    "input": "",
+    "expectedOutput": "11.1.",
+    "predicate": "startsWith"
+  },
+  {
+    "description": "HTML DOCTYPE",
+    "args": "",
+    "input": "",
+    "expectedOutput": "<!DOCTYPE HTML>",
+    "predicate": "startsWith",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --custom-toc",
+    "args": "--custom-toc",
+    "input": "",
+    "expectedOutput": "<div id=\"toc\"",
+    "predicate": "!contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --lint (DEPRECATED OPTION)",
+    "args": "--lint",
+    "input": "{x}",
+    "expectedOutput": "<p>{x}</p>error: /dev/stdin: undefined macro: {x}: {x}\n",
+    "exitCode": 1,
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc undefined macro",
+    "args": "",
+    "input": "{x}",
+    "expectedOutput": "<p>{x}</p>error: /dev/stdin: undefined macro: {x}: {x}\n",
+    "exitCode": 1,
+    "predicate": "equals"
+  },
+  {
+    "description": "header links",
+    "args": "--header-links",
+    "input": "",
+    "expectedOutput": "function setHeaderLink(heading)",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc layout custom CSS value",
+    "args": "--prepend \"{--primary-color}='#123456'\"",
+    "input": "",
+    "expectedOutput": "color: #123456;",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --prepend-file",
+    "args": "--prepend-file ./test/fixtures/prepend-file.rmu",
+    "input": "{x}",
+    "expectedOutput": "<p>X</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --prepend-file ordering",
+    "args": "--prepend-file ./test/fixtures/prepend-file.rmu --prepend-file ./test/fixtures/prepend-file-2.rmu",
+    "input": "{x}",
+    "expectedOutput": "<p>X2</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc basic input file test",
+    "args": "./test/fixtures/hello-rimu.rmu",
+    "input": "",
+    "expectedOutput": "<p>Hello <em>Rimu</em>!</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --head macro",
+    "args": "--prepend \"{--head}='<style>foobar</style>'\"",
+    "input": "",
+    "expectedOutput": "<style>foobar</style>\n</head>",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --prepend has priority over --prepend-file",
+    "args": "--prepend \"{x}='X2'\" --prepend-file ./test/fixtures/prepend-file.rmu",
+    "input": "{x}",
+    "expectedOutput": "<p>X2</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --prepend option ordering",
+    "args": "--prepend \"{x}='X1'\" --prepend \"{x}='X2'\"",
+    "input": "{x}",
+    "expectedOutput": "<p>X2</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --prepend option error",
+    "args": "--prepend \"{x}\"",
+    "input": "",
+    "expectedOutput": "<p>{x}</p>error: --prepend options: undefined macro: {x}: {x}\n",
+    "exitCode": 1,
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc non-existent input file",
+    "args": "./test/fixtures/a-non-existent-file",
+    "input": "",
+    "expectedOutput": "source file does not exist: ./test/fixtures/a-non-existent-file\n",
+    "exitCode": 1,
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc HTML, empty and stdin input files",
+    "args": "./test/fixtures/hello-rimu.html ./test/fixtures/empty-file.rmu -",
+    "input": "Hello *again*!",
+    "expectedOutput": "Hello *Rimu*!\n<p>Hello <em>again</em>!</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --pass option",
+    "args": "--pass",
+    "input": "foo",
+    "expectedOutput": "foo",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc example rimurc quotes and replacements",
+    "args": "--prepend-file ./src/examples/example-rimurc.rmu",
+    "input": "__foo__ \"bar\" -- ... -> <- (c) (TM) +-",
+    "expectedOutput": "<p><u>foo</u> &ldquo;bar&rdquo; &mdash; &hellip; &rightarrow; &leftarrow; &copy; &trade; &plusmn;</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc example rimurc singular admonishments",
+    "args": "--prepend-file ./src/examples/example-rimurc.rmu",
+    "input": "NOTE: TODO\n\nIMPORTANT: foobar\n\nWARNING: foobar\n\nTIP: foobar",
+    "expectedOutput": "<p><b>NOTE</b>: <b style=\"color: red; background-color: yellow;\">TODO</b></p>\n<p><b>IMPORTANT</b>: foobar</p>\n<p><b>WARNING</b>: foobar</p>\n<p><b>TIP</b>: foobar</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc example rimurc plural admonishments",
+    "args": "--prepend-file ./src/examples/example-rimurc.rmu",
+    "input": "NOTES: foobar\n\nWARNINGS: foobar\n\nTIPS: foobar",
+    "expectedOutput": "<p><b>NOTES</b>: foobar</p>\n<p><b>WARNINGS</b>: foobar</p>\n<p><b>TIPS</b>: foobar</p>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc imported layout",
+    "args": "--layout plain",
+    "input": "foobar",
+    "expectedOutput": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<title>Title</title>\n</head>\n<body>\n<p>foobar</p>\n</body>\n</html>",
+    "predicate": "equals"
+  },
+  {
+    "description": "rimuc --styled has no TOC",
+    "args": "--styled",
+    "input": "",
+    "expectedOutput": "<div id=\"toc\"",
+    "predicate": "!contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --styled has CSS",
+    "args": "--styled",
+    "input": "",
+    "expectedOutput": "<style>",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc --styled has header IDs",
+    "args": "--styled",
+    "input": "# Header",
+    "expectedOutput": "<h1 id=\"header\">Header</h1>",
+    "predicate": "contains",
+    "layouts": true
+  },
+  {
+    "description": "rimuc empty input file",
+    "args": "./test/fixtures/empty-file.rmu",
+    "input": "",
+    "expectedOutput": "",
+    "predicate": "equals"
+  }
+]

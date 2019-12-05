@@ -1,0 +1,46 @@
+/*
+  Custom Rimu Markup definitions for use by the rimuc command.
+  Rename this file to ~/.rimurc and it will be loaded automatically by rimurc.
+*/
+
+
+/*
+  Replacements
+*/
+// Typographic replacements.
+// NOTE: &mdash; and &rightarrow; replacements generate false positives in inline HTML comment tags.
+/\\?--/ = '&mdash;'
+/\\?\.{3}/ = '&hellip;'
+/\\?->/ = '&rightarrow;'
+/\\?<-/ = '&leftarrow;'
+/\\?\([cC]\)/ = '&copy;'
+/\\?\((tm|TM)\)/ = '&trade;'
+/\\?\+-/ = '&plusmn;'
+
+// Admonishments.
+/\\?\bTODO\b/ = '<b style="color: red; background-color: yellow;">TODO</b>'
+/^\\?(NOTES?|IMPORTANT|WARNINGS?|TIPS?):/ = '<b>$1</b>:'
+
+
+/*
+  Macros
+*/
+// Text formatting e.g. H{sub|2}O.
+{mark} = '<mark>$1</mark>'
+{del} = '<del>$1</del>'
+{ins} = '<ins>$1</ins>'
+{sup} = '<sup>$1</sup>'
+{sub} = '<sub>$1</sub>'
+
+// DEPRECATED
+// Bootstrap2 icons e.g. {icon|trash}.
+// See http://getbootstrap.com/components/#glyphicons
+{icon} = '<span class="icon-$1"></span>'
+
+/*
+  Quotes
+*/
+// Double-underline (overrides built-in strong quote).
+__ = '<u>|</u>'
+// Left and right double-quote characters.
+" = '&ldquo;|&rdquo;'
