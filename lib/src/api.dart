@@ -3,7 +3,7 @@ String render(String source) {
 }
 
 // Set API to default state.
-init() {}
+void init() {}
 
 /* TRANSLATED api.ts
 

@@ -26,7 +26,7 @@ String htmlReplacement;
 CallbackFunction callback;
 
 // Reset options to default values.
-init() {
+void init() {
   safeMode = 0;
   htmlReplacement = '<mark>replaced HTML</mark>';
   callback = null;
@@ -52,7 +52,7 @@ bool skipMacroDefs() {
 }
 
 // Update specified (non-null) options.
-updateOptions(RenderOptions options) {
+void updateOptions(RenderOptions options) {
   // Install callback first to ensure option errors are logged.
   if (options.callback != null) {
     callback = options.callback;
@@ -71,7 +71,7 @@ updateOptions(RenderOptions options) {
 }
 
 // Set named option value.
-setOption(String name, var value) {
+void setOption(String name, var value) {
   switch (name) {
     case 'safeMode':
       int n = int.tryParse(value);
@@ -114,14 +114,14 @@ String htmlSafeModeFilter(String html) {
   }
 }
 
-errorCallback(String message) {
+void errorCallback(String message) {
   if (callback != null) {
     callback(CallbackMessage('error', message));
   }
 }
 
 // Called when an unexpected program error occurs.
-panic(String message) {
+void panic(String message) {
   String msg = 'panic: ' + message;
   print(msg);
   errorCallback(msg);

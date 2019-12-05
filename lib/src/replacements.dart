@@ -122,7 +122,7 @@ List<Def> DEFAULT_DEFS = [
 ];
 
 // Reset definitions to defaults.
-init() {
+void init() {
   // Make shallow copy of DEFAULT_DEFS (list and list objects).
   defs = List<Def>.from(DEFAULT_DEFS.map((def) => Def.from(def)));
 }
@@ -134,7 +134,7 @@ Def getDefinition(String pattern) {
 }
 
 // Update existing or add new replacement definition.
-setDefinition(String pattern, String flags, String replacement) {
+void setDefinition(String pattern, String flags, String replacement) {
   var ignoreCase = flags.contains('i') ? true : false;
   var multiLine = flags.contains('m') ? true : false;
   // Flag properties are read-only so have to create new RegExp.

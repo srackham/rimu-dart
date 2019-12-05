@@ -7,7 +7,7 @@ import 'package:rimu/src/rimuc.dart';
 */
 
 // Main wrapper to handle execeptions and set system exit code.
-main(List<String> args) {
+void main(List<String> args) {
   try {
     rimuc(args);
   } catch (e) {

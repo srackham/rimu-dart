@@ -14,7 +14,7 @@ String HOME_DIR =
 String RIMURC = path.join(HOME_DIR, '.rimurc');
 
 // Helpers.
-die([String message]) {
+void die([String message]) {
   if (message != null) {
     stderr.writeln(message);
   }
@@ -35,7 +35,7 @@ String importLayoutFile(String name) {
 }
 
 // Application body.
-rimuc(List<String> args) {
+void rimuc(List<String> args) {
   const RESOURCE_TAG = 'resource:'; // Tag for resource files.
   const PREPEND = '--prepend options';
   const STDIN = '-';

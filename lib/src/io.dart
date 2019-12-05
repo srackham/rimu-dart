@@ -30,7 +30,7 @@ class Reader {
   }
 
   // Move cursor to next input line.
-  next() {
+  void next() {
     if (!eof()) {
       pos++;
     }
@@ -79,7 +79,7 @@ class Writer {
     buffer = [];
   }
 
-  write(String s) {
+  void write(String s) {
     buffer.add(s);
   }
 

@@ -37,7 +37,7 @@ init() {
 }
 
 // Synthesise re's to find and unescape quotes.
-initializeRegExps() {
+void initializeRegExps() {
   var quotes = defs.map((def) => RegExp.escape(def.quote));
   // $1 is quote character(s), $2 is quoted text.
   // Quoted text cannot begin or end with whitespace.
@@ -55,7 +55,7 @@ Def getDefinition(String quote) {
 }
 
 // Update existing or add new quote definition.
-setDefinition(Def def) {
+void setDefinition(Def def) {
   var d = getDefinition(def.quote);
   if (d != null) {
     // Update existing definition.
