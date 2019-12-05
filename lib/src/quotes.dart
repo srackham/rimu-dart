@@ -16,7 +16,7 @@ class Def {
 
 List<Def> defs; // Mutable definitions initialized by DEFAULT_DEFS.
 
-List<Def> DEFAULT_DEFS = [
+final List<Def> DEFAULT_DEFS = [
   Def(quote: '**', openTag: '<strong>', closeTag: '</strong>', spans: true),
   Def(quote: '*', openTag: '<em>', closeTag: '</em>', spans: true),
   Def(quote: '__', openTag: '<strong>', closeTag: '</strong>', spans: true),
@@ -30,7 +30,7 @@ RegExp quotesRe; // Searches for quoted text.
 RegExp unescapeRe; // Searches for escaped quotes.
 
 // Reset definitions to defaults.
-init() {
+void init() {
   // Make shallow copy of DEFAULT_DEFS (list and list objects).
   defs = List<Def>.from(DEFAULT_DEFS.map((def) => Def.from(def)));
   initializeRegExps();

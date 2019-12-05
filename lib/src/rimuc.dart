@@ -9,9 +9,9 @@ import 'resources.dart';
 
 const VERSION = '11.1.4';
 const STDIN = '/dev/stdin';
-String HOME_DIR =
+final String HOME_DIR =
     Platform.environment[Platform.isWindows ? 'UserProfile' : 'HOME'];
-String RIMURC = path.join(HOME_DIR, '.rimurc');
+final String RIMURC = path.join(HOME_DIR, '.rimurc');
 
 // Helpers.
 void die([String message]) {

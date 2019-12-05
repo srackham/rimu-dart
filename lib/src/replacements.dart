@@ -17,7 +17,7 @@ class Def {
 
 List<Def> defs; // Mutable definitions initialized by DEFAULT_DEFS.
 
-List<Def> DEFAULT_DEFS = [
+final List<Def> DEFAULT_DEFS = [
   // Begin match with \\? to allow the replacement to be escaped.
   // Global flag must be set on match re's so that the RegExp lastIndex property is set.
   // Replacements and special characters are expanded in replacement groups ($1..).
