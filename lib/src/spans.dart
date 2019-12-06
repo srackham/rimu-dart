@@ -68,9 +68,9 @@ List<Fragment> fragQuote(Fragment fragment) {
     if (match == null) {
       return [fragment];
     }
-    quote = match.group(1);
+    quote = match[1];
     // Check if quote is escaped.
-    if (match.group(0).startsWith(r'\')) {
+    if (match[0].startsWith(r'\')) {
       // Restart search after escaped opening quote.
       nextIndex += match.start + quote.length + 1;
       continue;
@@ -83,9 +83,9 @@ List<Fragment> fragQuote(Fragment fragment) {
   // Arrive here if we have a matched quote.
   // The quote splits the input fragment into 5 or more output fragments:
   // Text before the quote, left quote tag, quoted text, right quote tag and text after the quote.
-  final def = quotes.getDefinition(match.group(1));
+  final def = quotes.getDefinition(match[1]);
   // Check for same closing quote one character further to the right.
-  var quoted = match.group(2);
+  var quoted = match[2];
   while (nextIndex < fragment.text.length &&
       fragment.text[nextIndex] == quote[0]) {
     // Move to closing quote one character to right.
@@ -136,7 +136,7 @@ String preReplacements(String text) {
 String postReplacements(String text) {
   return text.replaceAllMapped(RegExp(r'[\u0000\u0001]'), (match) {
     final fragment = savedReplacements.removeAt(0);
-    return (match.group(0) == '\u0000')
+    return (match[0] == '\u0000')
         ? fragment.text
         : utils.replaceSpecialChars(fragment.verbatim ?? '');
   });
@@ -169,15 +169,15 @@ List<Fragment> fragReplacement(Fragment fragment, replacements.Def def) {
   // The replacement splits the input fragment into 3 output fragments:
   // Text before the replacement, replaced text and text after the replacement.
   final before = fragment.text.substring(0, match.start);
-  final after = (match.end == fragment.text.length)
+  final after = (match.end >= fragment.text.length)
       ? ''
-      : fragment.text.substring(match.end + 1);
+      : fragment.text.substring(match.end);
   final List<Fragment> result = [];
   result.add(Fragment(text: before, done: false));
   String replacement;
-  if (match.group(0).startsWith(r'\')) {
+  if (match[0].startsWith(r'\')) {
     // Remove leading backslash.
-    replacement = utils.replaceSpecialChars(match.group(0).substring(1));
+    replacement = utils.replaceSpecialChars(match[0].substring(1));
   } else {
     if (def.filter == null) {
       replacement = utils.replaceMatch(match, def.replacement);
@@ -185,7 +185,7 @@ List<Fragment> fragReplacement(Fragment fragment, replacements.Def def) {
       replacement = (def.filter)(match, def);
     }
   }
-  result.add(Fragment(text: replacement, done: true, verbatim: match.group(0)));
+  result.add(Fragment(text: replacement, done: true, verbatim: match[0]));
   // Recursively process the remaining text.
   result.addAll(fragReplacement(Fragment(text: after, done: false), def));
   return result;

@@ -23,8 +23,7 @@ bool parse(String attrs) {
   // Parse Block Attributes.
   // class names = $1, id = $2, css-properties = $3, html-attributes = $4, block-options = $5
   var text = attrs;
-  // TODO
-  // text = utils.replaceInline(text, ExpansionOptions(macros: true));
+  text = utils.replaceInline(text, ExpansionOptions(macros: true));
   var m = RegExp(
           r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')
       .firstMatch(text);
@@ -32,29 +31,29 @@ bool parse(String attrs) {
     return false;
   }
   if (!skipBlockAttributes()) {
-    if (m.group(1).isNotEmpty) {
+    if (m[1].isNotEmpty) {
       // HTML element class names.
-      classes += ' ${m.group(1).trim()}';
+      classes += ' ${m[1].trim()}';
       classes = classes.trim();
     }
-    if (m.group(2).isNotEmpty) {
+    if (m[2].isNotEmpty) {
       // HTML element id.
-      id = m.group(2).trim().substring(1);
+      id = m[2].trim().substring(1);
     }
-    if (m.group(3).isNotEmpty) {
+    if (m[3].isNotEmpty) {
       // CSS properties.
       if (css.isNotEmpty && !css.endsWith(';')) {
         css += ';';
       }
-      css += ' ' + m.group(3).trim();
+      css += ' ' + m[3].trim();
       css = css.trim();
     }
-    if (m.group(4).isNotEmpty && !isSafeModeNz()) {
+    if (m[4].isNotEmpty && !isSafeModeNz()) {
       // HTML attributes.
-      attributes += ' ' + m.group(4).substring(1, m.group(4).length - 1).trim();
+      attributes += ' ' + m[4].substring(1, m[4].length - 1).trim();
       attributes = attributes.trim();
     }
-    options.parse(m.group(5) ?? '');
+    options.parse(m[5] ?? '');
   }
   return true;
 }
@@ -72,8 +71,8 @@ String injectHtmlAttributes(String tag) {
         .firstMatch(result);
     if (match != null) {
       // Inject class names into existing class attribute in first tag.
-      result = result.replaceFirst(
-          match.group(0), '${match.group(1)}${classes} ${match.group(2)}"');
+      result =
+          result.replaceFirst(match[0], '${match[1]}${classes} ${match[2]}"');
     } else {
       attrs = 'class="${classes}"';
     }
@@ -96,12 +95,11 @@ String injectHtmlAttributes(String tag) {
         .firstMatch(result);
     if (match != null) {
       // Inject CSS styles into first style attribute in first tag.
-      var group2 = match.group(2).trim();
+      var group2 = match[2].trim();
       if (!group2.endsWith(';')) {
         group2 += ';';
       }
-      result = result.replaceFirst(
-          match.group(0), '${match.group(1)}${group2} ${css}"');
+      result = result.replaceFirst(match[0], '${match[1]}${group2} ${css}"');
     } else {
       attrs += ' style="${css}"';
     }
@@ -115,8 +113,8 @@ String injectHtmlAttributes(String tag) {
         .firstMatch(result);
     if (match != null) {
       // Inject attributes after tag name.
-      var before = result.substring(0, match.group(0).length);
-      var after = result.substring(match.group(0).length);
+      var before = result.substring(0, match[0].length);
+      var after = result.substring(match[0].length);
       result = before + ' ' + attrs + after;
     }
   }

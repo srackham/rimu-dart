@@ -29,4 +29,11 @@ void main() {
     expect(css, '');
     expect(attributes, '');
   });
+
+  test('slugify', () {
+    init();
+    expect(slugify('-Foo bar  '), 'foo-bar');
+    ids.insert(0, 'foo-bar');
+    expect(slugify('Foo bar'), 'foo-bar-2');
+  });
 }

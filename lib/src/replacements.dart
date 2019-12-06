@@ -83,7 +83,8 @@ final List<Def> DEFAULT_DEFS = [
   // $1 = tag, $2 = tag name
   Def(
       match: RegExp(
-          r'\\?(<!--(?:[^<>&]*)?-->|<\/?([a-z][a-z0-9]*)(?:\s+[^<>&]+)?>)/i'),
+          r'\\?(<!--(?:[^<>&]*)?-->|<\/?([a-z][a-z0-9]*)(?:\s+[^<>&]+)?>)',
+          caseSensitive: false),
       replacement: '',
       filter: (match, def) {
         return options.htmlSafeModeFilter(
