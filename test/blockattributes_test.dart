@@ -1,5 +1,3 @@
-// Basic rendering tests (full syntax tested in rimu_test.dart).
-
 import 'package:test/test.dart';
 import 'package:rimu/src/blockattributes.dart';
 import 'package:rimu/src/options.dart' as options;
