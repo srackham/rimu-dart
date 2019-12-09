@@ -11,9 +11,6 @@ class ExpansionOptions {
   bool spans; // Span substitution also expands special characters.
   bool specials;
 
-  ExpansionOptions(
-      {this.macros, this.container, this.skip, this.spans, this.specials});
-
   bool operator ==(Object other) =>
       other is ExpansionOptions &&
       macros == other.macros &&
@@ -22,7 +19,17 @@ class ExpansionOptions {
       spans == other.spans &&
       specials == other.specials;
 
+  ExpansionOptions(
+      {this.macros, this.container, this.skip, this.spans, this.specials});
+
+  ExpansionOptions.from(ExpansionOptions other) {
+    this.merge(other);
+  }
+
   void merge(ExpansionOptions from) {
+    if (from == null) {
+      return;
+    }
     this.macros = from.macros ?? this.macros;
     this.container = from.container ?? this.container;
     this.skip = from.skip ?? this.skip;

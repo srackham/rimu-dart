@@ -24,6 +24,7 @@ final List<Macro> defs = [];
 // Reset definitions to defaults.
 void init() {
   // Initialize predefined macros.
+  defs.clear();
   defs.add(Macro('--'));
   defs.add(Macro('--header-ids'));
 }
