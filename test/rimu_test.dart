@@ -3,7 +3,6 @@ import 'package:test/test.dart';
 
 void main() {
   test('render', () {
-    expect(
-        rimu.render('Hello *Rimu*!'), '<p>Hello <em>Rimu</em>!</p>\n');
+    expect(rimu.render('Hello *Rimu*!'), '<p>Hello <em>Rimu</em>!</p>');
   });
 }

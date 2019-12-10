@@ -26,7 +26,6 @@ List<Def> defs = [
   Def(
     match: RegExp(r'^\\?\/{2}(.*)$'),
   ),
-
   // Expand lines prefixed with a macro invocation prior to all other processing.
   // macro name = $1, macro value = $2
   Def(
