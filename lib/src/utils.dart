@@ -13,7 +13,7 @@ String replaceSpecialChars(String s) {
 // from `match`. If pattern starts with one '$' character add specials to `expansionOptions`,
 // if it starts with two '$' characters add spans to `expansionOptions`.
 String replaceMatch(Match match, String replacement,
-    {ExpansionOptions expansionOptions}) {
+    [ExpansionOptions expansionOptions]) {
   expansionOptions ??= ExpansionOptions();
 
   return replacement.replaceAllMapped(RegExp(r'(\${1,2})(\d)'), (mr) {

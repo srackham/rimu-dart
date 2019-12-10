@@ -48,7 +48,7 @@ bool parse(String attrs) {
       css += ' ' + m[3].trim();
       css = css.trim();
     }
-    if (m[4].isNotEmpty && !isSafeModeNz()) {
+    if ((m[4]?.isNotEmpty ?? false) && !isSafeModeNz()) {
       // HTML attributes.
       attributes += ' ' + m[4].substring(1, m[4].length - 1).trim();
       attributes = attributes.trim();

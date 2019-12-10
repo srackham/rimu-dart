@@ -220,7 +220,9 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
     options.panic('premature eof');
   }
   for (var def in defs) {
-    if (allowed != null && !allowed.contains(def.name)) continue;
+    if (allowed != null && !allowed.contains(def.name)) {
+      continue;
+    }
     var match = def.openMatch.firstMatch(reader.cursor);
     if (match == null) {
       continue;
@@ -231,14 +233,11 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
       reader.cursor = reader.cursor.substring(1);
       continue;
     }
-    if (def.verify != null) {
-      if (!def.verify(match)) {
-        continue;
-      }
+    if (def.verify != null && !def.verify(match)) {
+      continue;
     }
     // Process opening delimiter.
-    var delimiterText =
-        (def.delimiterFilter != null) ? def.delimiterFilter(match, def) : '';
+    var delimiterText = def?.delimiterFilter(match, def) ?? '';
     // Read block content into lines.
     List<String> lines = [];
     if (delimiterText.isNotEmpty) {
