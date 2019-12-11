@@ -1,4 +1,5 @@
 import 'expansion.dart';
+import 'macros.dart' as macros;
 import 'options.dart' as options;
 import 'spans.dart' as spans;
 
@@ -37,8 +38,7 @@ String replaceMatch(Match match, String replacement,
 String replaceInline(String text, ExpansionOptions expansionOptions) {
   var result = text;
   if (expansionOptions.macros ?? false) {
-    // TODO
-    // result = Macros.render(result);
+    result = macros.render(result);
   }
   // Spans also expand special characters.
   if (expansionOptions.spans ?? false) {

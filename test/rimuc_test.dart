@@ -74,7 +74,7 @@ void main() {
       print(spec.description);
       continue;
 
-      if (spec.unsupported.contains('dart')) {
+      if (spec.unsupported.contains('kt')) {
         continue;
       }
       for (var layout in ['', 'classic', 'flex', 'sequel']) {

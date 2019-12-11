@@ -54,14 +54,10 @@ bool skipMacroDefs() {
 // Update specified (non-null) options.
 void updateOptions(RenderOptions options) {
   // Install callback first to ensure option errors are logged.
-  if (options.callback != null) {
-    callback = options.callback;
-  }
+  callback = options.callback ?? callback;
   setOption('reset', options.reset); // Reset takes priority.
   // Install callback again in case it has been reset.
-  if (options.callback != null) {
-    callback = options.callback;
-  }
+  callback = options.callback ?? callback;
   if (options.safeMode != null) {
     setOption('safeMode', options.safeMode.toString());
   }

@@ -31,16 +31,16 @@ bool parse(String attrs) {
     return false;
   }
   if (!skipBlockAttributes()) {
-    if (m[1].isNotEmpty) {
+    if (m[1]?.isNotEmpty ?? false) {
       // HTML element class names.
       classes += ' ${m[1].trim()}';
       classes = classes.trim();
     }
-    if (m[2].isNotEmpty) {
+    if (m[2]?.isNotEmpty ?? false) {
       // HTML element id.
       id = m[2].trim().substring(1);
     }
-    if (m[3].isNotEmpty) {
+    if (m[3]?.isNotEmpty ?? false) {
       // CSS properties.
       if (css.isNotEmpty && !css.endsWith(';')) {
         css += ';';
@@ -62,7 +62,9 @@ bool parse(String attrs) {
 // Consume HTML attributes unless the 'tag' argument is blank.
 String injectHtmlAttributes(String tag) {
   var result = tag;
+  // TODO; tag should not be null, fixed yet?
   if (result.isEmpty) {
+    // if (result?.isEmpty ?? true) {
     return result;
   }
   var attrs = '';

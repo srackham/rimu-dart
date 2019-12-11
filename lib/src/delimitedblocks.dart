@@ -69,6 +69,7 @@ final List<Def> DEFAULT_DEFS = [
     delimiterFilter: delimiterTextFilter,
     contentFilter: macroDefContentFilter,
   ),
+// TODO: Drop expression macro def.
   // Multi-line macro expression value definition.
   // DEPRECATED as of 11.0.0.
   Def(
@@ -139,7 +140,7 @@ final List<Def> DEFAULT_DEFS = [
     expansionOptions: ExpansionOptions(macros: true),
     verify: (match) {
       // Return false if the HTML tag is an inline (non-block) HTML tag.
-      if (match[2].isNotEmpty) {
+      if (match[2]?.isNotEmpty ?? false) {
         // Matched alphanumeric tag name.
         return !MATCH_INLINE_TAG.hasMatch(match[2]);
       } else {
@@ -237,7 +238,8 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
       continue;
     }
     // Process opening delimiter.
-    var delimiterText = def?.delimiterFilter(match, def) ?? '';
+    var delimiterText =
+        (def.delimiterFilter != null) ? def.delimiterFilter(match, def) : '';
     // Read block content into lines.
     List<String> lines = [];
     if (delimiterText.isNotEmpty) {
@@ -315,8 +317,11 @@ void setDefinition(String name, String value) {
         .errorCallback("illegal delimited block definition: |$name|='$value'");
     return;
   }
-  def.openTag = match[1];
-  def.closeTag = match[2];
+  if (match[1] != null) {
+    // Open and close tags are defined.
+    def.openTag = match[1];
+    def.closeTag = match[2];
+  }
   if (match[3] != null) {
     def.expansionOptions.parse(match[3]);
   }
@@ -341,17 +346,14 @@ String classInjectionFilter(RegExpMatch match, Def def) {
 // contentFilter for multi-line macro definitions.
 String macroDefContentFilter(
     String text, RegExpMatch match, ExpansionOptions expansionOptions) {
-  var quote = match[0][match[0].length -
-      match[1].length -
-      1]; // The leading macro value quote character.
   var name = RegExp(r'^{([\w\-]+\??)}')
       .firstMatch(match[0])[1]; // Extract macro name from opening delimiter.
-  text = text.replaceAll(RegExp('(' + quote + r') *\\\n'),
-      '\$1\n'); // Unescape line-continuations.
-  text = text.replaceAll(RegExp('(' + quote + r' *[\\]+)\\\n'),
+  text =
+      text.replaceAll(RegExp(r" *\\\n"), '\n'); // Unescape line-continuations.
+  text = text.replaceAll(RegExp(r"(' *[\\]+)\\\n"),
       '\$1\n'); // Unescape escaped line-continuations.
   text =
       utils.replaceInline(text, expansionOptions); // Expand macro invocations.
-  macros.setValue(name, text, quote);
+  macros.setValue(name, text, "'");
   return '';
 }

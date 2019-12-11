@@ -1,6 +1,6 @@
 import 'blockattributes.dart' as blockattributes;
 import 'delimitedblocks.dart' as delimitedblocks;
-import 'io.dart' as Io;
+import 'io.dart' as io;
 import 'lineblocks.dart' as lineblocks;
 import 'lists.dart' as lists;
 import 'macros.dart' as macros;
@@ -9,8 +9,8 @@ import 'quotes.dart' as quotes;
 import 'replacements.dart' as replacements;
 
 String render(String source) {
-  var reader = new Io.Reader(source);
-  var writer = new Io.Writer();
+  var reader = io.Reader(source);
+  var writer = io.Writer();
   while (!reader.eof()) {
     reader.skipBlankLines();
     if (reader.eof()) break;

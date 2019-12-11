@@ -3,11 +3,13 @@ import 'spans.dart' as spans;
 
 // Matches a line starting with a macro invocation. $1 = macro invocation.
 final MATCH_LINE = RegExp(r'^({(?:[\w\-]+)(?:[!=|?](?:|.*?[^\\]))?}).*$');
+// TODO: Drop expression macro def.
 // Match single-line macro definition. $1 = name, $2 = delimiter, $3 = value.
 final LINE_DEF = RegExp(r"^\\?{([\w\-]+\??)}\s*=\s*(['`])(.*)\2$");
 // Match multi-line macro definition literal value open delimiter. $1 is first line of macro.
 final LITERAL_DEF_OPEN = RegExp(r"^\\?{[\w\-]+\??}\s*=\s*'(.*)$");
 final LITERAL_DEF_CLOSE = RegExp(r"^(.*)'$");
+// TODO: Drop expression macro def.
 // Match multi-line macro definition expression value open delimiter. $1 is first line of macro.
 final EXPRESSION_DEF_OPEN = RegExp(r'^\\?{[\w\-]+\??}\s*=\s*`(.*)$');
 final EXPRESSION_DEF_CLOSE = RegExp(r'^(.*)`$');
@@ -42,6 +44,7 @@ String getValue(String name) {
 // Set named macro value or add it if it doesn't exist.
 // If the name ends with '?' then don't set the macro if it already exists.
 // `quote` is a single character: ' if a literal value, ` if an expression value.
+// TODO: Drop quote argument (part of sorting unsupported).
 void setValue(String name, String value, String quote) {
   if (options.skipMacroDefs()) {
     return; // Skip if a safe mode is set.
@@ -57,7 +60,7 @@ void setValue(String name, String value, String quote) {
     return;
   }
   if (quote == "`") {
-    options.errorCallback(r'unsupported: expression macro values: `${value}`');
+    options.errorCallback('unsupported: expression macro values: `${value}`');
   }
   for (var def in defs) {
     if (def.name == name) {
@@ -73,8 +76,8 @@ void setValue(String name, String value, String quote) {
 // Render macro invocations in text string.
 // Render Simple invocations first, followed by Parametized, Inclusion and Exclusion invocations.
 String render(String text, {bool silent = false}) {
-  final MATCH_COMPLEX = RegExp(
-      r'\\?{([\w\-]+)([!=|?](?:|[^]*?[^\\]))}'); // Parametrized, Inclusion and Exclusion invocations.
+  final MATCH_COMPLEX = RegExp(r'\\?{([\w\-]+)([!=|?](?:|[^]*?[^\\]))}',
+      dotAll: true); // Parametrized, Inclusion and Exclusion invocations.
   final MATCH_SIMPLE = RegExp(r'\\?{([\w\-]+)()}'); // Simple macro invocation.
   var result = text;
   [MATCH_SIMPLE, MATCH_COMPLEX].forEach((find) {
@@ -112,8 +115,8 @@ String render(String text, {bool silent = false}) {
           // 2nd group: <param-number> (1, 2..)
           // 3rd group: [\]:<default-param-value>$
           // 4th group: <default-param-value>
-          var PARAM_RE = RegExp(r'\\?(\$\$?)(\d+)(\\?:(|.*?[^\\])\$)?',
-              caseSensitive: false);
+          var PARAM_RE =
+              RegExp(r'\\?(\$\$?)(\d+)(\\?:(|.*?[^\\])\$)?', dotAll: true);
           value = value.replaceAllMapped(PARAM_RE, (mr) {
             if (mr[0].startsWith(r'\')) {
               // Unescape escaped macro parameters.
@@ -134,9 +137,10 @@ String render(String text, {bool silent = false}) {
                 param += p3.substring(1);
               } else {
                 if (param == '') {
-                  param = p4; // Assign default parameter value.
-                  params = params.replaceAll(r'\$',
-                      r'$'); // Unescape escaped $ characters in the default value.
+                  // Assign default parameter value.
+                  param = p4;
+                  // Unescape escaped $ characters in the default value.
+                  param = param.replaceAll(r'\$', r'$');
                 }
               }
             }
