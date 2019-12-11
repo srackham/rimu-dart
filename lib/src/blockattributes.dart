@@ -62,9 +62,7 @@ bool parse(String attrs) {
 // Consume HTML attributes unless the 'tag' argument is blank.
 String injectHtmlAttributes(String tag) {
   var result = tag;
-  // TODO; tag should not be null, fixed yet?
   if (result.isEmpty) {
-    // if (result?.isEmpty ?? true) {
     return result;
   }
   var attrs = '';

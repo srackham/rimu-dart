@@ -31,8 +31,7 @@ List<Def> defs = [
   Def(
       match: macros.MATCH_LINE,
       verify: (match, reader) {
-        if (macros.LITERAL_DEF_OPEN.hasMatch(match[0]) ||
-            macros.EXPRESSION_DEF_OPEN.hasMatch(match[0])) {
+        if (macros.DEF_OPEN.hasMatch(match[0])) {
           // Do not process macro definitions.
           return false;
         }
@@ -102,10 +101,9 @@ List<Def> defs = [
       match: macros.LINE_DEF,
       filter: (match, reader, def) {
         var name = match[1];
-        var quote = match[2];
-        var value = match[3];
+        var value = match[2];
         value = utils.replaceInline(value, ExpansionOptions(macros: true));
-        macros.setValue(name, value, quote);
+        macros.setValue(name, value);
         return '';
       }),
   // Headers.

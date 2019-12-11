@@ -23,7 +23,6 @@ void main() {
   });
 
   test('render', () {
-    // TODO: replace with api.init()
     blockattributes.init();
     quotes.init();
     replacements.init();

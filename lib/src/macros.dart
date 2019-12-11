@@ -3,16 +3,11 @@ import 'spans.dart' as spans;
 
 // Matches a line starting with a macro invocation. $1 = macro invocation.
 final MATCH_LINE = RegExp(r'^({(?:[\w\-]+)(?:[!=|?](?:|.*?[^\\]))?}).*$');
-// TODO: Drop expression macro def.
 // Match single-line macro definition. $1 = name, $2 = delimiter, $3 = value.
-final LINE_DEF = RegExp(r"^\\?{([\w\-]+\??)}\s*=\s*(['`])(.*)\2$");
+final LINE_DEF = RegExp(r"^\\?{([\w\-]+\??)}\s*=\s*'(.*)'$");
 // Match multi-line macro definition literal value open delimiter. $1 is first line of macro.
-final LITERAL_DEF_OPEN = RegExp(r"^\\?{[\w\-]+\??}\s*=\s*'(.*)$");
-final LITERAL_DEF_CLOSE = RegExp(r"^(.*)'$");
-// TODO: Drop expression macro def.
-// Match multi-line macro definition expression value open delimiter. $1 is first line of macro.
-final EXPRESSION_DEF_OPEN = RegExp(r'^\\?{[\w\-]+\??}\s*=\s*`(.*)$');
-final EXPRESSION_DEF_CLOSE = RegExp(r'^(.*)`$');
+final DEF_OPEN = RegExp(r"^\\?{[\w\-]+\??}\s*=\s*'(.*)$");
+final DEF_CLOSE = RegExp(r"^(.*)'$");
 
 class Macro {
   String name;
@@ -44,8 +39,7 @@ String getValue(String name) {
 // Set named macro value or add it if it doesn't exist.
 // If the name ends with '?' then don't set the macro if it already exists.
 // `quote` is a single character: ' if a literal value, ` if an expression value.
-// TODO: Drop quote argument (part of sorting unsupported).
-void setValue(String name, String value, String quote) {
+void setValue(String name, String value) {
   if (options.skipMacroDefs()) {
     return; // Skip if a safe mode is set.
   }
@@ -58,9 +52,6 @@ void setValue(String name, String value, String quote) {
     options
         .errorCallback('the predefined blank \'--\' macro cannot be redefined');
     return;
-  }
-  if (quote == "`") {
-    options.errorCallback('unsupported: expression macro values: `${value}`');
   }
   for (var def in defs) {
     if (def.name == name) {

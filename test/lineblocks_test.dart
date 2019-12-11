@@ -1,11 +1,7 @@
 import 'package:test/test.dart';
 import 'package:rimu/src/lineblocks.dart';
 import 'package:rimu/src/io.dart' as io;
-import 'package:rimu/src/blockattributes.dart' as blockattributes;
-import 'package:rimu/src/delimitedblocks.dart' as delimitedblocks;
-import 'package:rimu/src/options.dart' as options;
-import 'package:rimu/src/quotes.dart' as quotes;
-import 'package:rimu/src/replacements.dart' as replacements;
+import 'package:rimu/src/api.dart' as api;
 
 void main() {
   test('render', () {
@@ -21,12 +17,7 @@ void main() {
       r"/\.{3}/i = '&hellip;'": r'',
       r"{foo}='bar'": r'',
     };
-    // TODO: replace with api.init()
-    blockattributes.init();
-    delimitedblocks.init();
-    options.init();
-    quotes.init();
-    replacements.init();
+    api.init();
     tests.forEach((k, v) {
       var reader = io.Reader(k);
       var writer = io.Writer();

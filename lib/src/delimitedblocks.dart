@@ -1,5 +1,5 @@
 import 'api.dart' as api;
-import 'blockattributes.dart' as blockAttributes;
+import 'blockattributes.dart' as blockattributes;
 import 'expansion.dart' show ExpansionOptions;
 import 'utils.dart' as utils;
 import 'options.dart' as options;
@@ -61,25 +61,14 @@ final List<Def> DEFAULT_DEFS = [
 
   // Multi-line macro literal value definition.
   Def(
-    openMatch: macros.LITERAL_DEF_OPEN, // $1 is first line of macro.
-    closeMatch: macros.LITERAL_DEF_CLOSE,
+    openMatch: macros.DEF_OPEN, // $1 is first line of macro.
+    closeMatch: macros.DEF_CLOSE,
     openTag: '',
     closeTag: '',
     expansionOptions: ExpansionOptions(macros: true),
     delimiterFilter: delimiterTextFilter,
     contentFilter: macroDefContentFilter,
   ),
-// TODO: Drop expression macro def.
-  // Multi-line macro expression value definition.
-  // DEPRECATED as of 11.0.0.
-  Def(
-      openMatch: macros.EXPRESSION_DEF_OPEN, // $1 is first line of macro.
-      closeMatch: macros.EXPRESSION_DEF_CLOSE,
-      openTag: '',
-      closeTag: '',
-      expansionOptions: ExpansionOptions(macros: true),
-      delimiterFilter: delimiterTextFilter,
-      contentFilter: macroDefContentFilter),
   // Comment block.
   Def(
       name: 'comment',
@@ -255,7 +244,7 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
     }
     // Calculate block expansion options.
     var expansionOptions = ExpansionOptions.from(def.expansionOptions);
-    expansionOptions.merge(blockAttributes.options);
+    expansionOptions.merge(blockattributes.options);
     // Translate block.
     if (!(expansionOptions.skip ?? false)) {
       var text = lines.join('\n');
@@ -264,12 +253,12 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
       }
       var opentag = def.openTag;
       if (def.name == 'html') {
-        text = blockAttributes.injectHtmlAttributes(text);
+        text = blockattributes.injectHtmlAttributes(text);
       } else {
-        opentag = blockAttributes.injectHtmlAttributes(opentag);
+        opentag = blockattributes.injectHtmlAttributes(opentag);
       }
       if (expansionOptions.container ?? false) {
-        blockAttributes.options.container = null; // Consume before recursion.
+        blockattributes.options.container = null; // Consume before recursion.
         text = api.render(text);
       } else {
         text = utils.replaceInline(text, expansionOptions);
@@ -289,7 +278,7 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
       }
     }
     // Reset consumed Block Attributes expansion options.
-    blockAttributes.options = ExpansionOptions();
+    blockattributes.options = ExpansionOptions();
     return true;
   }
   return false; // No matching delimited block found.
@@ -337,7 +326,7 @@ String delimiterTextFilter(RegExpMatch match, Def def) {
 String classInjectionFilter(RegExpMatch match, Def def) {
   var p1 = match[2].trim();
   if (p1.isNotEmpty) {
-    blockAttributes.classes = p1;
+    blockattributes.classes = p1;
   }
   def.closeMatch = RegExp('^' + RegExp.escape(match[1]) + r'$');
   return '';
@@ -354,6 +343,6 @@ String macroDefContentFilter(
       '\$1\n'); // Unescape escaped line-continuations.
   text =
       utils.replaceInline(text, expansionOptions); // Expand macro invocations.
-  macros.setValue(name, text, "'");
+  macros.setValue(name, text);
   return '';
 }
