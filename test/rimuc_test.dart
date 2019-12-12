@@ -32,12 +32,10 @@ class TestSpec {
 // input: stdin input string.
 ProcessResult execRimuc({String args = '', String input = ''}) {
   input = input.replaceAll('\n', r'\n');
-  input = input.replaceAll('"', r'\x22');
-  input = input.replaceAll('`', r'\x60');
-  return Process.runSync('sh', [
-    '-c',
-    'echo -e "' + input + '" | pub run rimuc.dart --no-rimurc ' + args
-  ]);
+  input = input.replaceAll("'", r'\x27');
+  String cmd = "echo -e '$input' | pub run rimuc.dart --no-rimurc $args";
+  print(cmd);
+  return Process.runSync('bash', ['-c', cmd]);
 }
 
 void main() {
@@ -63,18 +61,19 @@ void main() {
         isTrue);
   });
 
+  test('basicRimuc', () {
+    expect(() {
+      rimuc(['./test/fixtures/hello-rimu.rmu'], testing: true);
+    }, returnsNormally);
+  });
+
   // Execute test cases specified in JSON file rimuc-tests.json
   test('jsonTests', () {
     final jsonSource = File('./test/rimuc-tests.json').readAsStringSync();
     final decoded = json.decode(jsonSource);
     for (var d in decoded) {
       var spec = TestSpec.fromJson(d);
-
-      // TODO: Drop this stub.
-      print(spec.description);
-      continue;
-
-      if (spec.unsupported.contains('kt')) {
+      if (spec.unsupported.contains('dart')) {
         continue;
       }
       for (var layout in ['', 'classic', 'flex', 'sequel']) {
@@ -93,10 +92,10 @@ void main() {
         expect(result.exitCode, spec.exitCode);
         switch (spec.predicate) {
           case "equals":
-            expect(output == spec.expectedOutput, isTrue);
+            expect(output, spec.expectedOutput);
             break;
           case "!equals":
-            expect(output != spec.expectedOutput, isTrue);
+            expect(output, isNot(spec.expectedOutput));
             break;
           case "contains":
             expect(output.contains(spec.expectedOutput), isTrue);

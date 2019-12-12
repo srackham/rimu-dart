@@ -49,7 +49,7 @@ void main() {
     final decoded = json.decode(jsonSource);
     for (var d in decoded) {
       var spec = TestSpec.fromJson(d);
-      var unsupported = spec.unsupported.contains('kt');
+      var unsupported = spec.unsupported.contains('dart');
       if (unsupported) {
         print('skipped unsupported: ${spec.description}');
         continue;
@@ -69,13 +69,9 @@ void main() {
             catchLint; // Callback should not occur, this will throw an error.
       }
       var result = render(spec.input, renderOptions);
-      if (unsupported) {
-        expect(msg.trim().startsWith('error: unsupported'), isTrue);
-      } else {
-        expect(result, spec.expectedOutput);
-        if (spec.expectedCallback != null) {
-          expect(msg.trim(), spec.expectedCallback);
-        }
+      expect(result, spec.expectedOutput);
+      if (spec.expectedCallback != null) {
+        expect(msg.trim(), spec.expectedCallback);
       }
     }
   });

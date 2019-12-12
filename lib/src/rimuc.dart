@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:rimu/rimu.dart';
 import 'package:path/path.dart' as path;
 import 'resources.dart';
@@ -8,7 +9,6 @@ import 'resources.dart';
 */
 
 const VERSION = '11.1.4';
-const STDIN = '/dev/stdin';
 final String HOME_DIR =
     Platform.environment[Platform.isWindows ? 'UserProfile' : 'HOME'];
 final String RIMURC = path.join(HOME_DIR, '.rimurc');
@@ -28,14 +28,23 @@ String readResource(String name) {
   return resources[name];
 }
 
-String importLayoutFile(String name) {
-  // External layouts not supported in go-rimu.
-  die("missing --layout: " + name);
-  return '';
+// Read all from stdin.
+// See https://stackoverflow.com/a/29024240
+String readInputSync({Encoding encoding = systemEncoding}) {
+  final List<int> input = [];
+  while (true) {
+    int byte = stdin.readByteSync();
+    if (byte < 0) {
+      if (input.isEmpty) return null;
+      break;
+    }
+    input.add(byte);
+  }
+  return encoding.decode(input);
 }
 
 // Application body.
-void rimuc(List<String> args) {
+void rimuc(List<String> args, {bool testing = false}) {
   const RESOURCE_TAG = 'resource:'; // Tag for resource files.
   const PREPEND = '--prepend options';
   const STDIN = '-';
@@ -57,10 +66,10 @@ void rimuc(List<String> args) {
 
   // Parse command-line options.
   String prepend = '';
-  String outfile;
-  String arg;
+  String outfile = '';
   outer:
   while (args.isNotEmpty) {
+    String arg;
     arg = args.removeAt(0);
 
     switch (arg) {
@@ -142,12 +151,12 @@ void rimuc(List<String> args) {
     }
   }
   // process.argv contains the list of source files.
-  var files = args;
+  var files = List<String>.from(args);
   if (files.isEmpty) {
     files.add(STDIN);
   } else if (files.length == 1 &&
       layout != '' &&
-      files[0] != '-' &&
+      files[0] != STDIN &&
       outfile.isEmpty) {
     // Use the source file name with .html extension for the output file.
     outfile = files[0].substring(0, files[0].lastIndexOf('.')) + '.html';
@@ -164,8 +173,7 @@ void rimuc(List<String> args) {
   if (prepend != '') {
     prepend_files.add(PREPEND);
   }
-  files = List<String>.from(prepend_files);
-  files.addAll(files);
+  files.insertAll(0, prepend_files);
   // Convert Rimu source files to HTML.
   String output = '';
   int errors = 0;
@@ -174,18 +182,14 @@ void rimuc(List<String> args) {
     options.htmlReplacement = html_replacement;
   }
   for (String infile in files) {
-    if (infile == '-') {
-      infile = STDIN;
-    }
     var source = '';
+    options.safeMode = safe_mode;
     if (infile.startsWith(RESOURCE_TAG)) {
       infile = infile.substring(RESOURCE_TAG.length);
-      if (['classic', 'flex', 'sequel', 'plain', 'v8'].contains(layout)) {
-        source = readResource(infile);
-      } else {
-        source = importLayoutFile(infile);
-      }
+      source = readResource(infile);
       options.safeMode = 0; // Resources are trusted.
+    } else if (infile == STDIN) {
+      source = readInputSync() ?? '';
     } else if (infile == PREPEND) {
       source = prepend;
       options.safeMode = 0; // --prepend options are trusted.
@@ -198,14 +202,17 @@ void rimuc(List<String> args) {
       } catch (e) {
         die('source file permission denied: ' + infile);
       }
-      // Prepended and ~/.rimurc files are trusted.
-      options.safeMode = prepend_files.contains(infile) ? 0 : safe_mode;
+      if (prepend_files.contains(infile)) {
+        // Prepended and ~/.rimurc files are trusted.
+        options.safeMode = 0;
+      }
     }
     String ext = path.extension(infile);
     // Skip .html and pass-through inputs.
     if (!(ext == '.html' || (pass && infile == STDIN))) {
       options.callback = (message) {
-        var msg = message.type + ': ' + infile + ': ' + message.text;
+        var msg =
+            '${message.type}: ${infile == STDIN ? "/dev/stdin" : infile}: ${message.text}';
         if (msg.length > 120) {
           msg = msg.substring(0, 117) + '...';
         }
@@ -223,7 +230,10 @@ void rimuc(List<String> args) {
   }
   output = output.trim();
   if (outfile.isEmpty || outfile == '-') {
-    stdout.write(output);
+    // Do not write to stdout when testing as it interferes with test results.
+    if (!testing) {
+      stdout.write(output);
+    }
   } else {
     File(outfile).writeAsStringSync(output);
   }
