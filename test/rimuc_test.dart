@@ -33,7 +33,13 @@ class TestSpec {
 ProcessResult execRimuc({String args = '', String input = ''}) {
   input = input.replaceAll('\n', r'\n');
   input = input.replaceAll("'", r'\x27');
-  String cmd = "echo -e '$input' | pub run rimuc.dart --no-rimurc $args";
+
+  // Run rimuc.dart
+  // String cmd = "echo -e '$input' | pub run rimuc.dart --no-rimurc $args";
+
+  // Run native rimuc (cuts total testing time from 45s to 16s).
+  String cmd = "echo -e '$input' | ./build/rimuc --no-rimurc $args";
+
   print(cmd);
   return Process.runSync('bash', ['-c', cmd]);
 }

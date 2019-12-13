@@ -11,6 +11,9 @@ void main(List<String> args) {
   try {
     rimuc(args);
   } catch (e) {
+    if (e is! String) {
+      stderr.writeln('unexpected error: $e');
+    }
     exit(1);
   }
   exit(0);

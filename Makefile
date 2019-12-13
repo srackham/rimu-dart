@@ -10,20 +10,26 @@ SHELL := bash
 .ONESHELL:
 .SILENT:
 
-.PHONY: test
-test: lib/src/resources.dart
-	pub run test test/rimu_test.dart
+RIMU_SRC = $(shell find lib -type f -name '*.dart')
+RIMUC_SRC = bin/rimuc.dart
+RESOURCES_SRC = lib/src/resources.dart
+TEST_SRC = test/*.dart
+RIMUC_EXE = build/rimuc
+TEST_FIXTURES = test/fixtures/* test/*.json
+RESOURCE_FILES = lib/resources/*
 
-build/rimuc: bin/rimuc.dart lib/src/resources.dart
+.PHONY: test
+test: $(RIMUC_EXE) $(RESOURCES_SRC)
+	pub run test $(TEST_SRC)
+
+.PHONY: build
+build: $(RIMUC_EXE)
+
+$(RIMUC_EXE): $(RIMUC_SRC) $(RIMU_SRC)
 	echo "Building executable $@"
 	dart2native $< -o $@
 
-.PHONY: build
-build: build/rimuc
-
-# .PHONY: resources
-# resources:
-lib/src/resources.dart: lib/resources/*
+$(RESOURCES_SRC): $(RESOURCE_FILES)
 	# Build resources.dart containing Map<filename,contents> of rimuc resource files.
 	echo "Building resources $@"
 	echo "// Generated automatically from resource files. Do not edit." > $@

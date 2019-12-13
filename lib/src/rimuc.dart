@@ -14,8 +14,8 @@ final String HOME_DIR =
 final String RIMURC = path.join(HOME_DIR, '.rimurc');
 
 // Helpers.
-void die([String message]) {
-  if (message != null) {
+void die([String message = '']) {
+  if (message.isNotEmpty) {
     stderr.writeln(message);
   }
   throw message;
@@ -49,6 +49,8 @@ void rimuc(List<String> args, {bool testing = false}) {
   const PREPEND = '--prepend options';
   const STDIN = '-';
 
+  args = List<String>.from(args); // Ensure args is not fixed length.
+
   // Command option values.
   int safe_mode = 0;
   String html_replacement;
@@ -71,7 +73,6 @@ void rimuc(List<String> args, {bool testing = false}) {
   while (args.isNotEmpty) {
     String arg;
     arg = args.removeAt(0);
-
     switch (arg) {
       case '--help':
       case '-h':
