@@ -337,10 +337,10 @@ String macroDefContentFilter(
     String text, RegExpMatch match, ExpansionOptions expansionOptions) {
   var name = RegExp(r'^{([\w\-]+\??)}')
       .firstMatch(match[0])[1]; // Extract macro name from opening delimiter.
-  text =
-      text.replaceAll(RegExp(r" *\\\n"), '\n'); // Unescape line-continuations.
-  text = text.replaceAll(RegExp(r"(' *[\\]+)\\\n"),
-      '\$1\n'); // Unescape escaped line-continuations.
+  text = text.replaceAll(
+      RegExp(r"' *\\\n"), "'\n"); // Unescape line-continuations.
+  text = text.replaceAllMapped(RegExp(r"(' *[\\]+)\\\n"),
+      (match) => '${match[1]}\n'); // Unescape escaped line-continuations.
   text =
       utils.replaceInline(text, expansionOptions); // Expand macro invocations.
   macros.setValue(name, text);

@@ -1707,6 +1707,15 @@
     }
   },
   {
+    "description": "multi-line meta-macro with deferred parameter evaluation",
+    "input": "{m1} = '.+macros\n```\n{$1}\n```'\n{m2} = 'foo \\\n'\n{m1|m2}",
+    "expectedOutput": "<pre><code>foo \\\n</code></pre>",
+    "expectedCallback": "",
+    "options": {
+      "reset": true
+    }
+  },
+  {
     "description": "simple meta-macro",
     "input": ".-macros\n{v} = '{v1} = 'foobar'\\\n{v1}'\n{v}",
     "expectedOutput": "<p>foobar</p>",
