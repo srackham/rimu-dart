@@ -8,7 +8,7 @@ import 'resources.dart';
   rimuc app implementation.
 */
 
-const VERSION = '11.1.5';
+const VERSION = '11.1.6';
 final String HOME_DIR =
     Platform.environment[Platform.isWindows ? 'UserProfile' : 'HOME'];
 final String RIMURC = path.join(HOME_DIR, '.rimurc');
