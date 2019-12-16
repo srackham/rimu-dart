@@ -32,7 +32,7 @@ The [Rimu CLI command](http://rimumarkup.org/reference.html#rimuc-command) is `r
 Run it using the Dart `pub` command e.g.
 
     pub global activate rimu
-    pub run rimuc "Hello *Rimu*!"
+    echo 'Hello *Rimu*!' | pub run rimuc
 
 
 ## Learn more
