@@ -79,7 +79,7 @@ void rimuc(List<String> args, {bool testing = false}) {
         print('\n' + readResource('manpage.txt'));
         return;
       case '--version':
-        print(VERSION + '\n');
+        print(VERSION);
         return;
       case '--lint':
       case '-l': // Deprecated in Rimu 10.0.0
