@@ -1,4 +1,4 @@
-A port of the [Rimu Markup language](http://rimumarkup.org) written in the Dart
+A port of the [Rimu Markup language](https://srackham.github.io/rimu/) written in the Dart
 language.
 
 
@@ -23,11 +23,11 @@ main(List<String> arguments) {
 ```
 
 See also Rimu
-[API documentation](http://rimumarkup.org/reference.html#api).
+[API documentation](https://srackham.github.io/rimu/reference.html#api).
 
 
 ## CLI command
-The [Rimu CLI command](http://rimumarkup.org/reference.html#rimuc-command) is `rimuc.dart`.
+The [Rimu CLI command](https://srackham.github.io/rimu/reference.html#rimuc-command) is `rimuc.dart`.
 
 Run it using the Dart `pub` command e.g.
 
@@ -48,7 +48,7 @@ Run it using the Dart `pub` command e.g.
 
 
 ## Learn more
-Read the [documentation](http://rimumarkup.org/reference.html) and experiment
+Read the [documentation](https://srackham.github.io/rimu/reference.html) and experiment
 with Rimu in the [Rimu
 Playground](http://srackham.github.io/rimu/rimuplayground.html).
 
