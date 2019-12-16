@@ -35,6 +35,17 @@ Run it using the Dart `pub` command e.g.
     echo 'Hello *Rimu*!' | pub run rimuc
 
 
+## Building
+. Clone source repo from Github:
+
+    git clone git@github.com:srackham/rimu-dart.git
+
+. Build and test:
+
+    cd rimu-dart/
+    make
+
+
 ## Learn more
 Read the [documentation](http://rimumarkup.org/reference.html) and experiment
 with Rimu in the [Rimu
