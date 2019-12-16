@@ -38,7 +38,7 @@ Run it using the Dart `pub` command e.g.
 ## Building
 1. Clone source repo from Github:
 
-    git clone git@github.com:srackham/rimu-dart.git
+        git clone git@github.com:srackham/rimu-dart.git
 
 2. Build and test:
 
