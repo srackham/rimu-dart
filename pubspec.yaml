@@ -2,7 +2,6 @@ name: rimu
 version: 11.1.4
 
 description: Rimu Markup for Dart.
-author: Stuart Rackham <srackham@gmail.com>
 homepage: https://srackham.github.io/rimu/
 repository: https://github.com/srackham/rimu-dart/
 
