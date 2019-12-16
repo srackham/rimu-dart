@@ -26,6 +26,9 @@ test: $(RIMUC_EXE) $(RESOURCES_SRC)
 build: $(RIMUC_EXE)
 
 $(RIMUC_EXE): $(RIMUC_SRC) $(RIMU_SRC)
+	if [ ! -d build ]; then
+		mkdir build
+	fi
 	echo "Building executable $@"
 	dart2native $< -o $@
 
