@@ -32,7 +32,7 @@ The [Rimu CLI command](https://srackham.github.io/rimu/reference.html#rimuc-comm
 Run it using the Dart `pub` command e.g.
 
     pub global activate rimu
-    echo 'Hello *Rimu*!' | pub run rimuc
+    echo 'Hello *Rimu*!' | pub global run rimu:rimuc
 
 
 ## Building
@@ -51,9 +51,6 @@ Run it using the Dart `pub` command e.g.
 Read the [documentation](https://srackham.github.io/rimu/reference.html) and experiment
 with Rimu in the [Rimu
 Playground](http://srackham.github.io/rimu/rimuplayground.html).
-
-See the Rimu [Change Log](http://srackham.github.io/rimu/changelog.html) for the
-latest changes.
 
 
 ## Implementation
