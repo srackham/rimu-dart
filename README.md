@@ -36,14 +36,15 @@ Run it using the Dart `pub` command e.g.
 
 
 ## Building
-. Clone source repo from Github:
+1. Clone source repo from Github:
 
     git clone git@github.com:srackham/rimu-dart.git
 
-. Build and test:
+2. Build and test:
 
-    cd rimu-dart/
-    make
+        cd rimu-dart/
+        pub get
+        make
 
 
 ## Learn more
