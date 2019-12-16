@@ -1,7 +1,6 @@
 // Generated automatically from resource files. Do not edit.
 Map<String, String> resources = {
-'classic-header.rmu':
-r'''/*
+  'classic-header.rmu': r'''/*
   Used by rimuc `--layout classic` option.
 */
 
@@ -569,11 +568,9 @@ hljs.initHighlightingOnLoad();
 </div>
 
 <div id="article">''',
-'plain-footer.rmu':
-r'''</body>
+  'plain-footer.rmu': r'''</body>
 </html>''',
-'manpage.txt':
-r'''NAME
+  'manpage.txt': r'''NAME
   rimuc - convert Rimu source to HTML
 
 SYNOPSIS
@@ -727,8 +724,7 @@ PREDEFINED MACROS
   --header-ids       Set to a non-blank value to generate h1, h2
                      and h3 header id attributes.
   _______________________________________________________________''',
-'v8-header.rmu':
-r'''/*
+  'v8-header.rmu': r'''/*
   Used by rimuc `--layout v8` option.
   DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
   Styled using Bootstrap.
@@ -1065,8 +1061,7 @@ r'''/*
 </div>
 
 <div id="contents">''',
-'classic-footer.rmu':
-r'''/*
+  'classic-footer.rmu': r'''/*
   Used by rimuc.js --styled option.
 */
 
@@ -1152,8 +1147,7 @@ window.onclick = function(event) {
 
 </body>
 </html>''',
-'flex-header.rmu':
-r'''/*
+  'flex-header.rmu': r'''/*
   Used by rimuc `--layout flex` option.
 */
 
@@ -1728,8 +1722,7 @@ hljs.initHighlightingOnLoad();
 </div>
 
 <div id="article">''',
-'flex-footer.rmu':
-r'''/*
+  'flex-footer.rmu': r'''/*
   Used by rimuc.js --styled option.
 */
 
@@ -1807,8 +1800,7 @@ document.onclick = function(event) {
 
 </body>
 </html>''',
-'sequel-header.rmu':
-r'''/*
+  'sequel-header.rmu': r'''/*
   Used by rimuc `--layout sequel` option.
 */
 
@@ -2397,8 +2389,7 @@ hljs.initHighlightingOnLoad();
 
 <div id="main">
 <div id="article">''',
-'plain-header.rmu':
-r'''/*
+  'plain-header.rmu': r'''/*
   Used by rimuc `--layout plain` option.
 */
 
@@ -2418,8 +2409,7 @@ r'''/*
 {--head}
 </head>
 <body>''',
-'v8-footer.rmu':
-r'''/*
+  'v8-footer.rmu': r'''/*
   Used by rimuc `--layout v8` option.
   DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
 */
@@ -2511,8 +2501,7 @@ window.onclick = function(event) {
 
 </body>
 </html>''',
-'sequel-footer.rmu':
-r'''/*
+  'sequel-footer.rmu': r'''/*
   Used by rimuc `--layout sequel` option.
 */
 

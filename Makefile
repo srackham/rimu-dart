@@ -38,7 +38,7 @@ $(RESOURCES_SRC): $(RESOURCE_FILES)
 	echo "// Generated automatically from resource files. Do not edit." > $@
 	echo "Map<String, String> resources = {" >> $@
 	for f in $^; do
-		echo "'$$(basename $$f)':" >> $@
+		echo -n "  '$$(basename $$f)': " >> $@
 		echo "r'''$$(cat $$f)'''," >> $@
 	done
 	echo "};" >> $@
