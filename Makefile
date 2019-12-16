@@ -39,3 +39,7 @@ $(RESOURCES_SRC): $(RESOURCE_FILES)
 		echo "r'''$$(cat $$f)'''," >> $@
 	done
 	echo "};" >> $@
+
+.PHONY: push
+push:
+	git push -u --tags origin master
