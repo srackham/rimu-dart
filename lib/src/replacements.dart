@@ -39,7 +39,7 @@ final List<Def> DEFAULT_DEFS = [
   // Image: <image:src|alt>
   // src = $1, alt = $2
   Def(
-      match: RegExp(r'\\?<image:([^\s|]+)\|([^]*?)>', dotAll: true),
+      match: RegExp(r'\\?<image:([^\s|]+)\|(.*?)>', dotAll: true),
       replacement: '<img src="\$1" alt="\$2">'),
 
   // Image: <image:src>
@@ -57,7 +57,7 @@ final List<Def> DEFAULT_DEFS = [
   // Email: <address|caption>
   // address = $1, caption = $2
   Def(
-      match: RegExp(r'\\?<(\S+@[\w.\-]+)\|([^]+?)>', dotAll: true),
+      match: RegExp(r'\\?<(\S+@[\w.\-]+)\|(.+?)>', dotAll: true),
       replacement: '<a href="mailto:\$1">\$\$2</a>'),
 
   // Email: <address>
@@ -75,7 +75,7 @@ final List<Def> DEFAULT_DEFS = [
   // Link: <url|caption>
   // url = $1, caption = $2
   Def(
-      match: RegExp(r'\\?<(\S+?)\|([^]*?)>', dotAll: true),
+      match: RegExp(r'\\?<(\S+?)\|(.*?)>', dotAll: true),
       replacement: '<a href="\$1">\$\$2</a>'),
 
   // HTML inline tags.

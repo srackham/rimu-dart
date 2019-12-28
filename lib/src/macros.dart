@@ -67,7 +67,7 @@ void setValue(String name, String value) {
 // Render macro invocations in text string.
 // Render Simple invocations first, followed by Parametized, Inclusion and Exclusion invocations.
 String render(String text, {bool silent = false}) {
-  final MATCH_COMPLEX = RegExp(r'\\?{([\w\-]+)([!=|?](?:|[^]*?[^\\]))}',
+  final MATCH_COMPLEX = RegExp(r'\\?{([\w\-]+)([!=|?](?:|.*?[^\\]))}',
       dotAll: true); // Parametrized, Inclusion and Exclusion invocations.
   final MATCH_SIMPLE = RegExp(r'\\?{([\w\-]+)()}'); // Simple macro invocation.
   var result = text;

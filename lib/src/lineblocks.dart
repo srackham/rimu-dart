@@ -127,7 +127,7 @@ List<Def> defs = [
   // Block image: <image:src|alt>
   // src = $1, alt = $2
   Def(
-    match: RegExp(r'^\\?<image:([^\s|]+)\|([^]+?)>$'),
+    match: RegExp(r'^\\?<image:([^\s|]+)\|(.+?)>$'),
     replacement: r'<img src="$1" alt="$2">',
   ),
   // Block image: <image:src>
