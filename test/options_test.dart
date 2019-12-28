@@ -47,13 +47,16 @@ void main() {
   test('setOption', () {
     init();
     // Illegal values do not update options.
-    setOption('safeMode', 'qux');
+    setOption('safeMode', 'ILLEGAL');
     expect(safeMode, 0);
     setOption('safeMode', '42');
     expect(safeMode, 0);
     setOption('safeMode', '1');
-    setOption('reset', 'qux');
+    setOption('reset', 'ILLEGAL');
     expect(safeMode, 1);
+    // Reset clears options.
+    setOption('reset', 'true');
+    expect(safeMode, 0);
   });
 
   test('htmlSafeModeFilter', () {
@@ -64,7 +67,7 @@ void main() {
     safeMode = 2;
     expect(htmlSafeModeFilter('foo'), '<mark>replaced HTML</mark>');
     safeMode = 3;
-    expect(htmlSafeModeFilter('<br>'),'&lt;br&gt;');
+    expect(htmlSafeModeFilter('<br>'), '&lt;br&gt;');
     safeMode = 0 + 4;
     expect(htmlSafeModeFilter('foo'), 'foo');
   });
