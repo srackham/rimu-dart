@@ -34,6 +34,11 @@ hljs.initHighlightingOnLoad();
 {--mathjax?} = ''
 {--mathjax-scripts} = '<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>'
 
+// List item CSS counters.
+{--dl-counter} = '<span class="dl-counter"></span>'
+{--ol-counter} = '<span class="ol-counter"></span>'
+{--ul-counter} = '<span class="ul-counter"></span>'
+
 // Classic layout specific.
 {--dropdown-toc?} = ''
 
@@ -587,8 +592,9 @@ DESCRIPTION
   then its contents is processed (with --safe-mode 0).
   This behavior can be disabled with the --no-rimurc option.
 
-  Inputs are processed in the following order: .rimurc file,
-  --prepend-file options, --prepend options, FILES...
+  Inputs are processed in the following order: .rimurc file then
+  --prepend-file option files then --prepend option source and
+  finally FILES...
 
 OPTIONS
   -h, --help
@@ -624,13 +630,14 @@ OPTIONS
     Pass the stdin input verbatim to the output.
 
   -p, --prepend SOURCE
-    Process the SOURCE text before all other inputs.
-    Rendered with --safe-mode 0.
+    Process the Rimu SOURCE text (immediately after --prepend-file
+    option files). Rendered with --safe-mode 0. This option can be
+    specified multiple times.
 
   --prepend-file PREPEND_FILE
-    Process the PREPEND_FILE contents immediately after --prepend
-    and .rimurc processing.
-    Rendered with --safe-mode 0.
+    Process the PREPEND_FILE contents (immediately after .rimurc file).
+    Rendered with --safe-mode 0. This option can be specified
+    multiple times.
 
   --no-rimurc
     Do not process .rimurc from the user's home directory.
@@ -1180,6 +1187,11 @@ hljs.initHighlightingOnLoad();
 
 {--mathjax?} = ''
 {--mathjax-scripts} = '<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>'
+
+// List item CSS counters.
+{--dl-counter} = '<span class="dl-counter"></span>'
+{--ol-counter} = '<span class="ol-counter"></span>'
+{--ul-counter} = '<span class="ul-counter"></span>'
 
 /*
   Legend theme.
@@ -1834,6 +1846,11 @@ hljs.initHighlightingOnLoad();
 
 {--mathjax?} = ''
 {--mathjax-scripts} = '<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>'
+
+// List item CSS counters.
+{--dl-counter} = '<span class="dl-counter"></span>'
+{--ol-counter} = '<span class="ol-counter"></span>'
+{--ul-counter} = '<span class="ul-counter"></span>'
 
 // Sequel layout specific.
 {--toc-width?} = '300px'
