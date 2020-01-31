@@ -41,11 +41,11 @@ class Reader {
   // the $1 match group (if it exists).
   // Return null if an EOF is encountered.
   // Exit with the reader pointing to the line following the match.
-  List<String> readTo(RegExp find) {
+  List<String> readTo(RegExp regexp) {
     List<String> result = [];
     RegExpMatch match;
     while (!eof()) {
-      match = find.firstMatch(cursor);
+      match = regexp.firstMatch(cursor);
       if (match != null) {
         if (match.groupCount > 0) {
           result.add(match[1]); // $1
@@ -57,7 +57,7 @@ class Reader {
       next();
     }
     // Blank line matches EOF.
-    if (match != null || (find.pattern == r'^$' && eof())) {
+    if (match != null || (regexp.pattern == r'^$' && eof())) {
       return result;
     } else {
       return null;

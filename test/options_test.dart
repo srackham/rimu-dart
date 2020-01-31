@@ -36,10 +36,10 @@ void main() {
 
   test('updateOptions', () {
     init();
-    updateOptions(RenderOptions(safeMode: 1));
+    updateFrom(RenderOptions(safeMode: 1));
     expect(safeMode, 1);
     expect(htmlReplacement, '<mark>replaced HTML</mark>');
-    updateOptions(RenderOptions(htmlReplacement: 'foo'));
+    updateFrom(RenderOptions(htmlReplacement: 'foo'));
     expect(safeMode, 1);
     expect(htmlReplacement, 'foo');
   });

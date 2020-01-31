@@ -52,7 +52,7 @@ bool skipMacroDefs() {
 }
 
 // Update specified (non-null) options.
-void updateOptions(RenderOptions options) {
+void updateFrom(RenderOptions options) {
   // Install callback first to ensure option errors are logged.
   callback = options.callback ?? callback;
   setOption('reset', options.reset); // Reset takes priority.
