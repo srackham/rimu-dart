@@ -1,9 +1,9 @@
 import 'blockattributes.dart' as blockattributes;
 import 'delimitedblocks.dart' as delimitedblocks;
 import 'expansion.dart';
+import 'io.dart' as io;
 import 'lineblocks.dart' as lineblocks;
 import 'options.dart' as options;
-import 'io.dart' as io;
 import 'utils.dart' as utils;
 
 class Def {
@@ -106,15 +106,15 @@ ItemInfo renderListItem(ItemInfo item, io.Reader reader, io.Writer writer) {
   String text;
   if (match.groupCount == 3) {
     // 3 match groups => definition list.
-    writer.write(blockattributes.injectHtmlAttributes(def.termOpenTag));
+    writer.write(
+        blockattributes.injectHtmlAttributes(def.termOpenTag, consume: false));
+    blockattributes.id = '';
     text = utils.replaceInline(
         match[1], ExpansionOptions(macros: true, spans: true));
     writer.write(text);
     writer.write(def.termCloseTag);
-    writer.write(def.itemOpenTag);
-  } else {
-    writer.write(blockattributes.injectHtmlAttributes(def.itemOpenTag));
   }
+  writer.write(blockattributes.injectHtmlAttributes(def.itemOpenTag));
   // Process item text from first line.
   var itemLines = io.Writer();
   text = match[match.groupCount];

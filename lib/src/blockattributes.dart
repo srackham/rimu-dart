@@ -60,7 +60,7 @@ bool parse(String attrs) {
 
 // Inject HTML attributes into the HTML `tag` and return result.
 // Consume HTML attributes unless the 'tag' argument is blank.
-String injectHtmlAttributes(String tag) {
+String injectHtmlAttributes(String tag, {bool consume = true}) {
   var result = tag;
   if (result.isEmpty) {
     return result;
@@ -118,11 +118,13 @@ String injectHtmlAttributes(String tag) {
       result = before + ' ' + attrs + after;
     }
   }
-  // Consume the attributes.
-  classes = '';
-  id = '';
-  css = '';
-  attributes = '';
+  if (consume) {
+    // Consume the attributes.
+    classes = '';
+    id = '';
+    css = '';
+    attributes = '';
+  }
   return result;
 }
 
