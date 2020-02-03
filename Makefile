@@ -43,6 +43,17 @@ $(RESOURCES_SRC): $(RESOURCE_FILES)
 	done
 	echo "};" >> $@
 
+.PHONY: tag
+tag: test
+	# Create Git version tag. VERS is a valid semantic version number.
+	if [ -z $${VERS+x} ]; then
+		echo "VERS environment variable not set e.g. make tag VERS=1.0.0"
+		exit 1
+	fi
+	tag=v$(VERS)
+	echo tag: $$tag
+	git tag -a -m $$tag $$tag
+
 .PHONY: push
 push:
 	git push -u --tags origin master
