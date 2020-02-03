@@ -1,14 +1,16 @@
-import 'dart:io';
 import 'dart:convert';
-import 'package:rimu/rimu.dart';
+import 'dart:io';
+
 import 'package:path/path.dart' as path;
+import 'package:rimu/rimu.dart';
+
 import 'resources.dart';
 
 /*
   rimuc app implementation.
 */
 
-const VERSION = '11.1.6';
+const VERSION = '11.1.7';
 final String HOME_DIR =
     Platform.environment[Platform.isWindows ? 'UserProfile' : 'HOME'];
 final String RIMURC = path.join(HOME_DIR, '.rimurc');

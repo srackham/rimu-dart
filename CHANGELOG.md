@@ -1,6 +1,10 @@
 This log contains Dart specific changes, the [full change
 log](https://srackham.github.io/rimu/changelog.html) is on the Rimu website.
 
+## 11.1.7
+- Updates ported from [Rimu
+  JavaScript 11.1.5](https://srackham.github.io/rimu/changelog.html).
+
 ## 11.1.6
 - Add missing `rimuc` executable to pubspec.
 
