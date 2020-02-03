@@ -47,8 +47,8 @@ String readInputSync({Encoding encoding = systemEncoding}) {
 
 // Application body.
 void rimuc(List<String> args, {bool testing = false}) {
-  const RESOURCE_TAG = 'resource:'; // Tag for resource files.
-  const PREPEND = '--prepend options';
+  const RESOURCE_TAG = 'resource:'; // Placeholder tag for resource files.
+  const PREPEND_TAG = '--prepend options'; // Placeholder tag for prepend options.
   const STDIN = '-';
 
   args = List<String>.from(args); // Ensure args is not fixed length.
@@ -174,7 +174,7 @@ void rimuc(List<String> args, {bool testing = false}) {
     prepend_files.insert(0, RIMURC);
   }
   if (prepend != '') {
-    prepend_files.add(PREPEND);
+    prepend_files.add(PREPEND_TAG);
   }
   files.insertAll(0, prepend_files);
   // Convert Rimu source files to HTML.
@@ -193,7 +193,7 @@ void rimuc(List<String> args, {bool testing = false}) {
       options.safeMode = 0; // Resources are trusted.
     } else if (infile == STDIN) {
       source = readInputSync() ?? '';
-    } else if (infile == PREPEND) {
+    } else if (infile == PREPEND_TAG) {
       source = prepend;
       options.safeMode = 0; // --prepend options are trusted.
     } else {
