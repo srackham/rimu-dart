@@ -165,7 +165,7 @@ hljs.initHighlightingOnLoad();
     text-align: left;
     vertical-align: top;
   }
-  {--!} tbody necessary because: http://stackoverflow.com/questions/7490364/why-do-browsers-still-inject-tbody-in-html5
+  {--!} tbody necessary because: https://stackoverflow.com/questions/7490364/why-do-browsers-still-inject-tbody-in-html5
   table.bordered > tbody > tr > th,
   table.bordered > tbody > tr > td {
     border: 1px solid {--border-color};
@@ -233,7 +233,7 @@ hljs.initHighlightingOnLoad();
     border: none;
     white-space: pre-wrap;
   }
-{--!} So hyphenated words like `--word-wrap` are not broken (there is no CSS property that will break on white space only).
+{--!} Do not break hyphenated words or white space inside code quotes.
   *:not(pre) > code {
     white-space: nowrap;
   }
