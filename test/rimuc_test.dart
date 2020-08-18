@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:rimu/src/rimuc.dart';
 import 'package:test/test.dart';
 
@@ -88,7 +89,7 @@ void main() {
             spec.layouts && layout.isEmpty) {
           continue;
         }
-        var args = spec.args.replaceAll('./src/examples/example-rimurc.rmu',
+        var args = spec.args.replaceAll('./examples/example-rimurc.rmu',
             './test/fixtures/example-rimurc.rmu');
         if (layout.isNotEmpty) {
           args = '--layout $layout $args';
