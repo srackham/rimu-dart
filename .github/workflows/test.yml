@@ -24,6 +24,12 @@ jobs:
           release-channel: stable
           version: ${{ matrix.dart-version }}
       - name: Install package dependencies
-        run: pub get
+        run: |
+          pub get
+      - name: Build rimuc executable
+        run: |
+          mkdir build
+          dart2native bin/rimuc.dart -o build/rimuc
       - name: Run tests
-        run: pub run test test/*.dart
+        run: |
+          pub run test test/*.dart
