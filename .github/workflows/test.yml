@@ -30,4 +30,4 @@ jobs:
           dart2native bin/rimuc.dart -o build/rimuc
       - name: Run tests
         run: |
-          pub run test test/*.dart
+          pub run test test/
