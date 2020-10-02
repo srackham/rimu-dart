@@ -12,7 +12,8 @@ jobs:
     strategy:
       matrix:
         dart-version: [2.9.3]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        # os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
