@@ -11,16 +11,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        sdk: [stable]
+        # sdk: [stable]
+        dart-version: [2.9.3]
         # os: [ubuntu-latest, macos-latest, windows-latest]
         os: [ubuntu-latest]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Use Dart ${{ matrix.sdk }}
+      - name: Use Dart ${{ matrix.dart-version }}
         uses: cedx/setup-dart@v2
         with:
-          release-channel: ${{matrix.sdk}}
+          release-channel: stable
+          version: ${{ matrix.dart-version }}
       - name: Install package dependencies
         run: pub get
       - name: Run tests
