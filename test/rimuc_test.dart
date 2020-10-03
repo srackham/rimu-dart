@@ -32,20 +32,32 @@ class TestSpec {
 // args: rimuc command args.
 // input: stdin input string.
 ProcessResult execRimuc({String args = '', String input = ''}) {
-  input = input.replaceAll('\n', r'\n');
-  input = input.replaceAll("'", r'\x27');
-
-  // Run rimuc.dart
-  // String cmd = "echo -e '$input' | pub run rimuc.dart --no-rimurc $args";
-
-  // Run native rimuc (cuts total testing time from 45s to 16s).
-  String cmd = "echo -e '$input' | ./build/rimuc --no-rimurc $args";
-
-  print(cmd);
-  return Process.runSync('bash', ['-c', cmd]);
+  final tempFile = './test/fixtures/temp.txt';
+  final file = File(tempFile);
+  file.writeAsStringSync(input, mode: FileMode.write);
+  try {
+    if (Platform.isWindows) {
+      final cmd = 'type $tempFile | ./build/rimuc --no-rimurc $args';
+      print(cmd);
+      // BUG: Process.run() prepends 6 spurious bytes to the piped input.
+      //      This does not occur when same command is run from the PowerShell command-line.
+      return Process.runSync('PowerShell.exe', ['-Command', cmd]);
+    } else {
+      final cmd = 'cat $tempFile | ./build/rimuc --no-rimurc $args';
+      print(cmd);
+      return Process.runSync('bash', ['-c', cmd]);
+    }
+  } finally {
+    file.deleteSync();
+  }
 }
 
 void main() {
+  // BUG: Skip these tests under Windows (see execRimuc())
+  if (Platform.isWindows) {
+    return;
+  }
+
   test('readResource', () {
     // Throws exception if there is a missing resource file.
     for (var style in ['classic', 'flex', 'plain', 'sequel', 'v8']) {
