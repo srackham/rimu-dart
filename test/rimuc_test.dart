@@ -53,10 +53,11 @@ ProcessResult execRimuc({String args = '', String input = ''}) {
 }
 
 void main() {
-  // BUG: Skip these tests under Windows (see execRimuc())
-  if (Platform.isWindows) {
-    return;
-  }
+  test('basicRimuc', () {
+    expect(() {
+      rimuc(['./test/fixtures/hello-rimu.rmu'], testing: true);
+    }, returnsNormally);
+  });
 
   test('readResource', () {
     // Throws exception if there is a missing resource file.
@@ -66,6 +67,11 @@ void main() {
     }
     readResource('manpage.txt');
   });
+
+  // BUG: Skip these tests under Windows (see execRimuc())
+  if (Platform.isWindows) {
+    return;
+  }
 
   test('helpCommand', () {
     var result = execRimuc(args: '-h');
@@ -78,12 +84,6 @@ void main() {
     expect(result.exitCode, 1);
     expect(result.stderr.toString().startsWith('illegal --layout: foobar'),
         isTrue);
-  });
-
-  test('basicRimuc', () {
-    expect(() {
-      rimuc(['./test/fixtures/hello-rimu.rmu'], testing: true);
-    }, returnsNormally);
   });
 
   // Execute test cases specified in JSON file rimuc-tests.json
