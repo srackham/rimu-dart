@@ -11,5 +11,5 @@ build/
 doc/api/
 
 # Related documents not included in the package.
-gitignore/
+tmp/
 .vscode/
