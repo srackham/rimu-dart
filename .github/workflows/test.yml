@@ -21,19 +21,19 @@ jobs:
         with:
           release-channel: stable
           version: ${{ matrix.dart-version }}
-      - if: ${{ runner.os != 'Windows' }}
-        env:
-          rimucExe: 'build/rimuc'
-      - if: ${{ runner.os == 'Windows' }}
-        env:
-          rimucExe: 'build/rimuc.exe'
       - name: Install package dependencies
         run: |
           pub get
       - name: Build rimuc executable
+        if: ${{ runner.os != 'Windows' }}
         run: |
           mkdir build
-          dart2native bin/rimuc.dart -o ${{ env.rimucExe }}
+          dart2native bin/rimuc.dart -o build/rimuc
+      - name: Build rimuc executable
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          mkdir build
+          dart2native bin/rimuc.dart -o build/rimuc.exe
       - name: Run tests
         run: |
           pub run test test/
