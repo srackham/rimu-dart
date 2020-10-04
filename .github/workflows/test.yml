@@ -24,12 +24,12 @@ jobs:
       - name: Install package dependencies
         run: |
           pub get
-      - name: Build rimuc executable
+      - name: Build rimuc executable (Linux, macOS)
         if: ${{ runner.os != 'Windows' }}
         run: |
           mkdir build
           dart2native bin/rimuc.dart -o build/rimuc
-      - name: Build rimuc executable
+      - name: Build rimuc executable (Windows)
         if: ${{ runner.os == 'Windows' }}
         run: |
           mkdir build
