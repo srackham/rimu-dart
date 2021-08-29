@@ -17,7 +17,7 @@ void main() {
             specials: false));
 
     opts = ExpansionOptions(macros: true, specials: false);
-    opts.parse("-macros +spans");
+    opts.parse('-macros +spans');
     expect(
         opts,
         ExpansionOptions(

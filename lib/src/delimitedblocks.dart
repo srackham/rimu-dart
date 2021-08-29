@@ -42,15 +42,15 @@ class Def {
       this.expansionOptions});
 
   Def.from(Def other) {
-    this.name = other.name;
-    this.openMatch = other.openMatch;
-    this.closeMatch = other.closeMatch;
-    this.openTag = other.openTag;
-    this.closeTag = other.closeTag;
-    this.verify = other.verify;
-    this.delimiterFilter = other.delimiterFilter;
-    this.contentFilter = other.contentFilter;
-    this.expansionOptions = ExpansionOptions.from(other.expansionOptions);
+    name = other.name;
+    openMatch = other.openMatch;
+    closeMatch = other.closeMatch;
+    openTag = other.openTag;
+    closeTag = other.closeTag;
+    verify = other.verify;
+    delimiterFilter = other.delimiterFilter;
+    contentFilter = other.contentFilter;
+    expansionOptions = ExpansionOptions.from(other.expansionOptions);
   }
 }
 
@@ -230,7 +230,7 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
     var delimiterText =
         (def.delimiterFilter != null) ? def.delimiterFilter(match, def) : '';
     // Read block content into lines.
-    List<String> lines = [];
+    var lines = <String>[];
     if (delimiterText.isNotEmpty) {
       lines.add(delimiterText);
     }

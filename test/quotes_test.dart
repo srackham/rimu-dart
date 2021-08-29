@@ -21,20 +21,20 @@ void main() {
     init();
 
     setDefinition(Def(
-        quote: "*", openTag: "<strong>", closeTag: "</strong>", spans: true));
+        quote: '*', openTag: '<strong>', closeTag: '</strong>', spans: true));
     expect(defs.length, DEFAULT_DEFS.length);
     var def = getDefinition('*');
     expect(def.openTag, '<strong>');
 
     setDefinition(
-        Def(quote: "x", openTag: "<del>", closeTag: "</del>", spans: true));
+        Def(quote: 'x', openTag: '<del>', closeTag: '</del>', spans: true));
     expect(defs.length, DEFAULT_DEFS.length + 1);
     def = getDefinition('x');
     expect(def.openTag, '<del>');
     expect(defs.last.openTag, '<del>');
 
     setDefinition(
-        Def(quote: "xx", openTag: "<u>", closeTag: "</u>", spans: true));
+        Def(quote: 'xx', openTag: '<u>', closeTag: '</u>', spans: true));
     expect(defs.length, DEFAULT_DEFS.length + 2);
     def = getDefinition('xx');
     expect(def.openTag, '<u>');

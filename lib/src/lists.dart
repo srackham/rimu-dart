@@ -123,7 +123,7 @@ ItemInfo renderListItem(ItemInfo item, io.Reader reader, io.Writer writer) {
   reader.next();
   var attachedLines = io.Writer();
   int blankLines;
-  bool attachedDone = false;
+  var attachedDone = false;
   ItemInfo nextItem;
   while (true) {
     blankLines = consumeBlockAttributes(reader, attachedLines);
@@ -180,7 +180,7 @@ ItemInfo renderListItem(ItemInfo item, io.Reader reader, io.Writer writer) {
 // Consume blank lines and Block Attributes.
 // Return number of blank lines read or -1 if EOF.
 int consumeBlockAttributes(io.Reader reader, io.Writer writer) {
-  int blanks = 0;
+  var blanks = 0;
   while (true) {
     if (reader.eof()) {
       return -1;
@@ -204,7 +204,7 @@ ItemInfo matchItem(io.Reader reader) {
   if (reader.eof()) {
     return null;
   }
-  ItemInfo item = ItemInfo(); // ItemInfo factory.
+  var item = ItemInfo(); // ItemInfo factory.
   // Check if the line matches a list item.
   for (var def in defs) {
     var match = def.match.firstMatch(reader.cursor);

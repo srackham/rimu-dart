@@ -17,14 +17,14 @@ class TestSpec {
   bool layouts;
 
   TestSpec.fromJson(dynamic decoded) {
-    this.unsupported = decoded['unsupported'] ?? '';
-    this.description = decoded['description'];
-    this.args = decoded['args'];
-    this.input = decoded['input'];
-    this.expectedOutput = decoded['expectedOutput'];
-    this.exitCode = decoded['exitCode'] ?? 0;
-    this.predicate = decoded['predicate'];
-    this.layouts = decoded['layouts'] ?? false;
+    unsupported = decoded['unsupported'] ?? '';
+    description = decoded['description'];
+    args = decoded['args'];
+    input = decoded['input'];
+    expectedOutput = decoded['expectedOutput'];
+    exitCode = decoded['exitCode'] ?? 0;
+    predicate = decoded['predicate'];
+    layouts = decoded['layouts'] ?? false;
   }
 }
 
@@ -110,19 +110,19 @@ void main() {
         var output = '${result.stdout}${result.stderr}';
         expect(result.exitCode, spec.exitCode);
         switch (spec.predicate) {
-          case "equals":
+          case 'equals':
             expect(output, spec.expectedOutput);
             break;
-          case "!equals":
+          case '!equals':
             expect(output, isNot(spec.expectedOutput));
             break;
-          case "contains":
+          case 'contains':
             expect(output.contains(spec.expectedOutput), isTrue);
             break;
-          case "!contains":
+          case '!contains':
             expect(!output.contains(spec.expectedOutput), isTrue);
             break;
-          case "startsWith":
+          case 'startsWith':
             expect(output.startsWith(spec.expectedOutput), isTrue);
             break;
           default:

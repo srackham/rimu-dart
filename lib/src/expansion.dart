@@ -11,6 +11,7 @@ class ExpansionOptions {
   bool spans; // Span substitution also expands special characters.
   bool specials;
 
+  @override
   bool operator ==(Object other) =>
       other is ExpansionOptions &&
       macros == other.macros &&
@@ -23,18 +24,18 @@ class ExpansionOptions {
       {this.macros, this.container, this.skip, this.spans, this.specials});
 
   ExpansionOptions.from(ExpansionOptions other) {
-    this.merge(other);
+    merge(other);
   }
 
   void merge(ExpansionOptions from) {
     if (from == null) {
       return;
     }
-    this.macros = from.macros ?? this.macros;
-    this.container = from.container ?? this.container;
-    this.skip = from.skip ?? this.skip;
-    this.spans = from.spans ?? this.spans;
-    this.specials = from.specials ?? this.specials;
+    macros = from.macros ?? macros;
+    container = from.container ?? container;
+    skip = from.skip ?? skip;
+    spans = from.spans ?? spans;
+    specials = from.specials ?? specials;
   }
 
   // Parse block-options string into blockOptions.
@@ -50,19 +51,19 @@ class ExpansionOptions {
           var value = opt[0] == '+';
           switch (opt.substring(1)) {
             case 'macros':
-              this.macros = value;
+              macros = value;
               break;
             case 'spans':
-              this.spans = value;
+              spans = value;
               break;
             case 'specials':
-              this.specials = value;
+              specials = value;
               break;
             case 'container':
-              this.container = value;
+              container = value;
               break;
             case 'skip':
-              this.skip = value;
+              skip = value;
               break;
           }
         } else {

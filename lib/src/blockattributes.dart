@@ -72,9 +72,9 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
     if (match != null) {
       // Inject class names into existing class attribute in first tag.
       result =
-          result.replaceFirst(match[0], '${match[1]}${classes} ${match[2]}"');
+          result.replaceFirst(match[0], '${match[1]}$classes ${match[2]}"');
     } else {
-      attrs = 'class="${classes}"';
+      attrs = 'class="$classes"';
     }
   }
   if (id.isNotEmpty) {
@@ -82,12 +82,12 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
     var has_id =
         RegExp(r'^<[^<]*id=".*?"', caseSensitive: false).hasMatch(result);
     if (has_id || ids.contains(id)) {
-      errorCallback("duplicate 'id' attribute: ${id}");
+      errorCallback("duplicate 'id' attribute: $id");
     } else {
       ids.insert(0, id);
     }
     if (!has_id) {
-      attrs += ' id="${id}"';
+      attrs += ' id="$id"';
     }
   }
   if (css.isNotEmpty) {
@@ -99,13 +99,13 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
       if (!group2.endsWith(';')) {
         group2 += ';';
       }
-      result = result.replaceFirst(match[0], '${match[1]}${group2} ${css}"');
+      result = result.replaceFirst(match[0], '${match[1]}$group2 $css"');
     } else {
-      attrs += ' style="${css}"';
+      attrs += ' style="$css"';
     }
   }
   if (attributes.isNotEmpty) {
-    attrs += ' ${attributes}';
+    attrs += ' $attributes';
   }
   attrs = attrs.trim();
   if (attrs.isNotEmpty) {
@@ -131,10 +131,10 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
 String slugify(String text) {
   var slug = text
       .replaceAll(RegExp(r'\W+'),
-          "-") // Replace non-alphanumeric characters with dashes.
+          '-') // Replace non-alphanumeric characters with dashes.
       .replaceAll(
-          RegExp(r'-+'), "-") // Replace multiple dashes with single dash.
-      .replaceAll(RegExp(r'(^-)|(-$)'), "") // Trim leading and trailing dashes.
+          RegExp(r'-+'), '-') // Replace multiple dashes with single dash.
+      .replaceAll(RegExp(r'(^-)|(-$)'), '') // Trim leading and trailing dashes.
       .toLowerCase();
   if (slug.isEmpty) {
     slug = 'x';
@@ -142,10 +142,10 @@ String slugify(String text) {
   if (ids.contains(slug)) {
     // Another element already has that id.
     var i = 2;
-    while (ids.contains('${slug}-${i}')) {
+    while (ids.contains('$slug-$i')) {
       i++;
     }
-    slug += '-${i}';
+    slug += '-$i';
   }
   return slug;
 }

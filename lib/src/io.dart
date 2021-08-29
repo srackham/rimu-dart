@@ -42,7 +42,7 @@ class Reader {
   // Return null if an EOF is encountered.
   // Exit with the reader pointing to the line following the match.
   List<String> readTo(RegExp regexp) {
-    List<String> result = [];
+    var result = <String>[];
     RegExpMatch match;
     while (!eof()) {
       match = regexp.firstMatch(cursor);
@@ -64,7 +64,7 @@ class Reader {
     }
   }
 
-  skipBlankLines() {
+  void skipBlankLines() {
     while (!eof() && cursor.trim() == '') {
       next();
     }
@@ -83,6 +83,7 @@ class Writer {
     buffer.add(s);
   }
 
+  @override
   String toString() {
     return buffer.join('');
   }

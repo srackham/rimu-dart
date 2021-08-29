@@ -147,7 +147,7 @@ String render(String text, {bool silent = false}) {
           var pattern = params.substring(1);
           bool skip;
           try {
-            skip = !RegExp('^${pattern}\$').hasMatch(value);
+            skip = !RegExp('^$pattern\$').hasMatch(value);
           } catch (e) {
             if (!silent) {
               options.errorCallback(

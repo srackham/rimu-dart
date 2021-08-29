@@ -24,7 +24,7 @@ String replaceMatch(Match match, String replacement,
     } else {
       expansionOptions.specials = true;
     }
-    int i = int.parse(mr[2]); // match group number.
+    var i = int.parse(mr[2]); // match group number.
     if (i > match.groupCount) {
       options.errorCallback('undefined replacement group: ' + mr[0]);
       return '';

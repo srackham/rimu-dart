@@ -1,5 +1,5 @@
-import 'package:rimu/rimu.dart';
+import 'package:rimu/rimu.dart' show RenderOptions, render;
 
-main(List<String> arguments) {
+void main(List<String> arguments) {
   print(render('Hello *Rimu*!', RenderOptions(reset: true)));
 }

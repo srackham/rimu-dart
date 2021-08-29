@@ -23,12 +23,12 @@ class TestSpec {
   RimuTestOptions options;
 
   TestSpec.fromJson(dynamic decoded) {
-    this.unsupported = decoded['unsupported'] ?? '';
-    this.description = decoded['description'];
-    this.input = decoded['input'];
-    this.expectedOutput = decoded['expectedOutput'];
-    this.expectedCallback = decoded['expectedCallback'];
-    this.options = RimuTestOptions(
+    unsupported = decoded['unsupported'] ?? '';
+    description = decoded['description'];
+    input = decoded['input'];
+    expectedOutput = decoded['expectedOutput'];
+    expectedCallback = decoded['expectedCallback'];
+    options = RimuTestOptions(
         reset: decoded['options']['reset'],
         safeMode: decoded['options']['safeMode'],
         htmlReplacement: decoded['options']['htmlReplacement']);

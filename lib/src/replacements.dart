@@ -97,7 +97,7 @@ final List<Def> DEFAULT_DEFS = [
 
   // Auto-encode (most) raw HTTP URLs as links.
   Def(
-      match: RegExp(r'\\?((?:http|https):\/\/[^\s"' + r"']*[A-Za-z0-9/#])"),
+      match: RegExp(r'\\?((?:http|https):\/\/[^\s"' r"']*[A-Za-z0-9/#])"),
       replacement: '<a href="\$1">\$1</a>'),
 
   // Character entity.

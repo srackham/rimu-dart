@@ -70,7 +70,7 @@ void updateFrom(RenderOptions options) {
 void setOption(String name, var value) {
   switch (name) {
     case 'safeMode':
-      int n = int.tryParse(value);
+      var n = int.tryParse(value);
       if (n == null || n < 0 || n > 15) {
         errorCallback('illegal safeMode API option value: ' + value);
       } else {
@@ -118,7 +118,7 @@ void errorCallback(String message) {
 
 // Called when an unexpected program error occurs.
 void panic(String message) {
-  String msg = 'panic: ' + message;
+  var msg = 'panic: ' + message;
   print(msg);
   errorCallback(msg);
 }

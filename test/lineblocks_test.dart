@@ -5,7 +5,7 @@ import 'package:rimu/src/api.dart' as api;
 
 void main() {
   test('render', () {
-    Map<String, String> tests = {
+    var tests = <String, String>{
       r'# foo': r'<h1>foo</h1>',
       r'// foo': r'',
       r'<image:foo|bar>': r'<img src="foo" alt="bar">',

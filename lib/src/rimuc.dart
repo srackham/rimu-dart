@@ -25,7 +25,7 @@ void die([String message = '']) {
 
 String readResource(String name) {
   if (!resources.containsKey(name)) {
-    die('missing resource: ${name}');
+    die('missing resource: $name');
   }
   return resources[name];
 }
@@ -33,9 +33,9 @@ String readResource(String name) {
 // Read all from stdin.
 // See https://stackoverflow.com/a/29024240
 String readInputSync({Encoding encoding = systemEncoding}) {
-  final List<int> input = [];
+  final input = <int>[];
   while (true) {
-    int byte = stdin.readByteSync();
+    var byte = stdin.readByteSync();
     if (byte < 0) {
       if (input.isEmpty) return null;
       break;
@@ -54,23 +54,23 @@ void rimuc(List<String> args, {bool testing = false}) {
   args = List<String>.from(args); // Ensure args is not fixed length.
 
   // Command option values.
-  int safe_mode = 0;
+  var safe_mode = 0;
   String html_replacement;
-  String layout = '';
+  var layout = '';
   var no_rimurc = false;
-  List<String> prepend_files = [];
+  var prepend_files = <String>[];
   var pass = false;
 
-  String Function(String) popOptionValue = (String arg) {
+  var popOptionValue = (String arg) {
     if (args.isEmpty) {
-      die("missing $arg option value");
+      die('missing $arg option value');
     }
     return args.removeAt(0);
   };
 
   // Parse command-line options.
-  String prepend = '';
-  String outfile = '';
+  var prepend = '';
+  var outfile = '';
   outer:
   while (args.isNotEmpty) {
     String arg;
@@ -138,7 +138,7 @@ void rimuc(List<String> args, {bool testing = false}) {
       case '--styled-name': // Deprecated in Rimu 10.0.0
         layout = popOptionValue(arg);
         if (!['classic', 'flex', 'plain', 'sequel', 'v8'].contains(layout)) {
-          die("illegal --layout: $layout"); // NOTE: Imported layouts are not supported.
+          die('illegal --layout: $layout'); // NOTE: Imported layouts are not supported.
         }
         prepend += "{--header-ids}='true'\n";
         break;
@@ -166,8 +166,8 @@ void rimuc(List<String> args, {bool testing = false}) {
   }
   if (layout != '') {
     // Envelope source files with header and footer.
-    files.insert(0, '${RESOURCE_TAG}${layout}-header.rmu');
-    files.add('${RESOURCE_TAG}${layout}-footer.rmu');
+    files.insert(0, '$RESOURCE_TAG$layout-header.rmu');
+    files.add('$RESOURCE_TAG$layout-footer.rmu');
   }
   // Prepend $HOME/.rimurc file if it exists.
   if (!no_rimurc && File(RIMURC).existsSync()) {
@@ -178,13 +178,13 @@ void rimuc(List<String> args, {bool testing = false}) {
   }
   files.insertAll(0, prepend_files);
   // Convert Rimu source files to HTML.
-  String output = '';
-  int errors = 0;
-  RenderOptions options = RenderOptions();
+  var output = '';
+  var errors = 0;
+  var options = RenderOptions();
   if (html_replacement != null) {
     options.htmlReplacement = html_replacement;
   }
-  for (String infile in files) {
+  for (var infile in files) {
     var source = '';
     options.safeMode = safe_mode;
     if (infile.startsWith(RESOURCE_TAG)) {
@@ -210,7 +210,7 @@ void rimuc(List<String> args, {bool testing = false}) {
         options.safeMode = 0;
       }
     }
-    String ext = path.extension(infile);
+    var ext = path.extension(infile);
     // Skip .html and pass-through inputs.
     if (!(ext == '.html' || (pass && infile == STDIN))) {
       options.callback = (message) {

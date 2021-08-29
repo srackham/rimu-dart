@@ -40,7 +40,7 @@ String defrag(List<Fragment> fragments) {
 
 // Fragment quotes in all fragments and return resulting fragments array.
 List<Fragment> fragQuotes(List<Fragment> fragments) {
-  final List<Fragment> result = [];
+  final result = <Fragment>[];
   for (var fragment in fragments) {
     result.addAll(fragQuote(fragment));
   }
@@ -61,8 +61,8 @@ List<Fragment> fragQuote(Fragment fragment) {
   // Find first matched quote in fragment text.
   String quote;
   RegExpMatch match;
-  int startIndex = 0;
-  int nextIndex = 0;
+  var startIndex = 0;
+  var nextIndex = 0;
   while (true) {
     match = quotes.quotesRe.firstMatch(fragment.text.substring(nextIndex));
     if (match == null) {
@@ -79,7 +79,7 @@ List<Fragment> fragQuote(Fragment fragment) {
     nextIndex += match.end;
     break;
   }
-  List<Fragment> result = [];
+  var result = <Fragment>[];
   // Arrive here if we have a matched quote.
   // The quote splits the input fragment into 5 or more output fragments:
   // Text before the quote, left quote tag, quoted text, right quote tag and text after the quote.
@@ -146,7 +146,7 @@ String postReplacements(String text) {
 List<Fragment> fragReplacements(List<Fragment> fragments) {
   var result = List<Fragment>.from(fragments);
   for (var def in replacements.defs) {
-    final List<Fragment> tmp = [];
+    final tmp = <Fragment>[];
     for (var fragment in result) {
       tmp.addAll(fragReplacement(fragment, def));
     }
@@ -172,7 +172,7 @@ List<Fragment> fragReplacement(Fragment fragment, replacements.Def def) {
   final after = (match.end >= fragment.text.length)
       ? ''
       : fragment.text.substring(match.end);
-  final List<Fragment> result = [];
+  final result = <Fragment>[];
   result.add(Fragment(text: before, done: false));
   String replacement;
   if (match[0].startsWith(r'\')) {
