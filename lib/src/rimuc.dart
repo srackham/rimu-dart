@@ -48,7 +48,8 @@ String readInputSync({Encoding encoding = systemEncoding}) {
 // Application body.
 void rimuc(List<String> args, {bool testing = false}) {
   const RESOURCE_TAG = 'resource:'; // Placeholder tag for resource files.
-  const PREPEND_TAG = '--prepend options'; // Placeholder tag for prepend options.
+  const PREPEND_TAG =
+      '--prepend options'; // Placeholder tag for prepend options.
   const STDIN = '-';
 
   args = List<String>.from(args); // Ensure args is not fixed length.
