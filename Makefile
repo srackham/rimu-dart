@@ -20,7 +20,7 @@ RESOURCE_FILES = lib/resources/*
 
 .PHONY: test
 test: $(RIMUC_EXE) $(RESOURCES_SRC)
-	pub run test $(TEST_SRC)
+	dart test $(TEST_SRC)
 
 .PHONY: build
 build: $(RIMUC_EXE)
@@ -30,10 +30,10 @@ $(RIMUC_EXE): $(RIMUC_SRC) $(RIMU_SRC)
 		mkdir build
 	fi
 	echo "Building executable $@"
-	dart2native $< -o $@
+	dart compile exe $< -o $@
 
+# Build resources.dart containing a Map<filename,contents> of rimuc resource files.
 $(RESOURCES_SRC): $(RESOURCE_FILES)
-	# Build resources.dart containing Map<filename,contents> of rimuc resource files.
 	echo "Building resources $@"
 	echo "// Generated automatically from resource files. Do not edit." > $@
 	echo "Map<String, String> resources = {" >> $@
@@ -44,12 +44,9 @@ $(RESOURCES_SRC): $(RESOURCE_FILES)
 	echo "};" >> $@
 
 .PHONY: tag
+# Tag the latest commit with the VERS environment variable e.g. make tag VERS=1.0.0
 tag: test
-	# Create Git version tag. VERS is a valid semantic version number.
-	if [ -z $${VERS+x} ]; then
-		echo "VERS environment variable not set e.g. make tag VERS=1.0.0"
-		exit 1
-	fi
+	[[ ! $$VERS =~ ^[0-9]+\.[0-9]+\.[0-9]+$$ ]] && echo "error: illegal VERS=$$VERS " && exit 1
 	tag=v$(VERS)
 	echo tag: $$tag
 	git tag -a -m $$tag $$tag

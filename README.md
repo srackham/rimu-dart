@@ -29,10 +29,10 @@ See also Rimu
 ## CLI command
 The [Rimu CLI command](https://srackham.github.io/rimu/reference.html#rimuc-command) is `rimuc.dart`.
 
-Run it using the Dart `pub` command e.g.
+Run it using the Dart `dart pub` command e.g.
 
-    pub global activate rimu
-    echo 'Hello *Rimu*!' | pub global run rimu:rimuc
+    dart pub global activate rimu
+    echo 'Hello *Rimu*!' | dart pub global run rimu:rimuc
 
 
 ## Building
@@ -43,7 +43,7 @@ Run it using the Dart `pub` command e.g.
 2. Build and test:
 
         cd rimu-dart/
-        pub get
+        dart pub get
         make
 
 

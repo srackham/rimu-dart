@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dart-version: [2.10.0]
+        dart-version: [2.13.4]
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: Checkout repository
@@ -23,17 +23,17 @@ jobs:
           version: ${{ matrix.dart-version }}
       - name: Install package dependencies
         run: |
-          pub get
+          dart pub get
       - name: Build rimuc executable (Linux, macOS)
         if: ${{ runner.os != 'Windows' }}
         run: |
           mkdir build
-          dart2native bin/rimuc.dart -o build/rimuc
+          dart compile exe bin/rimuc.dart -o build/rimuc
       - name: Build rimuc executable (Windows)
         if: ${{ runner.os == 'Windows' }}
         run: |
           mkdir build
-          dart2native bin/rimuc.dart -o build/rimuc.exe
+          dart compile exe bin/rimuc.dart -o build/rimuc.exe
       - name: Run tests
         run: |
-          pub run test test/
+          dart test test/

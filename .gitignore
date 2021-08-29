@@ -1,4 +1,4 @@
-# Files and directories created by pub
+# Files and directories created by dart pub
 .dart_tool/
 .packages
 # Remove the following pattern if you wish to check in your lock file

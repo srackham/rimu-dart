@@ -1,5 +1,253 @@
 // Generated automatically from resource files. Do not edit.
 Map<String, String> resources = {
+  'sequel-footer.rmu': r'''/*
+  Used by rimuc `--layout sequel` option.
+*/
+
+// Close main and article divs.
+</div>
+</div>
+
+{--highlightjs=}.+skip
+{--highlightjs-scripts}
+
+{--mathjax!}{--mathjax-scripts}
+
+{--no-toc!}.+skip
+<script>
+window.onload = function() {
+  document.getElementById('sidebar').appendChild(document.getElementById('toc')); // Ensure custom TOC is child of sidebar.
+  var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
+  headings.forEach(function(heading) {
+{--header-links!}    setHeaderLink(heading);
+    appendTocEntry(heading);
+  });
+  if (isSmallScreen()) {
+    toggleToc();  // Hide TOC.
+  }
+}
+</script>
+
+{--header-links=}.+skip
+<script>
+function setHeaderLink(heading) {
+  var id = heading.getAttribute('id');
+  if (id) {
+    var link = document.createElement('a');
+    link.classList.add('header-link');
+    link.setAttribute('href', '#' + id);
+    heading.appendChild(link);
+  }
+}
+</script>
+
+{--no-toc!}.+skip
+<script>
+function appendTocEntry(heading) {
+  var id = heading.getAttribute('id');
+  if (heading.classList.contains('no-auto-toc')) {
+    return;
+  }
+  var container = document.getElementById('auto-toc');
+  if (container === null) {
+    return;
+  }
+  var tocLink = document.createElement('a');
+  tocLink.setAttribute('href', '#' + id);
+  tocLink.textContent = heading.textContent;
+  var tocEntry = document.createElement('div');
+  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
+  tocEntry.appendChild(tocLink);
+  container.appendChild(tocEntry);
+}
+</script>
+
+{--no-toc!}.+skip
+<script>
+  document.onclick = function (event) {
+    if (event.target.matches('#toc-button') || event.target.matches('#toc a') && isSmallScreen()) {
+{--!} Toggle TOC if TOC button or small-screen TOC link is clicked.
+      toggleToc();
+    }
+  }
+  function toggleToc() {
+    document.body.classList.toggle('hide-toc');
+  }
+  function isSmallScreen() {
+    return window.matchMedia('{--small-screen}').matches;
+  }
+  // matches() polyfill for old browsers.
+  if (!Element.prototype.matches) {
+    var p = Element.prototype;
+    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+      p.matches = p.webkitMatchesSelector;
+    if (p.msMatchesSelector) // IE9/10/11 & Edge
+      p.matches = p.msMatchesSelector;
+    if (p.mozMatchesSelector) // FF<34
+      p.matches = p.mozMatchesSelector;
+  }
+</script>
+
+</body>
+</html>''',
+  'plain-footer.rmu': r'''</body>
+</html>''',
+  'manpage.txt': r'''NAME
+  rimuc - convert Rimu source to HTML
+
+SYNOPSIS
+  rimuc [OPTIONS...] [FILES...]
+
+DESCRIPTION
+  Reads Rimu source markup from stdin, converts them to HTML
+  then writes the HTML to stdout. If FILES are specified
+  the Rimu source is read from FILES. The contents of files
+  with an .html extension are passed directly to the output.
+  An input file named '-' is read from stdin.
+
+  If a file named .rimurc exists in the user's home directory
+  then its contents is processed (with --safe-mode 0).
+  This behavior can be disabled with the --no-rimurc option.
+
+  Inputs are processed in the following order: .rimurc file then
+  --prepend-file option files then --prepend option source and
+  finally FILES...
+
+OPTIONS
+  -h, --help
+    Display help message.
+
+  --html-replacement TEXT
+    Embedded HTML is replaced by TEXT when --safe-mode is set to 2.
+    Defaults to '<mark>replaced HTML</mark>'.
+
+  --layout LAYOUT
+    Generate a styled HTML document. rimuc includes the
+    following built-in document layouts:
+
+    'classic': Desktop-centric layout.
+    'flex':    Flexbox mobile layout (experimental).
+    'plain':   Unstyled HTML layout.
+    'sequel':  Responsive cross-device layout.
+
+    If only one source file is specified and the --output
+    option is not specified then the output is written to a
+    same-named file with an .html extension.
+    This option enables --header-ids.
+
+  -s, --styled
+    Style output using default layout.
+    Shortcut for '--layout sequel --header-ids --no-toc'
+
+  -o, --output OUTFILE
+    Write output to file OUTFILE instead of stdout.
+    If OUTFILE is a hyphen '-' write to stdout.
+
+  --pass
+    Pass the stdin input verbatim to the output.
+
+  -p, --prepend SOURCE
+    Process the Rimu SOURCE text (immediately after --prepend-file
+    option files). Rendered with --safe-mode 0. This option can be
+    specified multiple times.
+
+  --prepend-file PREPEND_FILE
+    Process the PREPEND_FILE contents (immediately after .rimurc file).
+    Rendered with --safe-mode 0. This option can be specified
+    multiple times.
+
+  --no-rimurc
+    Do not process .rimurc from the user's home directory.
+
+  --safe-mode NUMBER
+    Non-zero safe modes ignore: Definition elements; API option elements;
+    HTML attributes in Block Attributes elements.
+    Also specifies how to process HTML elements:
+
+    --safe-mode 0 renders HTML (default).
+    --safe-mode 1 ignores HTML.
+    --safe-mode 2 replaces HTML with --html-replacement option value.
+    --safe-mode 3 renders HTML as text.
+
+    Add 4 to --safe-mode to ignore Block Attribute elements.
+    Add 8 to --safe-mode to allow Macro Definitions.
+
+  --theme THEME, --lang LANG, --title TITLE, --highlightjs, --mathjax,
+  --no-toc, --custom-toc, --section-numbers, --header-ids, --header-links
+    Shortcuts for the following prepended macro definitions:
+
+    --prepend "{--custom-toc}='true'"
+    --prepend "{--header-ids}='true'"
+    --prepend "{--header-links}='true'"
+    --prepend "{--highlightjs}='true'"
+    --prepend "{--lang}='LANG'"
+    --prepend "{--mathjax}='true'"
+    --prepend "{--no-toc}='true'"
+    --prepend "{--section-numbers}='true'"
+    --prepend "{--theme}='THEME'"
+    --prepend "{--title}='TITLE'"
+
+  --version
+    Print version number.
+
+LAYOUT OPTIONS
+  The following options are available when the --layout option
+  specifies a built-in layout:
+
+  Option             Description
+  _______________________________________________________________
+  --custom-toc       Set to a non-blank value if a custom table
+                     of contents is used.
+  --header-links     Set to a non-blank value to generate h2 and
+                     h3 header header links.
+  --highlightjs      Set to non-blank value to enable syntax
+                     highlighting with Highlight.js.
+  --lang             HTML document language attribute value.
+  --mathjax          Set to a non-blank value to enable MathJax.
+  --no-toc           Set to a non-blank value to suppress table of
+                     contents generation.
+  --section-numbers  Apply h2 and h3 section numbering.
+  --theme            Styling theme. Theme names:
+                     'legend', 'graystone', 'vintage'.
+  --title            HTML document title.
+  _______________________________________________________________
+  These options are translated by rimuc to corresponding layout
+  macro definitions using the --prepend option.
+
+LAYOUT CLASSES
+  The following CSS classes are available for use in Rimu Block
+  Attributes elements when the --layout option specifies a
+  built-in layout:
+
+  CSS class        Description
+  ______________________________________________________________
+  align-center     Text alignment center.
+  align-left       Text alignment left.
+  align-right      Text alignment right.
+  bordered         Adds table borders.
+  cite             Quote and verse attribution.
+  dl-horizontal    Format labeled lists horizontally.
+  dl-numbered      Number labeled list items.
+  dl-counter       Prepend dl item counter to element content.
+  ol-counter       Prepend ol item counter to element content.
+  ul-counter       Prepend ul item counter to element content.
+  no-auto-toc      Exclude heading from table of contents.
+  no-page-break    Avoid page break inside the element.
+  no-print         Do not print.
+  page-break       Force page break before the element.
+  preserve-breaks  Honor line breaks in source text.
+  sidebar          Sidebar format (paragraphs, division blocks).
+  verse            Verse format (paragraphs, division blocks).
+  ______________________________________________________________
+
+PREDEFINED MACROS
+  Macro name         Description
+  _______________________________________________________________
+  --                 Blank macro (empty string).
+                     The Blank macro cannot be redefined.
+  --header-ids       Set to a non-blank value to generate h1, h2
+                     and h3 header id attributes.
+  _______________________________________________________________''',
   'classic-header.rmu': r'''/*
   Used by rimuc `--layout classic` option.
 */
@@ -573,164 +821,184 @@ hljs.initHighlightingOnLoad();
 </div>
 
 <div id="article">''',
-  'plain-footer.rmu': r'''</body>
+  'v8-footer.rmu': r'''/*
+  Used by rimuc `--layout v8` option.
+  DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
+*/
+
+// Close contents div.
+</div>
+
+{--highlightjs!}<script src="https://yandex.st/highlightjs/7.3/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script>
+
+{--mathjax!}<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+<script>
+window.onload = function() {
+  var headings = [].slice.call(document.body.querySelectorAll('#contents > h1, #contents > h2, #contents > h3'));
+  headings.forEach(function(heading, index) {
+    var title = heading.textContent;
+    var id = heading.getAttribute('id');
+    if (!id) {
+      id = slugify(title);
+      heading.setAttribute('id', id);
+    }
+    if (index === 0 && heading.tagName === 'H1') {
+      id = ''; // Go to top of page.
+    }
+{--sidebar-toc!}    appendTocEntry(heading, id);
+{--dropdown-toc!}    appendTocEntry(heading, id);
+  });
+}
+function slugify(text) {
+  var slug = text.replace(/\s+/g, '-') // Replace spaces with dashes.
+      .replace(/[^\w-]/g, '')          // Retain alphanumeric, '-' and '_' characters.
+      .toLowerCase()
+  if (!slug) slug = 'x';
+  if (document.getElementById(slug)) { // Another element already has that id.
+    var i = 2, prefix = slug;
+    while (document.getElementById(slug = prefix + '-' + i++)) {}
+  }
+  return slug;
+}
+</script>
+
+.+skip
+{--sidebar-toc!}.-skip
+{--dropdown-toc!}.-skip
+<script>
+function appendTocEntry(heading, id) {
+  if (heading.classList.contains('no-auto-toc')) {
+    return;
+  }
+  var container = document.getElementById('auto-toc');
+  if (container === null) {
+    return;
+  }
+  var tocLink = document.createElement('a');
+  tocLink.setAttribute('href', '#' + id);
+  tocLink.textContent = heading.textContent;
+  var tocEntry = document.createElement('div');
+  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
+  tocEntry.appendChild(tocLink);
+  container.appendChild(tocEntry);
+}
+</script>
+
+{--dropdown-toc=}.+skip
+<script>
+function toggleToc() {
+    document.getElementById("toc").classList.toggle('toc-visible');
+}
+window.onclick = function(event) {
+  if (!Element.prototype.matches) {
+    // matches() polyfill for old browsers.
+    var p = Element.prototype;
+    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+      p.matches = p.webkitMatchesSelector;
+    if (p.msMatchesSelector) // IE9/10/11 & Edge
+      p.matches = p.msMatchesSelector;
+    if (p.mozMatchesSelector) // FF<34
+      p.matches = p.mozMatchesSelector;
+  }
+  if (!event.target.matches('#toc-button, #toc, #toc :not(a)')) {
+    // Hide TOC if clicked outside TOC or on TOC link.
+    var toc = document.getElementById('toc');
+    if (toc.classList.contains('toc-visible')) {
+      toc.classList.remove('toc-visible');
+    }
+  }
+}
+</script>
+
+</body>
 </html>''',
-  'manpage.txt': r'''NAME
-  rimuc - convert Rimu source to HTML
+  'classic-footer.rmu': r'''/*
+  Used by rimuc.js --styled option.
+*/
 
-SYNOPSIS
-  rimuc [OPTIONS...] [FILES...]
+// Close article div.
+</div>
 
-DESCRIPTION
-  Reads Rimu source markup from stdin, converts them to HTML
-  then writes the HTML to stdout. If FILES are specified
-  the Rimu source is read from FILES. The contents of files
-  with an .html extension are passed directly to the output.
-  An input file named '-' is read from stdin.
+{--highlightjs=}.+skip
+{--highlightjs-scripts}
 
-  If a file named .rimurc exists in the user's home directory
-  then its contents is processed (with --safe-mode 0).
-  This behavior can be disabled with the --no-rimurc option.
+{--mathjax!}{--mathjax-scripts}
 
-  Inputs are processed in the following order: .rimurc file then
-  --prepend-file option files then --prepend option source and
-  finally FILES...
+.+skip
+{--no-toc=}.-skip
+{--header-links!}.-skip
+<script>
+window.onload = function() {
+  var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
+  headings.forEach(function(heading) {
+{--header-links!}    setHeaderLink(heading);
+{--no-toc=}    appendTocEntry(heading);
+  });
+}
+</script>
 
-OPTIONS
-  -h, --help
-    Display help message.
+{--header-links=}.+skip
+<script>
+function setHeaderLink(heading) {
+  var id = heading.getAttribute('id');
+  if (id) {
+    var link = document.createElement('a');
+    link.classList.add('header-link');
+    link.setAttribute('href', '#' + id);
+    heading.appendChild(link);
+  }
+}
+</script>
 
-  --html-replacement TEXT
-    Embedded HTML is replaced by TEXT when --safe-mode is set to 2.
-    Defaults to '<mark>replaced HTML</mark>'.
+{--no-toc!}.+skip
+<script>
+function appendTocEntry(heading) {
+  var id = heading.getAttribute('id');
+  if (heading.classList.contains('no-auto-toc')) {
+    return;
+  }
+  var container = document.getElementById('auto-toc');
+  if (container === null) {
+    return;
+  }
+  var tocLink = document.createElement('a');
+  tocLink.setAttribute('href', '#' + id);
+  tocLink.textContent = heading.textContent;
+  var tocEntry = document.createElement('div');
+  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
+  tocEntry.appendChild(tocLink);
+  container.appendChild(tocEntry);
+}
+</script>
 
-  --layout LAYOUT
-    Generate a styled HTML document. rimuc includes the
-    following built-in document layouts:
+{--dropdown-toc=}.+skip
+<script>
+// matches() polyfill for old browsers.
+if (!Element.prototype.matches) {
+  var p = Element.prototype;
+  if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+    p.matches = p.webkitMatchesSelector;
+  if (p.msMatchesSelector) // IE9/10/11 & Edge
+    p.matches = p.msMatchesSelector;
+  if (p.mozMatchesSelector) // FF<34
+    p.matches = p.mozMatchesSelector;
+}
+window.onclick = function(event) {
+  var body = document.getElementsByTagName('body')[0];
+  if (event.target.matches('#toc-button, #toc a')) {
+    // Toggle TOC if TOC button or TOC link is clicked.
+    body.classList.toggle('show-toc');
+  }
+  else if (!event.target.matches('#toc, #toc *')) {
+    // Hide TOC if clicked outside TOC.
+    body.classList.remove('show-toc');
+  }
+}
+</script>
 
-    'classic': Desktop-centric layout.
-    'flex':    Flexbox mobile layout (experimental).
-    'plain':   Unstyled HTML layout.
-    'sequel':  Responsive cross-device layout.
-
-    If only one source file is specified and the --output
-    option is not specified then the output is written to a
-    same-named file with an .html extension.
-    This option enables --header-ids.
-
-  -s, --styled
-    Style output using default layout.
-    Shortcut for '--layout sequel --header-ids --no-toc'
-
-  -o, --output OUTFILE
-    Write output to file OUTFILE instead of stdout.
-    If OUTFILE is a hyphen '-' write to stdout.
-
-  --pass
-    Pass the stdin input verbatim to the output.
-
-  -p, --prepend SOURCE
-    Process the Rimu SOURCE text (immediately after --prepend-file
-    option files). Rendered with --safe-mode 0. This option can be
-    specified multiple times.
-
-  --prepend-file PREPEND_FILE
-    Process the PREPEND_FILE contents (immediately after .rimurc file).
-    Rendered with --safe-mode 0. This option can be specified
-    multiple times.
-
-  --no-rimurc
-    Do not process .rimurc from the user's home directory.
-
-  --safe-mode NUMBER
-    Non-zero safe modes ignore: Definition elements; API option elements;
-    HTML attributes in Block Attributes elements.
-    Also specifies how to process HTML elements:
-
-    --safe-mode 0 renders HTML (default).
-    --safe-mode 1 ignores HTML.
-    --safe-mode 2 replaces HTML with --html-replacement option value.
-    --safe-mode 3 renders HTML as text.
-
-    Add 4 to --safe-mode to ignore Block Attribute elements.
-    Add 8 to --safe-mode to allow Macro Definitions.
-
-  --theme THEME, --lang LANG, --title TITLE, --highlightjs, --mathjax,
-  --no-toc, --custom-toc, --section-numbers, --header-ids, --header-links
-    Shortcuts for the following prepended macro definitions:
-
-    --prepend "{--custom-toc}='true'"
-    --prepend "{--header-ids}='true'"
-    --prepend "{--header-links}='true'"
-    --prepend "{--highlightjs}='true'"
-    --prepend "{--lang}='LANG'"
-    --prepend "{--mathjax}='true'"
-    --prepend "{--no-toc}='true'"
-    --prepend "{--section-numbers}='true'"
-    --prepend "{--theme}='THEME'"
-    --prepend "{--title}='TITLE'"
-
-  --version
-    Print version number.
-
-LAYOUT OPTIONS
-  The following options are available when the --layout option
-  specifies a built-in layout:
-
-  Option             Description
-  _______________________________________________________________
-  --custom-toc       Set to a non-blank value if a custom table
-                     of contents is used.
-  --header-links     Set to a non-blank value to generate h2 and
-                     h3 header header links.
-  --highlightjs      Set to non-blank value to enable syntax
-                     highlighting with Highlight.js.
-  --lang             HTML document language attribute value.
-  --mathjax          Set to a non-blank value to enable MathJax.
-  --no-toc           Set to a non-blank value to suppress table of
-                     contents generation.
-  --section-numbers  Apply h2 and h3 section numbering.
-  --theme            Styling theme. Theme names:
-                     'legend', 'graystone', 'vintage'.
-  --title            HTML document title.
-  _______________________________________________________________
-  These options are translated by rimuc to corresponding layout
-  macro definitions using the --prepend option.
-
-LAYOUT CLASSES
-  The following CSS classes are available for use in Rimu Block
-  Attributes elements when the --layout option specifies a
-  built-in layout:
-
-  CSS class        Description
-  ______________________________________________________________
-  align-center     Text alignment center.
-  align-left       Text alignment left.
-  align-right      Text alignment right.
-  bordered         Adds table borders.
-  cite             Quote and verse attribution.
-  dl-horizontal    Format labeled lists horizontally.
-  dl-numbered      Number labeled list items.
-  dl-counter       Prepend dl item counter to element content.
-  ol-counter       Prepend ol item counter to element content.
-  ul-counter       Prepend ul item counter to element content.
-  no-auto-toc      Exclude heading from table of contents.
-  no-page-break    Avoid page break inside the element.
-  no-print         Do not print.
-  page-break       Force page break before the element.
-  preserve-breaks  Honor line breaks in source text.
-  sidebar          Sidebar format (paragraphs, division blocks).
-  verse            Verse format (paragraphs, division blocks).
-  ______________________________________________________________
-
-PREDEFINED MACROS
-  Macro name         Description
-  _______________________________________________________________
-  --                 Blank macro (empty string).
-                     The Blank macro cannot be redefined.
-  --header-ids       Set to a non-blank value to generate h1, h2
-                     and h3 header id attributes.
-  _______________________________________________________________''',
+</body>
+</html>''',
   'v8-header.rmu': r'''/*
   Used by rimuc `--layout v8` option.
   DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
@@ -1068,92 +1336,6 @@ PREDEFINED MACROS
 </div>
 
 <div id="contents">''',
-  'classic-footer.rmu': r'''/*
-  Used by rimuc.js --styled option.
-*/
-
-// Close article div.
-</div>
-
-{--highlightjs=}.+skip
-{--highlightjs-scripts}
-
-{--mathjax!}{--mathjax-scripts}
-
-.+skip
-{--no-toc=}.-skip
-{--header-links!}.-skip
-<script>
-window.onload = function() {
-  var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
-  headings.forEach(function(heading) {
-{--header-links!}    setHeaderLink(heading);
-{--no-toc=}    appendTocEntry(heading);
-  });
-}
-</script>
-
-{--header-links=}.+skip
-<script>
-function setHeaderLink(heading) {
-  var id = heading.getAttribute('id');
-  if (id) {
-    var link = document.createElement('a');
-    link.classList.add('header-link');
-    link.setAttribute('href', '#' + id);
-    heading.appendChild(link);
-  }
-}
-</script>
-
-{--no-toc!}.+skip
-<script>
-function appendTocEntry(heading) {
-  var id = heading.getAttribute('id');
-  if (heading.classList.contains('no-auto-toc')) {
-    return;
-  }
-  var container = document.getElementById('auto-toc');
-  if (container === null) {
-    return;
-  }
-  var tocLink = document.createElement('a');
-  tocLink.setAttribute('href', '#' + id);
-  tocLink.textContent = heading.textContent;
-  var tocEntry = document.createElement('div');
-  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
-  tocEntry.appendChild(tocLink);
-  container.appendChild(tocEntry);
-}
-</script>
-
-{--dropdown-toc=}.+skip
-<script>
-// matches() polyfill for old browsers.
-if (!Element.prototype.matches) {
-  var p = Element.prototype;
-  if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-    p.matches = p.webkitMatchesSelector;
-  if (p.msMatchesSelector) // IE9/10/11 & Edge
-    p.matches = p.msMatchesSelector;
-  if (p.mozMatchesSelector) // FF<34
-    p.matches = p.mozMatchesSelector;
-}
-window.onclick = function(event) {
-  var body = document.getElementsByTagName('body')[0];
-  if (event.target.matches('#toc-button, #toc a')) {
-    // Toggle TOC if TOC button or TOC link is clicked.
-    body.classList.toggle('show-toc');
-  }
-  else if (!event.target.matches('#toc, #toc *')) {
-    // Hide TOC if clicked outside TOC.
-    body.classList.remove('show-toc');
-  }
-}
-</script>
-
-</body>
-</html>''',
   'flex-header.rmu': r'''/*
   Used by rimuc `--layout flex` option.
 */
@@ -1734,84 +1916,6 @@ hljs.initHighlightingOnLoad();
 </div>
 
 <div id="article">''',
-  'flex-footer.rmu': r'''/*
-  Used by rimuc.js --styled option.
-*/
-
-// Close article div.
-</div>
-
-{--highlightjs=}.+skip
-{--highlightjs-scripts}
-
-{--mathjax!}{--mathjax-scripts}
-
-.+skip
-{--no-toc=}.-skip
-{--header-links!}.-skip
-<script>
-window.onload = function() {
-{--no-toc=}  document.getElementsByTagName('body')[0].appendChild(document.getElementById('toc')); // Ensure custom TOC is child of body.
-  var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
-  headings.forEach(function(heading) {
-{--header-links!}    setHeaderLink(heading);
-{--no-toc=}    appendTocEntry(heading);
-  });
-}
-</script>
-
-{--header-links=}.+skip
-<script>
-function setHeaderLink(heading) {
-  var id = heading.getAttribute('id');
-  if (id) {
-    var link = document.createElement('a');
-    link.classList.add('header-link');
-    link.setAttribute('href', '#' + id);
-    heading.appendChild(link);
-  }
-}
-</script>
-
-{--no-toc!}.+skip
-<script>
-function appendTocEntry(heading) {
-  var id = heading.getAttribute('id');
-  if (heading.classList.contains('no-auto-toc')) {
-    return;
-  }
-  var container = document.getElementById('auto-toc');
-  if (container === null) {
-    return;
-  }
-  var tocLink = document.createElement('a');
-  tocLink.setAttribute('href', '#' + id);
-  tocLink.textContent = heading.textContent;
-  var tocEntry = document.createElement('div');
-  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
-  tocEntry.appendChild(tocLink);
-  container.appendChild(tocEntry);
-}
-// matches() polyfill for old browsers.
-if (!Element.prototype.matches) {
-  var p = Element.prototype;
-  if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-    p.matches = p.webkitMatchesSelector;
-  if (p.msMatchesSelector) // IE9/10/11 & Edge
-    p.matches = p.msMatchesSelector;
-  if (p.mozMatchesSelector) // FF<34
-    p.matches = p.mozMatchesSelector;
-}
-document.onclick = function(event) {
-  if (event.target.matches('#toc-button *, #toc a')) {
-    // Toggle TOC if TOC button or TOC link is clicked.
-    document.getElementsByTagName('body')[0].classList.toggle('show-toc');
-  }
-}
-</script>
-
-</body>
-</html>''',
   'sequel-header.rmu': r'''/*
   Used by rimuc `--layout sequel` option.
 */
@@ -2426,104 +2530,11 @@ hljs.initHighlightingOnLoad();
 {--head}
 </head>
 <body>''',
-  'v8-footer.rmu': r'''/*
-  Used by rimuc `--layout v8` option.
-  DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
+  'flex-footer.rmu': r'''/*
+  Used by rimuc.js --styled option.
 */
 
-// Close contents div.
-</div>
-
-{--highlightjs!}<script src="https://yandex.st/highlightjs/7.3/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script>
-
-{--mathjax!}<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-<script>
-window.onload = function() {
-  var headings = [].slice.call(document.body.querySelectorAll('#contents > h1, #contents > h2, #contents > h3'));
-  headings.forEach(function(heading, index) {
-    var title = heading.textContent;
-    var id = heading.getAttribute('id');
-    if (!id) {
-      id = slugify(title);
-      heading.setAttribute('id', id);
-    }
-    if (index === 0 && heading.tagName === 'H1') {
-      id = ''; // Go to top of page.
-    }
-{--sidebar-toc!}    appendTocEntry(heading, id);
-{--dropdown-toc!}    appendTocEntry(heading, id);
-  });
-}
-function slugify(text) {
-  var slug = text.replace(/\s+/g, '-') // Replace spaces with dashes.
-      .replace(/[^\w-]/g, '')          // Retain alphanumeric, '-' and '_' characters.
-      .toLowerCase()
-  if (!slug) slug = 'x';
-  if (document.getElementById(slug)) { // Another element already has that id.
-    var i = 2, prefix = slug;
-    while (document.getElementById(slug = prefix + '-' + i++)) {}
-  }
-  return slug;
-}
-</script>
-
-.+skip
-{--sidebar-toc!}.-skip
-{--dropdown-toc!}.-skip
-<script>
-function appendTocEntry(heading, id) {
-  if (heading.classList.contains('no-auto-toc')) {
-    return;
-  }
-  var container = document.getElementById('auto-toc');
-  if (container === null) {
-    return;
-  }
-  var tocLink = document.createElement('a');
-  tocLink.setAttribute('href', '#' + id);
-  tocLink.textContent = heading.textContent;
-  var tocEntry = document.createElement('div');
-  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
-  tocEntry.appendChild(tocLink);
-  container.appendChild(tocEntry);
-}
-</script>
-
-{--dropdown-toc=}.+skip
-<script>
-function toggleToc() {
-    document.getElementById("toc").classList.toggle('toc-visible');
-}
-window.onclick = function(event) {
-  if (!Element.prototype.matches) {
-    // matches() polyfill for old browsers.
-    var p = Element.prototype;
-    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-      p.matches = p.webkitMatchesSelector;
-    if (p.msMatchesSelector) // IE9/10/11 & Edge
-      p.matches = p.msMatchesSelector;
-    if (p.mozMatchesSelector) // FF<34
-      p.matches = p.mozMatchesSelector;
-  }
-  if (!event.target.matches('#toc-button, #toc, #toc :not(a)')) {
-    // Hide TOC if clicked outside TOC or on TOC link.
-    var toc = document.getElementById('toc');
-    if (toc.classList.contains('toc-visible')) {
-      toc.classList.remove('toc-visible');
-    }
-  }
-}
-</script>
-
-</body>
-</html>''',
-  'sequel-footer.rmu': r'''/*
-  Used by rimuc `--layout sequel` option.
-*/
-
-// Close main and article divs.
-</div>
+// Close article div.
 </div>
 
 {--highlightjs=}.+skip
@@ -2531,18 +2542,17 @@ window.onclick = function(event) {
 
 {--mathjax!}{--mathjax-scripts}
 
-{--no-toc!}.+skip
+.+skip
+{--no-toc=}.-skip
+{--header-links!}.-skip
 <script>
 window.onload = function() {
-  document.getElementById('sidebar').appendChild(document.getElementById('toc')); // Ensure custom TOC is child of sidebar.
+{--no-toc=}  document.getElementsByTagName('body')[0].appendChild(document.getElementById('toc')); // Ensure custom TOC is child of body.
   var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
   headings.forEach(function(heading) {
 {--header-links!}    setHeaderLink(heading);
-    appendTocEntry(heading);
+{--no-toc=}    appendTocEntry(heading);
   });
-  if (isSmallScreen()) {
-    toggleToc();  // Hide TOC.
-  }
 }
 </script>
 
@@ -2578,32 +2588,22 @@ function appendTocEntry(heading) {
   tocEntry.appendChild(tocLink);
   container.appendChild(tocEntry);
 }
-</script>
-
-{--no-toc!}.+skip
-<script>
-  document.onclick = function (event) {
-    if (event.target.matches('#toc-button') || event.target.matches('#toc a') && isSmallScreen()) {
-{--!} Toggle TOC if TOC button or small-screen TOC link is clicked.
-      toggleToc();
-    }
+// matches() polyfill for old browsers.
+if (!Element.prototype.matches) {
+  var p = Element.prototype;
+  if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+    p.matches = p.webkitMatchesSelector;
+  if (p.msMatchesSelector) // IE9/10/11 & Edge
+    p.matches = p.msMatchesSelector;
+  if (p.mozMatchesSelector) // FF<34
+    p.matches = p.mozMatchesSelector;
+}
+document.onclick = function(event) {
+  if (event.target.matches('#toc-button *, #toc a')) {
+    // Toggle TOC if TOC button or TOC link is clicked.
+    document.getElementsByTagName('body')[0].classList.toggle('show-toc');
   }
-  function toggleToc() {
-    document.body.classList.toggle('hide-toc');
-  }
-  function isSmallScreen() {
-    return window.matchMedia('{--small-screen}').matches;
-  }
-  // matches() polyfill for old browsers.
-  if (!Element.prototype.matches) {
-    var p = Element.prototype;
-    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-      p.matches = p.webkitMatchesSelector;
-    if (p.msMatchesSelector) // IE9/10/11 & Edge
-      p.matches = p.msMatchesSelector;
-    if (p.mozMatchesSelector) // FF<34
-      p.matches = p.mozMatchesSelector;
-  }
+}
 </script>
 
 </body>

@@ -28,7 +28,7 @@ class TestSpec {
   }
 }
 
-// Execute rimuc.dart in command shell.
+// Execute rimuc in command shell.
 // args: rimuc command args.
 // input: stdin input string.
 ProcessResult execRimuc({String args = '', String input = ''}) {
