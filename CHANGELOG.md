@@ -1,6 +1,14 @@
 This log contains Dart specific changes, the [full change
 log](https://srackham.github.io/rimu/changelog.html) is on the Rimu website.
 
+## 11.1.8
+- Add Github actions workflow template to run CI tests.
+- Packaage updates.
+- Minimum Dart SDK bumped to 2.14 occasioned by the [Deprecation and discontinuation of standalone Dart
+  tools](https://github.com/dart-lang/sdk/issues/46100).
+
+There are no functional changes in this release.
+
 ## 11.1.7
 - Updates ported from [Rimu
   JavaScript 11.1.5](https://srackham.github.io/rimu/changelog.html).
