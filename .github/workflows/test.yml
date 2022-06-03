@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dart-version: [2.13.4]
+        dart-version: [2.14.4]
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: Checkout repository
