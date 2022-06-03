@@ -66,6 +66,12 @@ final List<Def> DEFAULT_DEFS = [
       match: RegExp(r'\\?<(\S+@[\w.\-]+)>'),
       replacement: '<a href="mailto:\$1">\$1</a>'),
 
+  // Open link in new window: ^[caption](url)
+  // caption = $1, url = $2
+  Def(
+      match: RegExp(r'\\?\^\[([^[]*?)]\((\S+?)\)'),
+      replacement: '<a href="\$2" target="_blank">\$\$1</a>'),
+
   // Link: [caption](url)
   // caption = $1, url = $2
   Def(
