@@ -204,8 +204,8 @@ LAYOUT OPTIONS
                      highlighting with Highlight.js.
   --lang             HTML document language attribute value.
   --mathjax          Set to a non-blank value to enable MathJax.
-  --no-toc           Set to a non-blank value to suppress table of
-                     contents generation.
+  --no-toc           Set to a non-blank value to suppress table
+                     of contents generation.
   --section-numbers  Apply h2 and h3 section numbering.
   --theme            Styling theme. Theme names:
                      'legend', 'graystone', 'vintage'.
@@ -215,15 +215,15 @@ LAYOUT OPTIONS
   macro definitions using the --prepend option.
 
 LAYOUT CLASSES
-  The following CSS classes are available for use in Rimu Block
-  Attributes elements when the --layout option is used:
+  The following CSS classes can be used to style Rimu block
+  elements in conjunction with the --layout option:
 
   CSS class        Description
-  ______________________________________________________________
-  align-center     Text alignment center.
-  align-left       Text alignment left.
-  align-right      Text alignment right.
-  bordered         Adds table borders.
+  _______________________________________________________________
+  align-center     Align element content center.
+  align-left       Align element content left.
+  align-right      Align element content right.
+  bordered         Add borders to table element.
   cite             Quote and verse attribution.
   dl-horizontal    Format labeled lists horizontally.
   dl-numbered      Number labeled list items.
@@ -232,12 +232,16 @@ LAYOUT CLASSES
   ul-counter       Prepend ul item counter to element content.
   no-auto-toc      Exclude heading from table of contents.
   no-page-break    Avoid page break inside the element.
-  no-print         Do not print.
-  page-break       Force page break before the element.
-  preserve-breaks  Honor line breaks in source text.
-  sidebar          Sidebar format (paragraphs, division blocks).
-  verse            Verse format (paragraphs, division blocks).
-  ______________________________________________________________
+  no-print         Do not print element.
+  page-break       Force a page break before the element.
+  preserve-breaks  Honor line breaks in element content.
+  sidebar          Paragraph and division block style.
+  verse            Paragraph and division block style.
+  important        Paragraph and division block style.
+  note             Paragraph and division block style.
+  tip              Paragraph and division block style.
+  warning          Paragraph and division block style.
+  _______________________________________________________________
 
 PREDEFINED MACROS
   Macro name         Description
@@ -262,7 +266,8 @@ PREDEFINED MACROS
 {--no-toc?} = ''
 {--custom-toc?} = ''
 {--header-links?} = ''
-{--small-screen?} = '(max-width: 800px)'
+{--!} The min-width: 1px clause stops page load transitions in IE11 and Edge (https://stackoverflow.com/a/25850649).
+{--small-screen?} = '(min-width: 1px) and (max-width: 800px)'
 {--meta?} = '<meta charset="UTF-8">
   {--!} Make old IE versions use the latest rendering engine.
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -271,11 +276,11 @@ PREDEFINED MACROS
 {--head?} = ''
 
 {--highlightjs?} = ''
-{--highlightjs-css} = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">'
-{--highlightjs-scripts} = '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+{--highlightjs-css} = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">'
+{--highlightjs-scripts} = '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 <script>
 hljs.configure({languages: []});
-hljs.initHighlightingOnLoad();
+hljs.highlightAll();
 </script>'
 
 {--mathjax?} = ''
@@ -411,9 +416,9 @@ hljs.initHighlightingOnLoad();
     margin: 10px 0;
     color: {--primary-color};
   }
-  h1 { font-size: 2.2rem; line-height: 40px;}
+  h1 { font-size: 2.1rem; line-height: 40px;}
   h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
+  h3 { font-size: 1.4rem; }
   h4 { font-size: 1.1rem; }
   h5 { font-size: 1.0rem; }
   h6 { font-size: 0.9rem; }
@@ -431,6 +436,7 @@ hljs.initHighlightingOnLoad();
   }
   table {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
   }
   td, th {
@@ -490,7 +496,6 @@ hljs.initHighlightingOnLoad();
     font-size: {--mono-size};
     background-color: {--code-background};
   }
-{--highlightjs!}  .hljs { background-color: {--code-background}; }
   pre {
     font-family: {--mono-font};
     line-height: normal;
@@ -498,23 +503,21 @@ hljs.initHighlightingOnLoad();
     background-color: {--code-background};
     border: 1px solid {--border-color};
     border-radius: {--border-radius};
-    padding: 6px;
+    padding: 0;
   }
   .light-background {
     background-color: {--code-background};
     border: none;
     white-space: pre-wrap;
   }
-  *:not(pre) > code {
-    white-space: nowrap;
-  }
   .dl-horizontal > dd {
     margin-top: 1.0rem;
   }
   pre > code {
     background-color: inherit;
-    {--!} highlight.js tweak.
-    padding: 0;
+    display: block;
+    padding: 0.5em !important;
+    border-radius: {--border-radius};
   }
   pre span {
     {--!} highlight.js tweak.
@@ -527,20 +530,79 @@ hljs.initHighlightingOnLoad();
   }
   div.verse p, p.verse {
     font-family: {--serif-font};
-    white-space: pre;
+    white-space: pre-wrap;
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
   }
-  {--!} Apply sidebar class to Normal Paragraphs and Division blocks.
-  .sidebar {
-    border: 1px solid {--border-color};
-    border-radius: {--border-radius};
-    background: {--sidebar-background};
-    padding: 10px;
+  {--!} Apply sidebar and admonition classes to Normal Paragraphs and Division blocks.
+  .sidebar,
+  .important,
+  .note,
+  .tip,
+  .warning {
     margin: 1.5em 0;
+    padding: 10px;
+    border-radius: {--border-radius};
   }
-  div.sidebar *:first-child {
-    margin-top: 0.2rem;
+  div.sidebar *:first-child,
+  div.important *:first-child,
+  div.note *:first-child,
+  div.tip *:first-child,
+  div.warning *:first-child {
+    margin-top: 0.2rem !important;
+  }
+  .note::before,
+  .important::before,
+  .tip::before,
+  .warning::before {
+    font-weight: bold;
+  }
+  .notitle::before {
+    content: "" !important;
+  }
+  .sidebar {
+    background: #ffffee;
+    border: 1px solid {--border-color};
+  }
+  .note {
+    background-color: #f0f7fb;
+    border-left: solid 4px #3498db;
+  }
+  div.note::before {
+    content: "Note";
+  }
+  p.note::before {
+    content: "Note: ";
+  }
+  .tip {
+    background-color: #e7f6ef;
+    border-left: solid 4px #32c875;
+  }
+  div.tip::before {
+    content: "Tip";
+  }
+  p.tip::before {
+    content: "Tip: ";
+  }
+  .warning {
+    background-color: #fdf7f2;
+    border-left: solid 4px #d1534a;
+  }
+  div.warning::before {
+    content: "Warning";
+  }
+  p.warning::before {
+    content: "Warning: ";
+  }
+  .important {
+    background-color: #fffbea;
+    border-left: solid 4px #eec51c;
+  }
+  div.important::before {
+    content: "Important";
+  }
+  p.important::before {
+    content: "Important: ";
   }
   {--!} Force page break before the element.
   .page-break {
@@ -566,7 +628,7 @@ hljs.initHighlightingOnLoad();
   }
   {--!} DEPRECATED: Use `preserve-breaks` instead.
   .line-breaks {
-    white-space: pre;
+    white-space: pre-wrap;
   }
   {--!} Horizontal labeled list.
   .dl-horizontal:before, .dl-horizontal:after {
@@ -782,6 +844,9 @@ hljs.initHighlightingOnLoad();
   @media screen and {--small-screen} {
     body {
       font-size: 20px;
+    }
+    * {
+      overflow-wrap: break-word;
     }
   }
   @media print {
@@ -1350,7 +1415,8 @@ window.onclick = function(event) {
 {--no-toc?} = ''
 {--custom-toc?} = ''
 {--header-links?} = ''
-{--small-screen?} = '(max-width: 800px)'
+{--!} The min-width: 1px clause stops page load transitions in IE11 and Edge (https://stackoverflow.com/a/25850649).
+{--small-screen?} = '(min-width: 1px) and (max-width: 800px)'
 {--meta?} = '<meta charset="UTF-8">
   {--!} Make old IE versions use the latest rendering engine.
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -1359,11 +1425,11 @@ window.onclick = function(event) {
 {--head?} = ''
 
 {--highlightjs?} = ''
-{--highlightjs-css} = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">'
-{--highlightjs-scripts} = '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+{--highlightjs-css} = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">'
+{--highlightjs-scripts} = '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 <script>
 hljs.configure({languages: []});
-hljs.initHighlightingOnLoad();
+hljs.highlightAll();
 </script>'
 
 {--mathjax?} = ''
@@ -1468,9 +1534,9 @@ hljs.initHighlightingOnLoad();
     margin: 10px 0;
     color: {--primary-color};
   }
-  h1 { font-size: 2.2rem; line-height: 40px;}
+  h1 { font-size: 2.1rem; line-height: 40px;}
   h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
+  h3 { font-size: 1.4rem; }
   h4 { font-size: 1.1rem; }
   h5 { font-size: 1.0rem; }
   h6 { font-size: 0.9rem; }
@@ -1488,6 +1554,7 @@ hljs.initHighlightingOnLoad();
   }
   table {
     border-collapse: collapse;
+    table-layout: fixed;
     width: 100%;
   }
   td, th {
@@ -1547,7 +1614,6 @@ hljs.initHighlightingOnLoad();
     font-size: {--mono-size};
     background-color: {--code-background};
   }
-{--highlightjs!}  .hljs { background-color: {--code-background}; }
   pre {
     font-family: {--mono-font};
     line-height: normal;
@@ -1555,23 +1621,21 @@ hljs.initHighlightingOnLoad();
     background-color: {--code-background};
     border: 1px solid {--border-color};
     border-radius: {--border-radius};
-    padding: 6px;
+    padding: 0;
   }
   .light-background {
     background-color: {--code-background};
     border: none;
     white-space: pre-wrap;
   }
-  *:not(pre) > code {
-    white-space: nowrap;
-  }
   .dl-horizontal > dd {
     margin-top: 1.0rem;
   }
   pre > code {
     background-color: inherit;
-    {--!} highlight.js tweak.
-    padding: 0;
+    display: block;
+    padding: 0.5em !important;
+    border-radius: {--border-radius};
   }
   pre span {
     {--!} highlight.js tweak.
@@ -1584,20 +1648,79 @@ hljs.initHighlightingOnLoad();
   }
   div.verse p, p.verse {
     font-family: {--serif-font};
-    white-space: pre;
+    white-space: pre-wrap;
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
   }
-  {--!} Apply sidebar class to Normal Paragraphs and Division blocks.
-  .sidebar {
-    border: 1px solid {--border-color};
-    border-radius: {--border-radius};
-    background: {--sidebar-background};
-    padding: 10px;
+  {--!} Apply sidebar and admonition classes to Normal Paragraphs and Division blocks.
+  .sidebar,
+  .important,
+  .note,
+  .tip,
+  .warning {
     margin: 1.5em 0;
+    padding: 10px;
+    border-radius: {--border-radius};
   }
-  div.sidebar *:first-child {
-    margin-top: 0.2rem;
+  div.sidebar *:first-child,
+  div.important *:first-child,
+  div.note *:first-child,
+  div.tip *:first-child,
+  div.warning *:first-child {
+    margin-top: 0.2rem !important;
+  }
+  .note::before,
+  .important::before,
+  .tip::before,
+  .warning::before {
+    font-weight: bold;
+  }
+  .notitle::before {
+    content: "" !important;
+  }
+  .sidebar {
+    background: #ffffee;
+    border: 1px solid {--border-color};
+  }
+  .note {
+    background-color: #f0f7fb;
+    border-left: solid 4px #3498db;
+  }
+  div.note::before {
+    content: "Note";
+  }
+  p.note::before {
+    content: "Note: ";
+  }
+  .tip {
+    background-color: #e7f6ef;
+    border-left: solid 4px #32c875;
+  }
+  div.tip::before {
+    content: "Tip";
+  }
+  p.tip::before {
+    content: "Tip: ";
+  }
+  .warning {
+    background-color: #fdf7f2;
+    border-left: solid 4px #d1534a;
+  }
+  div.warning::before {
+    content: "Warning";
+  }
+  p.warning::before {
+    content: "Warning: ";
+  }
+  .important {
+    background-color: #fffbea;
+    border-left: solid 4px #eec51c;
+  }
+  div.important::before {
+    content: "Important";
+  }
+  p.important::before {
+    content: "Important: ";
   }
   {--!} Force page break before the element.
   .page-break {
@@ -1623,7 +1746,7 @@ hljs.initHighlightingOnLoad();
   }
   {--!} DEPRECATED: Use `preserve-breaks` instead.
   .line-breaks {
-    white-space: pre;
+    white-space: pre-wrap;
   }
   {--!} Horizontal labeled list.
   .dl-horizontal:before, .dl-horizontal:after {
@@ -1879,6 +2002,9 @@ hljs.initHighlightingOnLoad();
     body {
       font-size: 20px;
     }
+    * {
+      overflow-wrap: break-word;
+    }
   }
 </style>
 
@@ -1940,11 +2066,11 @@ hljs.initHighlightingOnLoad();
 {--head?} = ''
 
 {--highlightjs?} = ''
-{--highlightjs-css} = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">'
-{--highlightjs-scripts} = '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+{--highlightjs-css} = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/default.min.css">'
+{--highlightjs-scripts} = '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 <script>
 hljs.configure({languages: []});
-hljs.initHighlightingOnLoad();
+hljs.highlightAll();
 </script>'
 
 {--mathjax?} = ''
@@ -2055,9 +2181,9 @@ hljs.initHighlightingOnLoad();
     margin: 10px 0;
     color: {--primary-color};
   }
-  h1 { font-size: 2.2rem; line-height: 40px;}
+  h1 { font-size: 2.1rem; line-height: 40px;}
   h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
+  h3 { font-size: 1.4rem; }
   h4 { font-size: 1.1rem; }
   h5 { font-size: 1.0rem; }
   h6 { font-size: 0.9rem; }
@@ -2135,7 +2261,6 @@ hljs.initHighlightingOnLoad();
     font-size: {--mono-size};
     background-color: {--code-background};
   }
-{--highlightjs!}  .hljs { background-color: {--code-background}; }
   pre {
     font-family: {--mono-font};
     line-height: normal;
@@ -2143,7 +2268,7 @@ hljs.initHighlightingOnLoad();
     background-color: {--code-background};
     border: 1px solid {--border-color};
     border-radius: {--border-radius};
-    padding: 6px;
+    padding: 0;
   }
   .light-background {
     background-color: {--code-background};
@@ -2159,8 +2284,9 @@ hljs.initHighlightingOnLoad();
   }
   pre > code {
     background-color: inherit;
-    {--!} highlight.js tweak.
-    padding: 0;
+    display: block;
+    padding: 0.5em !important;
+    border-radius: {--border-radius};
   }
   pre span {
     {--!} highlight.js tweak.
@@ -2177,16 +2303,75 @@ hljs.initHighlightingOnLoad();
     margin-top: 0.75rem;
     margin-bottom: 0.75rem;
   }
-  {--!} Apply sidebar class to Normal Paragraphs and Division blocks.
-  .sidebar {
-    border: 1px solid {--border-color};
-    border-radius: {--border-radius};
-    background: {--sidebar-background};
-    padding: 10px;
+  {--!} Apply sidebar and admonition classes to Normal Paragraphs and Division blocks.
+  .sidebar,
+  .important,
+  .note,
+  .tip,
+  .warning {
     margin: 1.5em 0;
+    padding: 10px;
+    border-radius: {--border-radius};
   }
-  div.sidebar *:first-child {
-    margin-top: 0.2rem;
+  div.sidebar *:first-child,
+  div.important *:first-child,
+  div.note *:first-child,
+  div.tip *:first-child,
+  div.warning *:first-child {
+    margin-top: 0.2rem !important;
+  }
+  .note::before,
+  .important::before,
+  .tip::before,
+  .warning::before {
+    font-weight: bold;
+  }
+  .notitle::before {
+    content: "" !important;
+  }
+  .sidebar {
+    background: #ffffee;
+    border: 1px solid {--border-color};
+  }
+  .note {
+    background-color: #f0f7fb;
+    border-left: solid 4px #3498db;
+  }
+  div.note::before {
+    content: "Note";
+  }
+  p.note::before {
+    content: "Note: ";
+  }
+  .tip {
+    background-color: #e7f6ef;
+    border-left: solid 4px #32c875;
+  }
+  div.tip::before {
+    content: "Tip";
+  }
+  p.tip::before {
+    content: "Tip: ";
+  }
+  .warning {
+    background-color: #fdf7f2;
+    border-left: solid 4px #d1534a;
+  }
+  div.warning::before {
+    content: "Warning";
+  }
+  p.warning::before {
+    content: "Warning: ";
+  }
+  .important {
+    background-color: #fffbea;
+    border-left: solid 4px #eec51c;
+  }
+  div.important::before {
+    content: "Important";
+  }
+  p.important::before {
+    content: "Important: ";
   }
   {--!} Force page break before the element.
   .page-break {
