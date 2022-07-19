@@ -1,11 +1,10 @@
 // Generated automatically from resource files. Do not edit.
 Map<String, String> resources = {
-  'sequel-footer.rmu': r'''/*
-  Used by rimuc `--layout sequel` option.
+  'classic-footer.rmu': r'''/*
+  Used by rimuc.js --styled option.
 */
 
-// Close main and article divs.
-</div>
+// Close article div.
 </div>
 
 {--highlightjs=}.+skip
@@ -13,18 +12,16 @@ Map<String, String> resources = {
 
 {--mathjax!}{--mathjax-scripts}
 
-{--no-toc!}.+skip
+.+skip
+{--no-toc=}.-skip
+{--header-links!}.-skip
 <script>
 window.onload = function() {
-  document.getElementById('sidebar').appendChild(document.getElementById('toc')); // Ensure custom TOC is child of sidebar.
   var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
   headings.forEach(function(heading) {
 {--header-links!}    setHeaderLink(heading);
-    appendTocEntry(heading);
+{--no-toc=}    appendTocEntry(heading);
   });
-  if (isSmallScreen()) {
-    toggleToc();  // Hide TOC.
-  }
 }
 </script>
 
@@ -62,195 +59,33 @@ function appendTocEntry(heading) {
 }
 </script>
 
-{--no-toc!}.+skip
+{--dropdown-toc=}.+skip
 <script>
-  document.onclick = function (event) {
-    if (event.target.matches('#toc-button') || event.target.matches('#toc a') && isSmallScreen()) {
-{--!} Toggle TOC if TOC button or small-screen TOC link is clicked.
-      toggleToc();
-    }
+// matches() polyfill for old browsers.
+if (!Element.prototype.matches) {
+  var p = Element.prototype;
+  if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+    p.matches = p.webkitMatchesSelector;
+  if (p.msMatchesSelector) // IE9/10/11 & Edge
+    p.matches = p.msMatchesSelector;
+  if (p.mozMatchesSelector) // FF<34
+    p.matches = p.mozMatchesSelector;
+}
+window.onclick = function(event) {
+  var body = document.getElementsByTagName('body')[0];
+  if (event.target.matches('#toc-button, #toc a')) {
+    // Toggle TOC if TOC button or TOC link is clicked.
+    body.classList.toggle('show-toc');
   }
-  function toggleToc() {
-    document.body.classList.toggle('hide-toc');
+  else if (!event.target.matches('#toc, #toc *')) {
+    // Hide TOC if clicked outside TOC.
+    body.classList.remove('show-toc');
   }
-  function isSmallScreen() {
-    return window.matchMedia('{--small-screen}').matches;
-  }
-  // matches() polyfill for old browsers.
-  if (!Element.prototype.matches) {
-    var p = Element.prototype;
-    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-      p.matches = p.webkitMatchesSelector;
-    if (p.msMatchesSelector) // IE9/10/11 & Edge
-      p.matches = p.msMatchesSelector;
-    if (p.mozMatchesSelector) // FF<34
-      p.matches = p.mozMatchesSelector;
-  }
+}
 </script>
 
 </body>
 </html>''',
-  'plain-footer.rmu': r'''</body>
-</html>''',
-  'manpage.txt': r'''NAME
-  rimuc - convert Rimu source to HTML
-
-SYNOPSIS
-  rimuc [OPTIONS...] [FILES...]
-
-DESCRIPTION
-  Reads Rimu source markup from stdin, converts them to HTML
-  then writes the HTML to stdout. If FILES are specified
-  the Rimu source is read from FILES. The contents of files
-  with an .html extension are passed directly to the output.
-  An input file named '-' is read from stdin.
-
-  If a file named .rimurc exists in the user's home directory
-  then its contents is processed (with --safe-mode 0).
-  This behavior can be disabled with the --no-rimurc option.
-
-  Inputs are processed in the following order: .rimurc file then
-  --prepend-file option files then --prepend option source and
-  finally FILES...
-
-OPTIONS
-  -h, --help
-    Display help message.
-
-  --html-replacement TEXT
-    Embedded HTML is replaced by TEXT when --safe-mode is set to 2.
-    Defaults to '<mark>replaced HTML</mark>'.
-
-  --layout LAYOUT
-    Generate a styled HTML document. rimuc includes the
-    following built-in document layouts:
-
-    'classic': Desktop-centric layout.
-    'flex':    Flexbox mobile layout (experimental).
-    'plain':   Unstyled HTML layout.
-    'sequel':  Responsive cross-device layout.
-
-    If only one source file is specified and the --output
-    option is not specified then the output is written to a
-    same-named file with an .html extension.
-    This option enables --header-ids.
-
-  -s, --styled
-    Style output using default layout.
-    Shortcut for '--layout sequel --header-ids --no-toc'
-
-  -o, --output OUTFILE
-    Write output to file OUTFILE instead of stdout.
-    If OUTFILE is a hyphen '-' write to stdout.
-
-  --pass
-    Pass the stdin input verbatim to the output.
-
-  -p, --prepend SOURCE
-    Process the Rimu SOURCE text (immediately after --prepend-file
-    option files). Rendered with --safe-mode 0. This option can be
-    specified multiple times.
-
-  --prepend-file PREPEND_FILE
-    Process the PREPEND_FILE contents (immediately after .rimurc file).
-    Rendered with --safe-mode 0. This option can be specified
-    multiple times.
-
-  --no-rimurc
-    Do not process .rimurc from the user's home directory.
-
-  --safe-mode NUMBER
-    Non-zero safe modes ignore: Definition elements; API option elements;
-    HTML attributes in Block Attributes elements.
-    Also specifies how to process HTML elements:
-
-    --safe-mode 0 renders HTML (default).
-    --safe-mode 1 ignores HTML.
-    --safe-mode 2 replaces HTML with --html-replacement option value.
-    --safe-mode 3 renders HTML as text.
-
-    Add 4 to --safe-mode to ignore Block Attribute elements.
-    Add 8 to --safe-mode to allow Macro Definitions.
-
-  --theme THEME, --lang LANG, --title TITLE, --highlightjs, --mathjax,
-  --no-toc, --custom-toc, --section-numbers, --header-ids, --header-links
-    Shortcuts for the following prepended macro definitions:
-
-    --prepend "{--custom-toc}='true'"
-    --prepend "{--header-ids}='true'"
-    --prepend "{--header-links}='true'"
-    --prepend "{--highlightjs}='true'"
-    --prepend "{--lang}='LANG'"
-    --prepend "{--mathjax}='true'"
-    --prepend "{--no-toc}='true'"
-    --prepend "{--section-numbers}='true'"
-    --prepend "{--theme}='THEME'"
-    --prepend "{--title}='TITLE'"
-
-  --version
-    Print version number.
-
-LAYOUT OPTIONS
-  The following options are available when the --layout option
-  is used:
-
-  Option             Description
-  _______________________________________________________________
-  --custom-toc       Set to a non-blank value if a custom table
-                     of contents is used.
-  --header-links     Set to a non-blank value to generate h2 and
-                     h3 header header links.
-  --highlightjs      Set to non-blank value to enable syntax
-                     highlighting with Highlight.js.
-  --lang             HTML document language attribute value.
-  --mathjax          Set to a non-blank value to enable MathJax.
-  --no-toc           Set to a non-blank value to suppress table
-                     of contents generation.
-  --section-numbers  Apply h2 and h3 section numbering.
-  --theme            Styling theme. Theme names:
-                     'legend', 'graystone', 'vintage'.
-  --title            HTML document title.
-  _______________________________________________________________
-  These options are translated by rimuc to corresponding layout
-  macro definitions using the --prepend option.
-
-LAYOUT CLASSES
-  The following CSS classes can be used to style Rimu block
-  elements in conjunction with the --layout option:
-
-  CSS class        Description
-  _______________________________________________________________
-  align-center     Align element content center.
-  align-left       Align element content left.
-  align-right      Align element content right.
-  bordered         Add borders to table element.
-  cite             Quote and verse attribution.
-  dl-horizontal    Format labeled lists horizontally.
-  dl-numbered      Number labeled list items.
-  dl-counter       Prepend dl item counter to element content.
-  ol-counter       Prepend ol item counter to element content.
-  ul-counter       Prepend ul item counter to element content.
-  no-auto-toc      Exclude heading from table of contents.
-  no-page-break    Avoid page break inside the element.
-  no-print         Do not print element.
-  page-break       Force a page break before the element.
-  preserve-breaks  Honor line breaks in element content.
-  sidebar          Paragraph and division block style.
-  verse            Paragraph and division block style.
-  important        Paragraph and division block style.
-  note             Paragraph and division block style.
-  tip              Paragraph and division block style.
-  warning          Paragraph and division block style.
-  _______________________________________________________________
-
-PREDEFINED MACROS
-  Macro name         Description
-  _______________________________________________________________
-  --                 Blank macro (empty string).
-                     The Blank macro cannot be redefined.
-  --header-ids       Set to a non-blank value to generate h1, h2
-                     and h3 header id attributes.
-  _______________________________________________________________''',
   'classic-header.rmu': r'''/*
   Used by rimuc `--layout classic` option.
 */
@@ -885,99 +720,7 @@ hljs.highlightAll();
 </div>
 
 <div id="article">''',
-  'v8-footer.rmu': r'''/*
-  Used by rimuc `--layout v8` option.
-  DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
-*/
-
-// Close contents div.
-</div>
-
-{--highlightjs!}<script src="https://yandex.st/highlightjs/7.3/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script>
-
-{--mathjax!}<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
-<script>
-window.onload = function() {
-  var headings = [].slice.call(document.body.querySelectorAll('#contents > h1, #contents > h2, #contents > h3'));
-  headings.forEach(function(heading, index) {
-    var title = heading.textContent;
-    var id = heading.getAttribute('id');
-    if (!id) {
-      id = slugify(title);
-      heading.setAttribute('id', id);
-    }
-    if (index === 0 && heading.tagName === 'H1') {
-      id = ''; // Go to top of page.
-    }
-{--sidebar-toc!}    appendTocEntry(heading, id);
-{--dropdown-toc!}    appendTocEntry(heading, id);
-  });
-}
-function slugify(text) {
-  var slug = text.replace(/\s+/g, '-') // Replace spaces with dashes.
-      .replace(/[^\w-]/g, '')          // Retain alphanumeric, '-' and '_' characters.
-      .toLowerCase()
-  if (!slug) slug = 'x';
-  if (document.getElementById(slug)) { // Another element already has that id.
-    var i = 2, prefix = slug;
-    while (document.getElementById(slug = prefix + '-' + i++)) {}
-  }
-  return slug;
-}
-</script>
-
-.+skip
-{--sidebar-toc!}.-skip
-{--dropdown-toc!}.-skip
-<script>
-function appendTocEntry(heading, id) {
-  if (heading.classList.contains('no-auto-toc')) {
-    return;
-  }
-  var container = document.getElementById('auto-toc');
-  if (container === null) {
-    return;
-  }
-  var tocLink = document.createElement('a');
-  tocLink.setAttribute('href', '#' + id);
-  tocLink.textContent = heading.textContent;
-  var tocEntry = document.createElement('div');
-  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
-  tocEntry.appendChild(tocLink);
-  container.appendChild(tocEntry);
-}
-</script>
-
-{--dropdown-toc=}.+skip
-<script>
-function toggleToc() {
-    document.getElementById("toc").classList.toggle('toc-visible');
-}
-window.onclick = function(event) {
-  if (!Element.prototype.matches) {
-    // matches() polyfill for old browsers.
-    var p = Element.prototype;
-    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-      p.matches = p.webkitMatchesSelector;
-    if (p.msMatchesSelector) // IE9/10/11 & Edge
-      p.matches = p.msMatchesSelector;
-    if (p.mozMatchesSelector) // FF<34
-      p.matches = p.mozMatchesSelector;
-  }
-  if (!event.target.matches('#toc-button, #toc, #toc :not(a)')) {
-    // Hide TOC if clicked outside TOC or on TOC link.
-    var toc = document.getElementById('toc');
-    if (toc.classList.contains('toc-visible')) {
-      toc.classList.remove('toc-visible');
-    }
-  }
-}
-</script>
-
-</body>
-</html>''',
-  'classic-footer.rmu': r'''/*
+  'flex-footer.rmu': r'''/*
   Used by rimuc.js --styled option.
 */
 
@@ -994,6 +737,7 @@ window.onclick = function(event) {
 {--header-links!}.-skip
 <script>
 window.onload = function() {
+{--no-toc=}  document.getElementsByTagName('body')[0].appendChild(document.getElementById('toc')); // Ensure custom TOC is child of body.
   var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
   headings.forEach(function(heading) {
 {--header-links!}    setHeaderLink(heading);
@@ -1034,10 +778,6 @@ function appendTocEntry(heading) {
   tocEntry.appendChild(tocLink);
   container.appendChild(tocEntry);
 }
-</script>
-
-{--dropdown-toc=}.+skip
-<script>
 // matches() polyfill for old browsers.
 if (!Element.prototype.matches) {
   var p = Element.prototype;
@@ -1048,358 +788,16 @@ if (!Element.prototype.matches) {
   if (p.mozMatchesSelector) // FF<34
     p.matches = p.mozMatchesSelector;
 }
-window.onclick = function(event) {
-  var body = document.getElementsByTagName('body')[0];
-  if (event.target.matches('#toc-button, #toc a')) {
+document.onclick = function(event) {
+  if (event.target.matches('#toc-button *, #toc a')) {
     // Toggle TOC if TOC button or TOC link is clicked.
-    body.classList.toggle('show-toc');
-  }
-  else if (!event.target.matches('#toc, #toc *')) {
-    // Hide TOC if clicked outside TOC.
-    body.classList.remove('show-toc');
+    document.getElementsByTagName('body')[0].classList.toggle('show-toc');
   }
 }
 </script>
 
 </body>
 </html>''',
-  'v8-header.rmu': r'''/*
-  Used by rimuc `--layout v8` option.
-  DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
-  Styled using Bootstrap.
-  Syntax highlighting with Highlight.js
-  Bootstrap and Highlight.js sourced from CDNs.
-*/
-
-// Set macro default values.
-{--highlightjs?} = ''
-{--mathjax?} = ''
-{--section-numbers?} = ''
-{--lang?} = ''
-{--title?} = '&nbsp;'
-{--custom-toc?} = ''
-{--theme?} = 'default'
-{--sidebar-toc?} = ''
-{--dropdown-toc?} = ''
-
-// DEPRECATED --toc: If --toc is non-blank make --sidebar-toc non-blank.
-{--toc?} = ''
-{--sidebar-toc} = '{--toc}{--sidebar-toc}'
-
-<!DOCTYPE HTML>
-<html lang="{--lang}">
-<head>
-{--!} Force IE into Standards mode.
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta charset="UTF-8">
-  <title>{--title}</title>
-  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css">
-  <link rel="stylesheet" href="https://yandex.st/highlightjs/7.3/styles/default.min.css">
-
-<style>
-  /* Bootstrap tweaks. */
-  body {
-    margin: 1em;
-    max-width: 50em;
-    font-family: Arial, Helvetica, sans-serif;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    color: #527bbd;
-  }
-  h1 { font-size: 2.2em; }
-  h2 { font-size: 1.5em; }
-  h3 { font-size: 1.2em; }
-  h4 { font-size: 1.1em; }
-  h5 { font-size: 1.0em; }
-  h6 { font-size: 0.9em; }
-  h2, h3, h4, h5, h6 {
-    line-height: normal;
-    margin-top: 1.0em;
-    margin-bottom: 0.2em;
-  }
-  h2 {
-    margin-top: 1.5em;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  }
-  a, a:hover {
-    color: #527bbd;
-  }
-  li, dd {
-    margin-bottom: 0.25em;
-  }
-  p, pre, li, dt, dd, blockquote p {
-    font-size: inherit;
-    line-height: 1.45;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-  }
-  blockquote {
-    border: none;
-    border-left: 5px solid #eeeeee;
-    font-family: Georgia, serif;
-    font-style: italic;
-    width: 80%;
-    margin: 1.5em 0;
-    color: #383838;
-  }
-  .cite {
-    font-style: italic;
-    color:#777;
-    padding:5px 0;
-  }
-  .cite::before {
-    content: "\2014 \2009";
-  }
-  pre {
-    padding: 6px;
-    line-height: normal;
-  }
-  .light-background {
-    background-color: #f8f8f8;
-    border: none;
-  }
-  code {
-    color: inherit;
-    font-size: inherit;
-  }
-  *:not(pre) > code {
-    border: none;
-    background-color: #f8f8f8;
-  }
-  .dl-horizontal > dt {
-    text-align: left;
-    margin-top: 1.0em;
-  }
-  .dl-horizontal > dd {
-    margin-top: 1.0em;
-  }
-  /* highlight.js tweaks. */
-  pre > code {
-    background-color: inherit;
-    padding: 0;
-  }
-  pre span {
-    opacity: 1 !important;
-  }
-  /* Rimu styles. */
-{--!} Apply verse class to Normal Paragraphs and Division blocks.
-  .verse {
-    margin: 1.5em 20px;
-  }
-  div.verse p, p.verse {
-    font-family: Georgia, serif;
-    white-space:pre;
-    margin-top: 0.75em;
-    margin-bottom: 0.75em;
-  }
-{--!} Apply sidebar class to Normal Paragraphs and Division blocks.
-  .sidebar {
-    border: 1px solid silver;
-    border-radius:4px;
-    background: #ffffee;
-    padding: 10px;
-    margin: 1.5em 20px;
-  }
-  div.sidebar *:first-child {
-    margin-top: 0.2em;
-  }
-  /* List item counters and definition list numbering. */
-{--!} List item counters.
-  dl {
-    counter-reset: dl-counter;
-  }
-  dl > dt {
-    counter-increment: dl-counter;
-  }
-  ol {
-    counter-reset: ol-counter;
-  }
-  ol > li {
-    counter-increment: ol-counter;
-  }
-  ul {
-    counter-reset: ul-counter;
-  }
-  ul > li {
-    counter-increment: ul-counter;
-  }
-{--!} Prefix list counter to counter class element content.
-  .dl-counter:before {
-    content: counter(dl-counter) " ";
-  }
-  .ol-counter:before {
-    content: counter(ol-counter) " ";
-  }
-  .ul-counter:before {
-    content: counter(ul-counter) " ";
-  }
-{--!} Number labeled list items.
-  .dl-numbered > dt:before {
-    content: counter(dl-counter) ". ";
-  }
-{--!} Force page break before the element.
-  .page-break {
-    page-break-before: always;
-  }
-{--!} Avoid page breaks inside the element.
-  .no-page-break {
-    page-break-inside: avoid;
-  }
-{--!} Text block alignment classes.
-  .align-left {
-    text-align: left;
-  }
-  .align-center {
-    text-align: center;
-  }
-  .align-right {
-    text-align: right;
-  }
-{--!} Do not wrap line breaks.
-  .line-breaks {
-    white-space:pre;
-  }
-</style>
-
-{--section-numbers=}.+skip
-<style>
-  /* Section numbers. */
-  body,h1 { counter-reset: h2-counter; }
-  h2      { counter-reset: h3-counter; }
-  #contents > h2:before {
-    content: counter(h2-counter) ". ";
-    counter-increment: h2-counter;
-  }
-  #contents > h3:before {
-    content: counter(h2-counter) "." counter(h3-counter) ". ";
-    counter-increment: h3-counter;
-  }
-</style>
-
-{--sidebar-toc=}.+skip
-<style>
-  body {
-    padding-left: 21em;
-  }
-  #toc {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 18em;
-    border-right: 1px solid #cccccc;
-    overflow-y: auto;
-    overflow-x: hidden;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
-  }
-</style>
-
-{--dropdown-toc=}.+skip
-<style>
-  .toc-visible {
-    display: block !important;
-  }
-  #toc-button {
-    position: fixed;
-    top: 22px;
-    left: 15px;
-    z-index: 1;
-    cursor: pointer;
-    color: silver;
-    font-size:3.2em;
-  }
-  #toc {
-    display: none;
-    position: fixed;
-    top: 55px;
-    left: 15px;
-    right: 10%;
-    z-index: 1;
-    max-width: 30em;
-    max-height: 80%;
-    overflow-y: auto;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
-  }
-  #contents {
-    margin-left: 40px;
-  }
-</style>
-
-// Common to --sidebar-toc and --dropdown-toc.
-.+skip
-{--sidebar-toc!}.-skip
-{--dropdown-toc!}.-skip
-<style>
-  @media print {
-    .no-print, .no-print * {
-      display: none !important;
-    }
-    body {
-      padding-left: 1em;
-    }
-  }
-  #toc {
-    padding-left: 1em;
-  }
-  #toc .h1 {
-    font-size: 110%;
-    font-weight: bold;
-    margin-top: 0.5em;
-    margin-bottom: 0.4em;
-  }
-  #toc .h2 {
-    margin-top: 0.4em;
-  }
-  #toc .h3 {
-    margin-left: 1.5em;
-    font-size: 90%;
-  }
-  #toc div:nth-child(even) {
-    background-color: #f8f8f8;
-  }
-</style>
-
-{--theme!.*\bgraystone\b.*}.+skip
-<style>
-  body {
-    font-size: 13pt;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    color: #888;
-  }
-  h1, h2 {
-    text-transform: uppercase;
-  }
-  a, a:hover {
-    color: #888;
-    text-decoration: underline;
-  }
-  @media print {
-    a {
-      text-decoration: none;
-    }
-  }
-</style>
-
-</head>
-<body>
-
-// Include dropdown TOC button unless a custom TOC is specified.
-{--dropdown-toc=}.+skip
-{--custom-toc!}.+skip
-<div id="toc-button" onclick="toggleToc()" class="no-print">&#8801;</div>
-
-// Include for sidebar and dropdown TOC unless a custom TOC is specified.
-.+skip
-{--sidebar-toc!}.-skip
-{--dropdown-toc!}.-skip
-{--custom-toc!}.+skip
-<div id="toc" class="no-print">
-  <div id="auto-toc"></div>
-</div>
-
-<div id="contents">''',
   'flex-header.rmu': r'''/*
   Used by rimuc `--layout flex` option.
 */
@@ -2041,6 +1439,277 @@ hljs.highlightAll();
 </div>
 
 <div id="article">''',
+  'manpage.txt': r'''NAME
+  rimuc - convert Rimu source to HTML
+
+SYNOPSIS
+  rimuc [OPTIONS...] [FILES...]
+
+DESCRIPTION
+  Reads Rimu source markup from stdin, converts them to HTML
+  then writes the HTML to stdout. If FILES are specified
+  the Rimu source is read from FILES. The contents of files
+  with an .html extension are passed directly to the output.
+  An input file named '-' is read from stdin.
+
+  If a file named .rimurc exists in the user's home directory
+  then its contents is processed (with --safe-mode 0).
+  This behavior can be disabled with the --no-rimurc option.
+
+  Inputs are processed in the following order: .rimurc file then
+  --prepend-file option files then --prepend option source and
+  finally FILES...
+
+OPTIONS
+  -h, --help
+    Display help message.
+
+  --html-replacement TEXT
+    Embedded HTML is replaced by TEXT when --safe-mode is set to 2.
+    Defaults to '<mark>replaced HTML</mark>'.
+
+  --layout LAYOUT
+    Generate a styled HTML document. rimuc includes the
+    following built-in document layouts:
+
+    'classic': Desktop-centric layout.
+    'flex':    Flexbox mobile layout (experimental).
+    'plain':   Unstyled HTML layout.
+    'sequel':  Responsive cross-device layout.
+
+    If only one source file is specified and the --output
+    option is not specified then the output is written to a
+    same-named file with an .html extension.
+    This option enables --header-ids.
+
+  -s, --styled
+    Style output using default layout.
+    Shortcut for '--layout sequel --header-ids --no-toc'
+
+  -o, --output OUTFILE
+    Write output to file OUTFILE instead of stdout.
+    If OUTFILE is a hyphen '-' write to stdout.
+
+  --pass
+    Pass the stdin input verbatim to the output.
+
+  -p, --prepend SOURCE
+    Process the Rimu SOURCE text (immediately after --prepend-file
+    option files). Rendered with --safe-mode 0. This option can be
+    specified multiple times.
+
+  --prepend-file PREPEND_FILE
+    Process the PREPEND_FILE contents (immediately after .rimurc file).
+    Rendered with --safe-mode 0. This option can be specified
+    multiple times.
+
+  --no-rimurc
+    Do not process .rimurc from the user's home directory.
+
+  --safe-mode NUMBER
+    Non-zero safe modes ignore: Definition elements; API option elements;
+    HTML attributes in Block Attributes elements.
+    Also specifies how to process HTML elements:
+
+    --safe-mode 0 renders HTML (default).
+    --safe-mode 1 ignores HTML.
+    --safe-mode 2 replaces HTML with --html-replacement option value.
+    --safe-mode 3 renders HTML as text.
+
+    Add 4 to --safe-mode to ignore Block Attribute elements.
+    Add 8 to --safe-mode to allow Macro Definitions.
+
+  --theme THEME, --lang LANG, --title TITLE, --highlightjs, --mathjax,
+  --no-toc, --custom-toc, --section-numbers, --header-ids, --header-links
+    Shortcuts for the following prepended macro definitions:
+
+    --prepend "{--custom-toc}='true'"
+    --prepend "{--header-ids}='true'"
+    --prepend "{--header-links}='true'"
+    --prepend "{--highlightjs}='true'"
+    --prepend "{--lang}='LANG'"
+    --prepend "{--mathjax}='true'"
+    --prepend "{--no-toc}='true'"
+    --prepend "{--section-numbers}='true'"
+    --prepend "{--theme}='THEME'"
+    --prepend "{--title}='TITLE'"
+
+  --version
+    Print version number.
+
+LAYOUT OPTIONS
+  The following options are available when the --layout option
+  is used:
+
+  Option             Description
+  _______________________________________________________________
+  --custom-toc       Set to a non-blank value if a custom table
+                     of contents is used.
+  --header-links     Set to a non-blank value to generate h2 and
+                     h3 header header links.
+  --highlightjs      Set to non-blank value to enable syntax
+                     highlighting with Highlight.js.
+  --lang             HTML document language attribute value.
+  --mathjax          Set to a non-blank value to enable MathJax.
+  --no-toc           Set to a non-blank value to suppress table
+                     of contents generation.
+  --section-numbers  Apply h2 and h3 section numbering.
+  --theme            Styling theme. Theme names:
+                     'legend', 'graystone', 'vintage'.
+  --title            HTML document title.
+  _______________________________________________________________
+  These options are translated by rimuc to corresponding layout
+  macro definitions using the --prepend option.
+
+LAYOUT CLASSES
+  The following CSS classes can be used to style Rimu block
+  elements in conjunction with the --layout option:
+
+  CSS class        Description
+  _______________________________________________________________
+  align-center     Align element content center.
+  align-left       Align element content left.
+  align-right      Align element content right.
+  bordered         Add borders to table element.
+  cite             Quote and verse attribution.
+  dl-horizontal    Format labeled lists horizontally.
+  dl-numbered      Number labeled list items.
+  dl-counter       Prepend dl item counter to element content.
+  ol-counter       Prepend ol item counter to element content.
+  ul-counter       Prepend ul item counter to element content.
+  no-auto-toc      Exclude heading from table of contents.
+  no-page-break    Avoid page break inside the element.
+  no-print         Do not print element.
+  page-break       Force a page break before the element.
+  preserve-breaks  Honor line breaks in element content.
+  sidebar          Paragraph and division block style.
+  verse            Paragraph and division block style.
+  important        Paragraph and division block style.
+  note             Paragraph and division block style.
+  tip              Paragraph and division block style.
+  warning          Paragraph and division block style.
+  _______________________________________________________________
+
+PREDEFINED MACROS
+  Macro name         Description
+  _______________________________________________________________
+  --                 Blank macro (empty string).
+                     The Blank macro cannot be redefined.
+  --header-ids       Set to a non-blank value to generate h1, h2
+                     and h3 header id attributes.
+  _______________________________________________________________''',
+  'plain-footer.rmu': r'''</body>
+</html>''',
+  'plain-header.rmu': r'''/*
+  Used by rimuc `--layout plain` option.
+*/
+
+{--lang?} = ''
+{--title?} = 'Title'
+{--meta?} = '<meta charset="UTF-8">'
+// Additional <head> element children.
+{--head?} = ''
+
+<!DOCTYPE html>
+{--lang=}<html>
+{--lang!}<html lang="{--lang}">
+<head>
+{--meta}
+<title>{--title}</title>
+
+{--head}
+</head>
+<body>''',
+  'sequel-footer.rmu': r'''/*
+  Used by rimuc `--layout sequel` option.
+*/
+
+// Close main and article divs.
+</div>
+</div>
+
+{--highlightjs=}.+skip
+{--highlightjs-scripts}
+
+{--mathjax!}{--mathjax-scripts}
+
+{--no-toc!}.+skip
+<script>
+window.onload = function() {
+  document.getElementById('sidebar').appendChild(document.getElementById('toc')); // Ensure custom TOC is child of sidebar.
+  var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
+  headings.forEach(function(heading) {
+{--header-links!}    setHeaderLink(heading);
+    appendTocEntry(heading);
+  });
+  if (isSmallScreen()) {
+    toggleToc();  // Hide TOC.
+  }
+}
+</script>
+
+{--header-links=}.+skip
+<script>
+function setHeaderLink(heading) {
+  var id = heading.getAttribute('id');
+  if (id) {
+    var link = document.createElement('a');
+    link.classList.add('header-link');
+    link.setAttribute('href', '#' + id);
+    heading.appendChild(link);
+  }
+}
+</script>
+
+{--no-toc!}.+skip
+<script>
+function appendTocEntry(heading) {
+  var id = heading.getAttribute('id');
+  if (heading.classList.contains('no-auto-toc')) {
+    return;
+  }
+  var container = document.getElementById('auto-toc');
+  if (container === null) {
+    return;
+  }
+  var tocLink = document.createElement('a');
+  tocLink.setAttribute('href', '#' + id);
+  tocLink.textContent = heading.textContent;
+  var tocEntry = document.createElement('div');
+  tocEntry.setAttribute('class', heading.tagName.toLowerCase());
+  tocEntry.appendChild(tocLink);
+  container.appendChild(tocEntry);
+}
+</script>
+
+{--no-toc!}.+skip
+<script>
+  document.onclick = function (event) {
+    if (event.target.matches('#toc-button') || event.target.matches('#toc a') && isSmallScreen()) {
+{--!} Toggle TOC if TOC button or small-screen TOC link is clicked.
+      toggleToc();
+    }
+  }
+  function toggleToc() {
+    document.body.classList.toggle('hide-toc');
+  }
+  function isSmallScreen() {
+    return window.matchMedia('{--small-screen}').matches;
+  }
+  // matches() polyfill for old browsers.
+  if (!Element.prototype.matches) {
+    var p = Element.prototype;
+    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+      p.matches = p.webkitMatchesSelector;
+    if (p.msMatchesSelector) // IE9/10/11 & Edge
+      p.matches = p.msMatchesSelector;
+    if (p.mozMatchesSelector) // FF<34
+      p.matches = p.mozMatchesSelector;
+  }
+</script>
+
+</body>
+</html>''',
   'sequel-header.rmu': r'''/*
   Used by rimuc `--layout sequel` option.
 */
@@ -2694,69 +2363,53 @@ hljs.highlightAll();
 
 <div id="main">
 <div id="article">''',
-  'plain-header.rmu': r'''/*
-  Used by rimuc `--layout plain` option.
+  'v8-footer.rmu': r'''/*
+  Used by rimuc `--layout v8` option.
+  DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
 */
 
-{--lang?} = ''
-{--title?} = 'Title'
-{--meta?} = '<meta charset="UTF-8">'
-// Additional <head> element children.
-{--head?} = ''
-
-<!DOCTYPE html>
-{--lang=}<html>
-{--lang!}<html lang="{--lang}">
-<head>
-{--meta}
-<title>{--title}</title>
-
-{--head}
-</head>
-<body>''',
-  'flex-footer.rmu': r'''/*
-  Used by rimuc.js --styled option.
-*/
-
-// Close article div.
+// Close contents div.
 </div>
 
-{--highlightjs=}.+skip
-{--highlightjs-scripts}
+{--highlightjs!}<script src="https://yandex.st/highlightjs/7.3/highlight.min.js"></script><script>hljs.initHighlightingOnLoad();</script>
 
-{--mathjax!}{--mathjax-scripts}
+{--mathjax!}<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
-.+skip
-{--no-toc=}.-skip
-{--header-links!}.-skip
 <script>
 window.onload = function() {
-{--no-toc=}  document.getElementsByTagName('body')[0].appendChild(document.getElementById('toc')); // Ensure custom TOC is child of body.
-  var headings = [].slice.call(document.body.querySelectorAll('#article > h1, #article > h2, #article > h3'));
-  headings.forEach(function(heading) {
-{--header-links!}    setHeaderLink(heading);
-{--no-toc=}    appendTocEntry(heading);
+  var headings = [].slice.call(document.body.querySelectorAll('#contents > h1, #contents > h2, #contents > h3'));
+  headings.forEach(function(heading, index) {
+    var title = heading.textContent;
+    var id = heading.getAttribute('id');
+    if (!id) {
+      id = slugify(title);
+      heading.setAttribute('id', id);
+    }
+    if (index === 0 && heading.tagName === 'H1') {
+      id = ''; // Go to top of page.
+    }
+{--sidebar-toc!}    appendTocEntry(heading, id);
+{--dropdown-toc!}    appendTocEntry(heading, id);
   });
 }
-</script>
-
-{--header-links=}.+skip
-<script>
-function setHeaderLink(heading) {
-  var id = heading.getAttribute('id');
-  if (id) {
-    var link = document.createElement('a');
-    link.classList.add('header-link');
-    link.setAttribute('href', '#' + id);
-    heading.appendChild(link);
+function slugify(text) {
+  var slug = text.replace(/\s+/g, '-') // Replace spaces with dashes.
+      .replace(/[^\w-]/g, '')          // Retain alphanumeric, '-' and '_' characters.
+      .toLowerCase()
+  if (!slug) slug = 'x';
+  if (document.getElementById(slug)) { // Another element already has that id.
+    var i = 2, prefix = slug;
+    while (document.getElementById(slug = prefix + '-' + i++)) {}
   }
+  return slug;
 }
 </script>
 
-{--no-toc!}.+skip
+.+skip
+{--sidebar-toc!}.-skip
+{--dropdown-toc!}.-skip
 <script>
-function appendTocEntry(heading) {
-  var id = heading.getAttribute('id');
+function appendTocEntry(heading, id) {
   if (heading.classList.contains('no-auto-toc')) {
     return;
   }
@@ -2772,24 +2425,371 @@ function appendTocEntry(heading) {
   tocEntry.appendChild(tocLink);
   container.appendChild(tocEntry);
 }
-// matches() polyfill for old browsers.
-if (!Element.prototype.matches) {
-  var p = Element.prototype;
-  if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-    p.matches = p.webkitMatchesSelector;
-  if (p.msMatchesSelector) // IE9/10/11 & Edge
-    p.matches = p.msMatchesSelector;
-  if (p.mozMatchesSelector) // FF<34
-    p.matches = p.mozMatchesSelector;
+</script>
+
+{--dropdown-toc=}.+skip
+<script>
+function toggleToc() {
+    document.getElementById("toc").classList.toggle('toc-visible');
 }
-document.onclick = function(event) {
-  if (event.target.matches('#toc-button *, #toc a')) {
-    // Toggle TOC if TOC button or TOC link is clicked.
-    document.getElementsByTagName('body')[0].classList.toggle('show-toc');
+window.onclick = function(event) {
+  if (!Element.prototype.matches) {
+    // matches() polyfill for old browsers.
+    var p = Element.prototype;
+    if (p.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+      p.matches = p.webkitMatchesSelector;
+    if (p.msMatchesSelector) // IE9/10/11 & Edge
+      p.matches = p.msMatchesSelector;
+    if (p.mozMatchesSelector) // FF<34
+      p.matches = p.mozMatchesSelector;
+  }
+  if (!event.target.matches('#toc-button, #toc, #toc :not(a)')) {
+    // Hide TOC if clicked outside TOC or on TOC link.
+    var toc = document.getElementById('toc');
+    if (toc.classList.contains('toc-visible')) {
+      toc.classList.remove('toc-visible');
+    }
   }
 }
 </script>
 
 </body>
 </html>''',
+  'v8-header.rmu': r'''/*
+  Used by rimuc `--layout v8` option.
+  DEPRECATED: This layout is no longer maintained, for Rimu version 8 compatibility.
+  Styled using Bootstrap.
+  Syntax highlighting with Highlight.js
+  Bootstrap and Highlight.js sourced from CDNs.
+*/
+
+// Set macro default values.
+{--highlightjs?} = ''
+{--mathjax?} = ''
+{--section-numbers?} = ''
+{--lang?} = ''
+{--title?} = '&nbsp;'
+{--custom-toc?} = ''
+{--theme?} = 'default'
+{--sidebar-toc?} = ''
+{--dropdown-toc?} = ''
+
+// DEPRECATED --toc: If --toc is non-blank make --sidebar-toc non-blank.
+{--toc?} = ''
+{--sidebar-toc} = '{--toc}{--sidebar-toc}'
+
+<!DOCTYPE HTML>
+<html lang="{--lang}">
+<head>
+{--!} Force IE into Standards mode.
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta charset="UTF-8">
+  <title>{--title}</title>
+  <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css">
+  <link rel="stylesheet" href="https://yandex.st/highlightjs/7.3/styles/default.min.css">
+
+<style>
+  /* Bootstrap tweaks. */
+  body {
+    margin: 1em;
+    max-width: 50em;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #527bbd;
+  }
+  h1 { font-size: 2.2em; }
+  h2 { font-size: 1.5em; }
+  h3 { font-size: 1.2em; }
+  h4 { font-size: 1.1em; }
+  h5 { font-size: 1.0em; }
+  h6 { font-size: 0.9em; }
+  h2, h3, h4, h5, h6 {
+    line-height: normal;
+    margin-top: 1.0em;
+    margin-bottom: 0.2em;
+  }
+  h2 {
+    margin-top: 1.5em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  }
+  a, a:hover {
+    color: #527bbd;
+  }
+  li, dd {
+    margin-bottom: 0.25em;
+  }
+  p, pre, li, dt, dd, blockquote p {
+    font-size: inherit;
+    line-height: 1.45;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  blockquote {
+    border: none;
+    border-left: 5px solid #eeeeee;
+    font-family: Georgia, serif;
+    font-style: italic;
+    width: 80%;
+    margin: 1.5em 0;
+    color: #383838;
+  }
+  .cite {
+    font-style: italic;
+    color:#777;
+    padding:5px 0;
+  }
+  .cite::before {
+    content: "\2014 \2009";
+  }
+  pre {
+    padding: 6px;
+    line-height: normal;
+  }
+  .light-background {
+    background-color: #f8f8f8;
+    border: none;
+  }
+  code {
+    color: inherit;
+    font-size: inherit;
+  }
+  *:not(pre) > code {
+    border: none;
+    background-color: #f8f8f8;
+  }
+  .dl-horizontal > dt {
+    text-align: left;
+    margin-top: 1.0em;
+  }
+  .dl-horizontal > dd {
+    margin-top: 1.0em;
+  }
+  /* highlight.js tweaks. */
+  pre > code {
+    background-color: inherit;
+    padding: 0;
+  }
+  pre span {
+    opacity: 1 !important;
+  }
+  /* Rimu styles. */
+{--!} Apply verse class to Normal Paragraphs and Division blocks.
+  .verse {
+    margin: 1.5em 20px;
+  }
+  div.verse p, p.verse {
+    font-family: Georgia, serif;
+    white-space:pre;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+  }
+{--!} Apply sidebar class to Normal Paragraphs and Division blocks.
+  .sidebar {
+    border: 1px solid silver;
+    border-radius:4px;
+    background: #ffffee;
+    padding: 10px;
+    margin: 1.5em 20px;
+  }
+  div.sidebar *:first-child {
+    margin-top: 0.2em;
+  }
+  /* List item counters and definition list numbering. */
+{--!} List item counters.
+  dl {
+    counter-reset: dl-counter;
+  }
+  dl > dt {
+    counter-increment: dl-counter;
+  }
+  ol {
+    counter-reset: ol-counter;
+  }
+  ol > li {
+    counter-increment: ol-counter;
+  }
+  ul {
+    counter-reset: ul-counter;
+  }
+  ul > li {
+    counter-increment: ul-counter;
+  }
+{--!} Prefix list counter to counter class element content.
+  .dl-counter:before {
+    content: counter(dl-counter) " ";
+  }
+  .ol-counter:before {
+    content: counter(ol-counter) " ";
+  }
+  .ul-counter:before {
+    content: counter(ul-counter) " ";
+  }
+{--!} Number labeled list items.
+  .dl-numbered > dt:before {
+    content: counter(dl-counter) ". ";
+  }
+{--!} Force page break before the element.
+  .page-break {
+    page-break-before: always;
+  }
+{--!} Avoid page breaks inside the element.
+  .no-page-break {
+    page-break-inside: avoid;
+  }
+{--!} Text block alignment classes.
+  .align-left {
+    text-align: left;
+  }
+  .align-center {
+    text-align: center;
+  }
+  .align-right {
+    text-align: right;
+  }
+{--!} Do not wrap line breaks.
+  .line-breaks {
+    white-space:pre;
+  }
+</style>
+
+{--section-numbers=}.+skip
+<style>
+  /* Section numbers. */
+  body,h1 { counter-reset: h2-counter; }
+  h2      { counter-reset: h3-counter; }
+  #contents > h2:before {
+    content: counter(h2-counter) ". ";
+    counter-increment: h2-counter;
+  }
+  #contents > h3:before {
+    content: counter(h2-counter) "." counter(h3-counter) ". ";
+    counter-increment: h3-counter;
+  }
+</style>
+
+{--sidebar-toc=}.+skip
+<style>
+  body {
+    padding-left: 21em;
+  }
+  #toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 18em;
+    border-right: 1px solid #cccccc;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.35);
+  }
+</style>
+
+{--dropdown-toc=}.+skip
+<style>
+  .toc-visible {
+    display: block !important;
+  }
+  #toc-button {
+    position: fixed;
+    top: 22px;
+    left: 15px;
+    z-index: 1;
+    cursor: pointer;
+    color: silver;
+    font-size:3.2em;
+  }
+  #toc {
+    display: none;
+    position: fixed;
+    top: 55px;
+    left: 15px;
+    right: 10%;
+    z-index: 1;
+    max-width: 30em;
+    max-height: 80%;
+    overflow-y: auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
+  }
+  #contents {
+    margin-left: 40px;
+  }
+</style>
+
+// Common to --sidebar-toc and --dropdown-toc.
+.+skip
+{--sidebar-toc!}.-skip
+{--dropdown-toc!}.-skip
+<style>
+  @media print {
+    .no-print, .no-print * {
+      display: none !important;
+    }
+    body {
+      padding-left: 1em;
+    }
+  }
+  #toc {
+    padding-left: 1em;
+  }
+  #toc .h1 {
+    font-size: 110%;
+    font-weight: bold;
+    margin-top: 0.5em;
+    margin-bottom: 0.4em;
+  }
+  #toc .h2 {
+    margin-top: 0.4em;
+  }
+  #toc .h3 {
+    margin-left: 1.5em;
+    font-size: 90%;
+  }
+  #toc div:nth-child(even) {
+    background-color: #f8f8f8;
+  }
+</style>
+
+{--theme!.*\bgraystone\b.*}.+skip
+<style>
+  body {
+    font-size: 13pt;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #888;
+  }
+  h1, h2 {
+    text-transform: uppercase;
+  }
+  a, a:hover {
+    color: #888;
+    text-decoration: underline;
+  }
+  @media print {
+    a {
+      text-decoration: none;
+    }
+  }
+</style>
+
+</head>
+<body>
+
+// Include dropdown TOC button unless a custom TOC is specified.
+{--dropdown-toc=}.+skip
+{--custom-toc!}.+skip
+<div id="toc-button" onclick="toggleToc()" class="no-print">&#8801;</div>
+
+// Include for sidebar and dropdown TOC unless a custom TOC is specified.
+.+skip
+{--sidebar-toc!}.-skip
+{--dropdown-toc!}.-skip
+{--custom-toc!}.+skip
+<div id="toc" class="no-print">
+  <div id="auto-toc"></div>
+</div>
+
+<div id="contents">''',
 };
