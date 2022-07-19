@@ -107,7 +107,7 @@ void main() {
           args = '--layout $layout $args';
         }
         var result = execRimuc(args: args, input: spec.input);
-        var output = '${result.stdout}${result.stderr}';
+        var output = '${result.stderr}${result.stdout}';
         expect(result.exitCode, spec.exitCode);
         switch (spec.predicate) {
           case 'equals':

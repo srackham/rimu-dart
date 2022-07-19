@@ -39,8 +39,8 @@ class Reader {
   // Read to the first line matching the re.
   // Return the array of lines preceding the match plus a line containing
   // the $1 match group (if it exists).
-  // Return null if an EOF is encountered.
-  // Exit with the reader pointing to the line following the match.
+  // If an EOF is encountered return all lines.
+  // Exit with the reader pointing to the line containing the matched line.
   List<String> readTo(RegExp regexp) {
     var result = <String>[];
     RegExpMatch match;
@@ -50,18 +50,12 @@ class Reader {
         if (match.groupCount > 0) {
           result.add(match[1]); // $1
         }
-        next();
         break;
       }
       result.add(cursor);
       next();
     }
-    // Blank line matches EOF.
-    if (match != null || (regexp.pattern == r'^$' && eof())) {
-      return result;
-    } else {
-      return null;
-    }
+    return result;
   }
 
   void skipBlankLines() {

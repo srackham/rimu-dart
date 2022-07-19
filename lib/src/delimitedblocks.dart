@@ -1,10 +1,10 @@
 import 'api.dart' as api;
 import 'blockattributes.dart' as blockattributes;
 import 'expansion.dart' show ExpansionOptions;
-import 'utils.dart' as utils;
-import 'options.dart' as options;
 import 'io.dart' as io;
 import 'macros.dart' as macros;
+import 'options.dart' as options;
+import 'utils.dart' as utils;
 
 final MATCH_INLINE_TAG = RegExp(
     r'^(a|abbr|acronym|address|b|bdi|bdo|big|blockquote|br|cite|code|del|dfn|em|i|img|ins|kbd|mark|q|s|samp|small|span|strike|strong|sub|sup|time|tt|u|var|wbr)$',
@@ -19,7 +19,7 @@ typedef ContentFilter = String Function(
 
 // Multi-line block element definition.
 class Def {
-  String name; // Optional unique identifier.
+  String name; // Unique identifier.
   RegExp openMatch;
   RegExp closeMatch; // $1 (if defined) is appended to block content.
   String openTag;
@@ -61,6 +61,7 @@ final List<Def> DEFAULT_DEFS = [
 
   // Multi-line macro literal value definition.
   Def(
+    name: 'macro-definition',
     openMatch: macros.DEF_OPEN, // $1 is first line of macro.
     closeMatch: macros.DEF_CLOSE,
     openTag: '',
@@ -94,7 +95,7 @@ final List<Def> DEFAULT_DEFS = [
   Def(
       name: 'quote',
       openMatch: RegExp(
-          r'^\\?("{2,})([\w\s-]*)$'), // $1 is delimiter text, $2 is optional class names.
+          r'^\\?("{2,}|>{2,})([\w\s-]*)$'), // $1 is delimiter text, $2 is optional class names.
       openTag: '<blockquote>',
       closeTag: '</blockquote>',
       expansionOptions: ExpansionOptions(
@@ -123,7 +124,7 @@ final List<Def> DEFAULT_DEFS = [
     openMatch: RegExp(
         r'^(<!--.*|<!DOCTYPE(?:\s.*)?|<\/?([a-z][a-z0-9]*)(?:[\s>].*)?)$',
         caseSensitive: false),
-    closeMatch: RegExp(r'^$'), // Blank line or EOF.
+    closeMatch: RegExp(r'^$'),
     openTag: '',
     closeTag: '',
     expansionOptions: ExpansionOptions(macros: true),
@@ -144,7 +145,7 @@ final List<Def> DEFAULT_DEFS = [
   Def(
       name: 'indented',
       openMatch: RegExp(r'^\\?(\s+\S.*)$'), // $1 is first line of block.
-      closeMatch: RegExp(r'^$'), // Blank line or EOF.
+      closeMatch: RegExp(r'^$'),
       openTag: '<pre><code>',
       closeTag: '</code></pre>',
       expansionOptions: ExpansionOptions(macros: false, specials: true),
@@ -165,7 +166,7 @@ final List<Def> DEFAULT_DEFS = [
   Def(
       name: 'quote-paragraph',
       openMatch: RegExp(r'^\\?(>.*)$'), // $1 is first line of block.
-      closeMatch: RegExp(r'^$'), // Blank line or EOF.
+      closeMatch: RegExp(r'^$'),
       openTag: '<blockquote><p>',
       closeTag: '</p></blockquote>',
       expansionOptions: ExpansionOptions(
@@ -187,7 +188,7 @@ final List<Def> DEFAULT_DEFS = [
   Def(
       name: 'paragraph',
       openMatch: RegExp(r'(.*)'), // $1 is first line of block.
-      closeMatch: RegExp(r'^$'), // Blank line or EOF.
+      closeMatch: RegExp(r'^$'),
       openTag: '<p>',
       closeTag: '</p>',
       expansionOptions: ExpansionOptions(
@@ -237,11 +238,14 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
     // Read content up to the closing delimiter.
     reader.next();
     var content = reader.readTo(def.closeMatch ?? def.openMatch);
-    if (content == null) {
-      options.errorCallback('unterminated delimited block: ' + match[0]);
-    } else {
-      lines.addAll(content);
+    if (reader.eof() &&
+        ["code", "comment", "division", "quote"].contains(def.name)) {
+      options.errorCallback(
+        "unterminated ${def.name} block: ${match[0]}",
+      );
     }
+    reader.next(); // Skip closing delimiter.
+    lines.addAll(content);
     // Calculate block expansion options.
     var expansionOptions = ExpansionOptions.from(def.expansionOptions);
     expansionOptions.merge(blockattributes.options);

@@ -33,9 +33,12 @@ void main() {
     expect(lines.length, 1);
     expect(lines[0], 'Hello');
     expect(reader.eof(), false);
+    reader.next();
     lines = reader.readTo(RegExp(r'^<(.*)>$'));
     expect(lines.length, 3);
     expect(lines[2], ' Goodbye ');
+    expect(reader.eof(), false);
+    reader.next();
     expect(reader.eof(), true);
 
     reader = Reader('\n\nHello\nWorld!');
