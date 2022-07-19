@@ -1,9 +1,9 @@
 import 'dart:io';
+
 import 'package:rimu/src/rimuc.dart';
 
 /*
   Command-lne app to convert Rimu source to HTML.
-  Run 'node rimu.js --help' for details.
 */
 
 // Main wrapper to handle execeptions and set system exit code.
