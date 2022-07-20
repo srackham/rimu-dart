@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:rimu/rimu.dart';
-import 'package:rimu/src/options.dart';
 import 'package:test/test.dart';
 
 // Helpers.
