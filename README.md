@@ -3,15 +3,11 @@ language.
 
 
 ## Features
-Functionally identical to the [JavaScript
-implementation](https://github.com/srackham/rimu) version 11.1 with the
-following exceptions:
-
-- Does not support deprecated _Expression macro values_.
-- Does not support deprecated _Imported Layouts_.
+Functionally identical to the [TypeScript
+implementation](https://github.com/srackham/rimu) version 11.4.x.
 
 
-## Usage
+## Using the Rimu package
 Example usage:
 
 ``` dart
@@ -22,17 +18,19 @@ main(List<String> arguments) {
 }
 ```
 
-See also Rimu
-[API documentation](https://srackham.github.io/rimu/reference.html#api).
+See also Rimu [API documentation](https://srackham.github.io/rimu/reference.html#api).
 
 
 ## CLI command
-The [Rimu CLI command](https://srackham.github.io/rimu/reference.html#rimuc-command) is `rimuc.dart`.
+The Dart port of the [Rimu CLI
+command](https://srackham.github.io/rimu/reference.html#rimuc-command) can be
+run as a script, for example:
 
-Run it using the Dart `dart pub` command e.g.
+    dart ./bin/rimuc.dart --version
 
-    dart pub global activate rimu
-    echo 'Hello *Rimu*!' | dart pub global run rimu:rimuc
+Or compiled to a native executable, for example:
+
+    dart compile exe ./bin/rimuc.dart -o ~/local/bin/rimudart
 
 
 ## Building
