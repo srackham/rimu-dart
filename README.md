@@ -8,6 +8,7 @@ implementation](https://github.com/srackham/rimu) version 11.4.x.
 
 
 ## Using the Rimu package
+The Rimu Dart package is hosted at [pub.dev](https://pub.dev/packages/rimu).
 Example usage:
 
 ``` dart
