@@ -8,8 +8,8 @@ import 'options.dart' as options;
 ///  The single public API which translates Rimu Markup to HTML.
 String render(String source, [options.RenderOptions? opts]) {
   opts ??= options.RenderOptions();
-  // Implicit first-call API initialisation.
-  if (options.safeMode == null) {
+  // Lazy first-call API initialisation.
+  if (options.safeMode == options.UNDEFINED) {
     api.init();
   }
   options.updateFrom(opts);

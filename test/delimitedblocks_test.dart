@@ -8,9 +8,9 @@ import 'package:rimu/src/replacements.dart' as replacements;
 void main() {
   test('getDefinition', () {
     init();
-    var def = getDefinition('paragraph')!;
+    Def? def = getDefinition('paragraph')!;
     expect(def.openTag, '<p>');
-    def = getDefinition('foo')!;
+    def = getDefinition('foo');
     expect(def, null);
   });
 

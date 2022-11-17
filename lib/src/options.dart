@@ -20,8 +20,11 @@ class CallbackMessage {
 
 typedef CallbackFunction = Function(CallbackMessage);
 
+// safeMode Sentinel to flag document initialization because Dart has no implicit package initialization like Go's init() function.
+const UNDEFINED = -1;
+
 // Global option values.
-int safeMode = 0;
+int safeMode = UNDEFINED;
 String htmlReplacement = '';
 CallbackFunction? callback;
 

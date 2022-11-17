@@ -65,7 +65,7 @@ void setValue(String? name, String? value) {
 }
 
 // Render macro invocations in text string.
-// Render Simple invocations first, followed by Parametized, Inclusion and Exclusion invocations.
+// Render Simple invocations first, followed by Parameterized, Inclusion and Exclusion invocations.
 String? render(String? text, {bool silent = false}) {
   final MATCH_COMPLEX = RegExp(r'\\?{([\w\-]+)([!=|?](?:|.*?[^\\]))}',
       dotAll: true); // Parametrized, Inclusion and Exclusion invocations.
@@ -141,7 +141,6 @@ String? render(String? text, {bool silent = false}) {
             return param;
           });
           return value;
-          break;
         case '!': // Exclusion macro.
         case '=': // Inclusion macro.
           var pattern = params.substring(1);
@@ -167,8 +166,10 @@ String? render(String? text, {bool silent = false}) {
   });
   // Delete lines flagged by Inclusion/Exclusion macros.
   if (result!.contains('\u0002')) {
-    result =
-        result!.split('\n').where((line) => !line.contains('\u0002')).join('\n');
+    result = result!
+        .split('\n')
+        .where((line) => !line.contains('\u0002'))
+        .join('\n');
   }
   return result;
 }
