@@ -1,5 +1,5 @@
 name: rimu
-version: 11.4.0
+version: 11.4.1
 
 description: Rimu is a readable-text to HTML markup language inspired by AsciiDoc and Markdown.
 homepage: https://srackham.github.io/rimu/
