@@ -1,4 +1,4 @@
-import 'api.dart' as api;
+import 'document.dart' as document;
 import 'utils.dart' as utils;
 
 class RenderOptions {
@@ -84,7 +84,7 @@ void setOption(String? name, var value) {
       if (value == null || value == false || value == 'false') {
         return;
       } else if (value == true || value == 'true') {
-        api.init();
+        document.init();
       } else {
         errorCallback('illegal reset API option value: ' + value);
       }

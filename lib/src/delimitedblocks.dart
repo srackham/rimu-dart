@@ -1,10 +1,11 @@
-import 'api.dart' as api;
+import 'package:collection/collection.dart' show IterableExtension;
+
 import 'blockattributes.dart' as blockattributes;
+import 'document.dart' as document;
 import 'expansion.dart' show ExpansionOptions;
 import 'io.dart' as io;
 import 'macros.dart' as macros;
 import 'options.dart' as options;
-import 'package:collection/collection.dart' show IterableExtension;
 import 'utils.dart' as utils;
 
 final MATCH_INLINE_TAG = RegExp(
@@ -264,7 +265,7 @@ bool render(io.Reader reader, io.Writer writer, [List<String>? allowed]) {
       }
       if (expansionOptions.container ?? false) {
         blockattributes.options.container = null; // Consume before recursion.
-        text = api.render(text);
+        text = document.render(text);
       } else {
         text = utils.replaceInline(text, expansionOptions);
       }

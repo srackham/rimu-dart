@@ -1,7 +1,7 @@
-import 'package:test/test.dart';
-import 'package:rimu/src/lineblocks.dart';
+import 'package:rimu/src/document.dart' as document;
 import 'package:rimu/src/io.dart' as io;
-import 'package:rimu/src/api.dart' as api;
+import 'package:rimu/src/lineblocks.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('render', () {
@@ -17,7 +17,7 @@ void main() {
       r"/\.{3}/i = '&hellip;'": r'',
       r"{foo}='bar'": r'',
     };
-    api.init();
+    document.init();
     tests.forEach((k, v) {
       var reader = io.Reader(k);
       var writer = io.Writer();

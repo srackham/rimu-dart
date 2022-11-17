@@ -1,11 +1,11 @@
-import 'package:test/test.dart';
-import 'package:rimu/src/lists.dart';
-import 'package:rimu/src/api.dart' as api;
+import 'package:rimu/src/document.dart' as document;
 import 'package:rimu/src/io.dart' as io;
+import 'package:rimu/src/lists.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('render', () {
-    api.init();
+    document.init();
 
     var input = '- Item 1';
     var reader = io.Reader(input);
