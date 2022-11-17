@@ -8,16 +8,16 @@ import 'package:rimu/src/replacements.dart' as replacements;
 void main() {
   test('getDefinition', () {
     init();
-    var def = getDefinition('paragraph');
+    var def = getDefinition('paragraph')!;
     expect(def.openTag, '<p>');
-    def = getDefinition('foo');
+    def = getDefinition('foo')!;
     expect(def, null);
   });
 
   test('setDefinition', () {
     init();
     setDefinition('indented', '<foo>|</foo>');
-    var def = getDefinition('indented');
+    var def = getDefinition('indented')!;
     expect(def.openTag, '<foo>');
     expect(def.closeTag, '</foo>');
   });

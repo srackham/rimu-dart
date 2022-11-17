@@ -11,9 +11,9 @@ import 'resources.dart';
 */
 
 const VERSION = '11.4.0';
-final String HOME_DIR =
+final String? HOME_DIR =
     Platform.environment[Platform.isWindows ? 'UserProfile' : 'HOME'];
-final String RIMURC = path.join(HOME_DIR, '.rimurc');
+final String RIMURC = path.join(HOME_DIR!, '.rimurc');
 
 // Helpers.
 void die([String message = '']) {
@@ -23,7 +23,7 @@ void die([String message = '']) {
   throw message;
 }
 
-String readResource(String name) {
+String? readResource(String name) {
   if (!resources.containsKey(name)) {
     die('missing resource: $name');
   }
@@ -32,7 +32,7 @@ String readResource(String name) {
 
 // Read all from stdin.
 // See https://stackoverflow.com/a/29024240
-String readInputSync({Encoding encoding = systemEncoding}) {
+String? readInputSync({Encoding encoding = systemEncoding}) {
   final input = <int>[];
   while (true) {
     var byte = stdin.readByteSync();
@@ -56,7 +56,7 @@ void rimuc(List<String> args, {bool testing = false}) {
 
   // Command option values.
   var safe_mode = 0;
-  String html_replacement;
+  String? html_replacement;
   var layout = '';
   var no_rimurc = false;
   var prepend_files = <String>[];
@@ -79,7 +79,7 @@ void rimuc(List<String> args, {bool testing = false}) {
     switch (arg) {
       case '--help':
       case '-h':
-        print('\n' + readResource('manpage.txt'));
+        print('\n' + readResource('manpage.txt')!);
         return;
       case '--version':
         print(VERSION);
@@ -186,7 +186,7 @@ void rimuc(List<String> args, {bool testing = false}) {
     options.htmlReplacement = html_replacement;
   }
   for (var infile in files) {
-    var source = '';
+    String? source = '';
     options.safeMode = safe_mode;
     if (infile.startsWith(RESOURCE_TAG)) {
       infile = infile.substring(RESOURCE_TAG.length);
@@ -225,9 +225,9 @@ void rimuc(List<String> args, {bool testing = false}) {
           errors += 1;
         }
       };
-      source = render(source, options);
+      source = render(source!, options);
     }
-    source = source.trim();
+    source = source!.trim();
     if (source != '') {
       output += source + '\n';
     }

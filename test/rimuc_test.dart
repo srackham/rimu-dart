@@ -7,14 +7,14 @@ import 'package:test/test.dart';
 // Helpers.
 
 class TestSpec {
-  String unsupported;
-  String description;
-  String args;
-  String input;
-  String expectedOutput;
-  int exitCode;
-  String predicate;
-  bool layouts;
+  late String unsupported;
+  String? description;
+  String? args;
+  String? input;
+  String? expectedOutput;
+  int? exitCode;
+  String? predicate;
+  late bool layouts;
 
   TestSpec.fromJson(dynamic decoded) {
     unsupported = decoded['unsupported'] ?? '';
@@ -101,12 +101,12 @@ void main() {
             spec.layouts && layout.isEmpty) {
           continue;
         }
-        var args = spec.args.replaceAll('./examples/example-rimurc.rmu',
+        var args = spec.args!.replaceAll('./examples/example-rimurc.rmu',
             './test/fixtures/example-rimurc.rmu');
         if (layout.isNotEmpty) {
           args = '--layout $layout $args';
         }
-        var result = execRimuc(args: args, input: spec.input);
+        var result = execRimuc(args: args, input: spec.input!);
         var output = '${result.stderr}${result.stdout}';
         expect(result.exitCode, spec.exitCode);
         switch (spec.predicate) {
@@ -117,16 +117,16 @@ void main() {
             expect(output, isNot(spec.expectedOutput));
             break;
           case 'contains':
-            expect(output.contains(spec.expectedOutput), isTrue);
+            expect(output.contains(spec.expectedOutput!), isTrue);
             break;
           case '!contains':
-            expect(!output.contains(spec.expectedOutput), isTrue);
+            expect(!output.contains(spec.expectedOutput!), isTrue);
             break;
           case 'startsWith':
-            expect(output.startsWith(spec.expectedOutput), isTrue);
+            expect(output.startsWith(spec.expectedOutput!), isTrue);
             break;
           default:
-            throw (spec.description + ': illegal predicate: ' + spec.predicate);
+            throw (spec.description! + ': illegal predicate: ' + spec.predicate!);
         }
       }
     }

@@ -6,20 +6,20 @@ import 'package:test/test.dart';
 // Helpers.
 
 class RimuTestOptions {
-  bool reset;
-  int safeMode;
-  String htmlReplacement;
+  bool? reset;
+  int? safeMode;
+  String? htmlReplacement;
 
   RimuTestOptions({this.reset, this.safeMode, this.htmlReplacement});
 }
 
 class TestSpec {
-  String unsupported;
-  String description;
-  String input;
-  String expectedOutput;
-  String expectedCallback;
-  RimuTestOptions options;
+  late String unsupported;
+  String? description;
+  String? input;
+  String? expectedOutput;
+  String? expectedCallback;
+  late RimuTestOptions options;
 
   TestSpec.fromJson(dynamic decoded) {
     unsupported = decoded['unsupported'] ?? '';
@@ -59,7 +59,7 @@ void main() {
       renderOptions.htmlReplacement = spec.options.htmlReplacement;
       renderOptions.reset = spec.options.reset;
       var msg = ''; // Captured callback message.
-      if (spec.expectedCallback.isNotEmpty || unsupported) {
+      if (spec.expectedCallback!.isNotEmpty || unsupported) {
         renderOptions.callback = (message) {
           msg += '${message.type}: ${message.text}\n';
         };
@@ -67,7 +67,7 @@ void main() {
         renderOptions.callback =
             catchLint; // Callback should not occur, this will throw an error.
       }
-      var result = render(spec.input, renderOptions);
+      var result = render(spec.input!, renderOptions);
       expect(result, spec.expectedOutput);
       if (spec.expectedCallback != null) {
         expect(msg.trim(), spec.expectedCallback);

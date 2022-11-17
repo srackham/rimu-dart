@@ -14,28 +14,28 @@ String replaceSpecialChars(String s) {
 // from `match`. If pattern starts with one '$' character add specials to `expansionOptions`,
 // if it starts with two '$' characters add spans to `expansionOptions`.
 String replaceMatch(Match match, String replacement,
-    [ExpansionOptions expansionOptions]) {
+    [ExpansionOptions? expansionOptions]) {
   expansionOptions ??= ExpansionOptions();
 
   return replacement.replaceAllMapped(RegExp(r'(\${1,2})(\d)'), (mr) {
     // Replace $1, $2 ... with corresponding match groups.
     if (mr[1] == r'$$') {
-      expansionOptions.spans = true;
+      expansionOptions!.spans = true;
     } else {
-      expansionOptions.specials = true;
+      expansionOptions!.specials = true;
     }
-    var i = int.parse(mr[2]); // match group number.
+    var i = int.parse(mr[2]!); // match group number.
     if (i > match.groupCount) {
-      options.errorCallback('undefined replacement group: ' + mr[0]);
+      options.errorCallback('undefined replacement group: ' + mr[0]!);
       return '';
     }
     var result = match[i]; // match group text.
-    return replaceInline(result, expansionOptions);
+    return replaceInline(result, expansionOptions)!;
   });
 }
 
 // Replace the inline elements specified in options in text and return the result.
-String replaceInline(String text, ExpansionOptions expansionOptions) {
+String? replaceInline(String? text, ExpansionOptions expansionOptions) {
   var result = text;
   if (expansionOptions.macros ?? false) {
     result = macros.render(result);
@@ -44,7 +44,7 @@ String replaceInline(String text, ExpansionOptions expansionOptions) {
   if (expansionOptions.spans ?? false) {
     result = spans.render(result);
   } else if (expansionOptions.specials ?? false) {
-    result = replaceSpecialChars(result);
+    result = replaceSpecialChars(result!);
   }
   return result;
 }

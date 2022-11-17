@@ -7,13 +7,13 @@ import 'options.dart' as options;
 import 'utils.dart' as utils;
 
 class Def {
-  RegExp match;
-  String listOpenTag;
-  String listCloseTag;
-  String itemOpenTag;
-  String itemCloseTag;
-  String termOpenTag; // Definition lists only.
-  String termCloseTag; // Definition lists only.
+  RegExp? match;
+  String? listOpenTag;
+  String? listCloseTag;
+  String? itemOpenTag;
+  String? itemCloseTag;
+  String? termOpenTag; // Definition lists only.
+  String? termCloseTag; // Definition lists only.
 
   Def(
       {this.match,
@@ -27,9 +27,9 @@ class Def {
 
 // Information about a matched list item element.
 class ItemInfo {
-  RegExpMatch match;
-  Def def;
-  String id; // List ID.
+  late RegExpMatch match;
+  late Def def;
+  String? id; // List ID.
 }
 
 final List<Def> defs = [
@@ -63,13 +63,13 @@ final List<Def> defs = [
       termCloseTag: '</dt>'),
 ];
 
-List<String> ids = []; // Stack of open list IDs.
+List<String?> ids = []; // Stack of open list IDs.
 
 bool render(io.Reader reader, io.Writer writer) {
   if (reader.eof()) {
     options.panic('premature eof');
   }
-  ItemInfo startItem;
+  ItemInfo? startItem;
   startItem = matchItem(reader);
   if (startItem == null) {
     return false;
@@ -83,10 +83,10 @@ bool render(io.Reader reader, io.Writer writer) {
   return true;
 }
 
-ItemInfo renderList(ItemInfo item, io.Reader reader, io.Writer writer) {
+ItemInfo? renderList(ItemInfo item, io.Reader reader, io.Writer writer) {
   ids.add(item.id);
-  writer.write(blockattributes.injectHtmlAttributes(item.def.listOpenTag));
-  ItemInfo nextItem;
+  writer.write(blockattributes.injectHtmlAttributes(item.def.listOpenTag!));
+  ItemInfo? nextItem;
   while (true) {
     nextItem = renderListItem(item, reader, writer);
     if (nextItem == null || nextItem.id != item.id) {
@@ -100,31 +100,31 @@ ItemInfo renderList(ItemInfo item, io.Reader reader, io.Writer writer) {
 }
 
 // Render the current list item, return the next list item or null if there are no more items.
-ItemInfo renderListItem(ItemInfo item, io.Reader reader, io.Writer writer) {
+ItemInfo? renderListItem(ItemInfo item, io.Reader reader, io.Writer writer) {
   var def = item.def;
   var match = item.match;
-  String text;
+  String? text;
   if (match.groupCount == 3) {
     // 3 match groups => definition list.
     writer.write(
-        blockattributes.injectHtmlAttributes(def.termOpenTag, consume: false));
+        blockattributes.injectHtmlAttributes(def.termOpenTag!, consume: false));
     blockattributes.id = '';
     text = utils.replaceInline(
         match[1], ExpansionOptions(macros: true, spans: true));
     writer.write(text);
     writer.write(def.termCloseTag);
   }
-  writer.write(blockattributes.injectHtmlAttributes(def.itemOpenTag));
+  writer.write(blockattributes.injectHtmlAttributes(def.itemOpenTag!));
   // Process item text from first line.
   var itemLines = io.Writer();
   text = match[match.groupCount];
-  itemLines.write(text + '\n');
+  itemLines.write(text! + '\n');
   // Process remainder of list item i.e. item text, optional attached block, optional child list.
   reader.next();
   var attachedLines = io.Writer();
   int blankLines;
   var attachedDone = false;
-  ItemInfo nextItem;
+  ItemInfo? nextItem;
   while (true) {
     blankLines = consumeBlockAttributes(reader, attachedLines);
     if (blankLines >= 2 || blankLines == -1) {
@@ -199,7 +199,7 @@ int consumeBlockAttributes(io.Reader reader, io.Writer writer) {
 // Check if the line at the reader cursor matches a list related element.
 // Unescape escaped list items in reader.
 // If it does not match a list related element return null.
-ItemInfo matchItem(io.Reader reader) {
+ItemInfo? matchItem(io.Reader reader) {
   // Check if the line matches a List definition.
   if (reader.eof()) {
     return null;
@@ -207,9 +207,9 @@ ItemInfo matchItem(io.Reader reader) {
   var item = ItemInfo(); // ItemInfo factory.
   // Check if the line matches a list item.
   for (var def in defs) {
-    var match = def.match.firstMatch(reader.cursor);
+    var match = def.match!.firstMatch(reader.cursor);
     if (match != null) {
-      if (match[0][0] == r'\') {
+      if (match[0]![0] == r'\') {
         reader.cursor = reader.cursor.substring(1); // Drop backslash.
         return null;
       }

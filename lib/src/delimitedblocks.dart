@@ -4,6 +4,7 @@ import 'expansion.dart' show ExpansionOptions;
 import 'io.dart' as io;
 import 'macros.dart' as macros;
 import 'options.dart' as options;
+import 'package:collection/collection.dart' show IterableExtension;
 import 'utils.dart' as utils;
 
 final MATCH_INLINE_TAG = RegExp(
@@ -12,23 +13,23 @@ final MATCH_INLINE_TAG = RegExp(
 
 typedef Verify = bool Function(
     RegExpMatch match); // Additional match verification checks.
-typedef DelimiterFilter = String Function(RegExpMatch match,
+typedef DelimiterFilter = String? Function(RegExpMatch match,
     Def def); // Process opening delimiter. Return any delimiter content.
-typedef ContentFilter = String Function(
-    String text, RegExpMatch match, ExpansionOptions expansionOptions);
+typedef ContentFilter = String? Function(
+    String? text, RegExpMatch match, ExpansionOptions expansionOptions);
 
 // Multi-line block element definition.
 class Def {
-  String name; // Unique identifier.
-  RegExp openMatch;
-  RegExp closeMatch; // $1 (if defined) is appended to block content.
-  String openTag;
-  String closeTag;
-  Verify verify; // Additional match verification checks.
-  DelimiterFilter
+  String? name; // Unique identifier.
+  RegExp? openMatch;
+  RegExp? closeMatch; // $1 (if defined) is appended to block content.
+  String? openTag;
+  String? closeTag;
+  Verify? verify; // Additional match verification checks.
+  DelimiterFilter?
       delimiterFilter; // Process opening delimiter. Return any delimiter content.
-  ContentFilter contentFilter;
-  ExpansionOptions expansionOptions;
+  ContentFilter? contentFilter;
+  ExpansionOptions? expansionOptions;
 
   Def(
       {this.name,
@@ -54,7 +55,7 @@ class Def {
   }
 }
 
-List<Def> defs; // Mutable definitions initialized by DEFAULT_DEFS.
+late List<Def> defs; // Mutable definitions initialized by DEFAULT_DEFS.
 
 final List<Def> DEFAULT_DEFS = [
   // Delimited blocks cannot be escaped with a backslash.
@@ -112,7 +113,7 @@ final List<Def> DEFAULT_DEFS = [
       expansionOptions: ExpansionOptions(macros: false, specials: true),
       verify: (match) {
         // The deprecated '-' delimiter does not support appended class names.
-        return !(match[1][0] == '-' && match[2].trim() != '');
+        return !(match[1]![0] == '-' && match[2]!.trim() != '');
       },
       delimiterFilter: classInjectionFilter),
   // HTML block.
@@ -132,7 +133,7 @@ final List<Def> DEFAULT_DEFS = [
       // Return false if the HTML tag is an inline (non-block) HTML tag.
       if (match[2]?.isNotEmpty ?? false) {
         // Matched alphanumeric tag name.
-        return !MATCH_INLINE_TAG.hasMatch(match[2]);
+        return !MATCH_INLINE_TAG.hasMatch(match[2]!);
       } else {
         return true; // Matched HTML comment or doctype tag.
       }
@@ -206,7 +207,7 @@ void init() {
 
 // If the next element in the reader is a valid delimited block render it
 // and return true, else return false.
-bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
+bool render(io.Reader reader, io.Writer writer, [List<String>? allowed]) {
   if (reader.eof()) {
     options.panic('premature eof');
   }
@@ -214,24 +215,24 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
     if (allowed != null && !allowed.contains(def.name)) {
       continue;
     }
-    var match = def.openMatch.firstMatch(reader.cursor);
+    var match = def.openMatch!.firstMatch(reader.cursor);
     if (match == null) {
       continue;
     }
     // Escape non-paragraphs.
-    if (match[0][0] == '\\' && def.name != 'paragraph') {
+    if (match[0]![0] == '\\' && def.name != 'paragraph') {
       // Drop backslash escape and continue.
       reader.cursor = reader.cursor.substring(1);
       continue;
     }
-    if (def.verify != null && !def.verify(match)) {
+    if (def.verify != null && !def.verify!(match)) {
       continue;
     }
     // Process opening delimiter.
     var delimiterText =
-        (def.delimiterFilter != null) ? def.delimiterFilter(match, def) : '';
+        (def.delimiterFilter != null) ? def.delimiterFilter!(match, def)! : '';
     // Read block content into lines.
-    var lines = <String>[];
+    var lines = <String?>[];
     if (delimiterText.isNotEmpty) {
       lines.add(delimiterText);
     }
@@ -251,19 +252,19 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
     expansionOptions.merge(blockattributes.options);
     // Translate block.
     if (!(expansionOptions.skip ?? false)) {
-      var text = lines.join('\n');
+      String? text = lines.join('\n');
       if (def.contentFilter != null) {
-        text = def.contentFilter(text, match, expansionOptions);
+        text = def.contentFilter!(text, match, expansionOptions);
       }
       var opentag = def.openTag;
       if (def.name == 'html') {
-        text = blockattributes.injectHtmlAttributes(text);
+        text = blockattributes.injectHtmlAttributes(text!);
       } else {
-        opentag = blockattributes.injectHtmlAttributes(opentag);
+        opentag = blockattributes.injectHtmlAttributes(opentag!);
       }
       if (expansionOptions.container ?? false) {
-        blockattributes.options.container = null; // Consume before recursion.
-        text = api.render(text);
+        blockattributes.options!.container = null; // Consume before recursion.
+        text = api.render(text!);
       } else {
         text = utils.replaceInline(text, expansionOptions);
       }
@@ -276,7 +277,7 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
       writer.write(opentag);
       writer.write(text);
       writer.write(closetag);
-      if (!reader.eof() && (opentag + text + closetag).isNotEmpty) {
+      if (!reader.eof() && (opentag! + text! + closetag!).isNotEmpty) {
         // Add a trailing '\n' if we've written a non-blank line and there are more source lines left.
         writer.write('\n');
       }
@@ -289,13 +290,13 @@ bool render(io.Reader reader, io.Writer writer, [List<String> allowed]) {
 }
 
 // Return block definition or null if not found.
-Def getDefinition(String name) {
-  return defs.firstWhere((def) => def.name == name, orElse: () => null);
+Def? getDefinition(String? name) {
+  return defs.firstWhereOrNull((def) => def.name == name);
 }
 
 // Update existing named definition.
 // Value syntax: <open-tag>|<close-tag> block-options
-void setDefinition(String name, String value) {
+void setDefinition(String? name, String? value) {
   var def = getDefinition(name);
   if (def == null) {
     options
@@ -304,7 +305,7 @@ void setDefinition(String name, String value) {
   }
   var match =
       RegExp(r'^(?:(<[a-zA-Z].*>)\|(<[a-zA-Z/].*>))?(?:\s*)?([+-][ \w+-]+)?$')
-          .firstMatch(value.trim());
+          .firstMatch(value!.trim());
   if (match == null) {
     options
         .errorCallback("illegal delimited block definition: |$name|='$value'");
@@ -316,23 +317,23 @@ void setDefinition(String name, String value) {
     def.closeTag = match[2];
   }
   if (match[3] != null) {
-    def.expansionOptions.parse(match[3]);
+    def.expansionOptions!.parse(match[3]!);
   }
 }
 
 // delimiterFilter that returns opening delimiter line text from match group $1.
-String delimiterTextFilter(RegExpMatch match, Def def) {
+String? delimiterTextFilter(RegExpMatch match, Def def) {
   return match[1];
 }
 
 // delimiterFilter for code, division and quote blocks.
 // Inject $2 into block class attribute, set close delimiter to $1.
 String classInjectionFilter(RegExpMatch match, Def def) {
-  var p1 = match[2].trim();
+  var p1 = match[2]!.trim();
   if (p1.isNotEmpty) {
     blockattributes.classes = p1;
   }
-  def.closeMatch = RegExp('^' + RegExp.escape(match[1]) + r'$');
+  def.closeMatch = RegExp('^' + RegExp.escape(match[1]!) + r'$');
   return '';
 }
 
@@ -340,13 +341,13 @@ String classInjectionFilter(RegExpMatch match, Def def) {
 String macroDefContentFilter(
     String text, RegExpMatch match, ExpansionOptions expansionOptions) {
   var name = RegExp(r'^{([\w\-]+\??)}')
-      .firstMatch(match[0])[1]; // Extract macro name from opening delimiter.
+      .firstMatch(match[0]!)![1]; // Extract macro name from opening delimiter.
   text = text.replaceAll(
       RegExp(r"' *\\\n"), "'\n"); // Unescape line-continuations.
   text = text.replaceAllMapped(RegExp(r"(' *[\\]+)\\\n"),
       (match) => '${match[1]}\n'); // Unescape escaped line-continuations.
   text =
-      utils.replaceInline(text, expansionOptions); // Expand macro invocations.
+      utils.replaceInline(text, expansionOptions)!; // Expand macro invocations.
   macros.setValue(name, text);
   return '';
 }

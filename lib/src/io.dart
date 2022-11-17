@@ -1,6 +1,6 @@
 class Reader {
-  List<String> lines;
-  int pos; // Line index of current line.
+  late List<String> lines;
+  int? pos; // Line index of current line.
 
   Reader(String text) {
     text = text
@@ -16,17 +16,17 @@ class Reader {
 
   String get cursor {
     assert(!eof());
-    return lines[pos];
+    return lines[pos!];
   }
 
   set cursor(String value) {
     assert(!eof());
-    lines[pos] = value;
+    lines[pos!] = value;
   }
 
   // Return true if the cursor has advanced over all input lines.
   bool eof() {
-    return pos >= lines.length;
+    return pos! >= lines.length;
   }
 
   // Move cursor to next input line.
@@ -41,11 +41,11 @@ class Reader {
   // the $1 match group (if it exists).
   // If an EOF is encountered return all lines.
   // Exit with the reader pointing to the line containing the matched line.
-  List<String> readTo(RegExp regexp) {
-    var result = <String>[];
-    RegExpMatch match;
+  List<String?> readTo(RegExp? regexp) {
+    var result = <String?>[];
+    RegExpMatch? match;
     while (!eof()) {
-      match = regexp.firstMatch(cursor);
+      match = regexp!.firstMatch(cursor);
       if (match != null) {
         if (match.groupCount > 0) {
           result.add(match[1]); // $1
@@ -66,14 +66,14 @@ class Reader {
 }
 
 class Writer {
-  List<String>
+  late List<String?>
       buffer; // Appending an array is faster than string concatenation.
 
   Writer() {
     buffer = [];
   }
 
-  void write(String s) {
+  void write(String? s) {
     buffer.add(s);
   }
 

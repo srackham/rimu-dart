@@ -1,10 +1,11 @@
 import 'options.dart' as options;
+import 'package:collection/collection.dart' show IterableExtension;
 import 'utils.dart' as utils;
 
 class Def {
-  RegExp match;
-  String replacement;
-  String Function(Match match, Def def) filter;
+  RegExp? match;
+  String? replacement;
+  String? Function(Match match, Def def)? filter;
 
   Def({this.match, this.replacement, this.filter});
 
@@ -15,7 +16,7 @@ class Def {
   }
 }
 
-List<Def> defs; // Mutable definitions initialized by DEFAULT_DEFS.
+List<Def>? defs; // Mutable definitions initialized by DEFAULT_DEFS.
 
 final List<Def> DEFAULT_DEFS = [
   // Begin match with \\? to allow the replacement to be escaped.
@@ -33,7 +34,7 @@ final List<Def> DEFAULT_DEFS = [
           return '';
         }
         // Default (non-filter) replacement processing.
-        return utils.replaceMatch(match, def.replacement);
+        return utils.replaceMatch(match, def.replacement!);
       }),
 
   // Image: <image:src|alt>
@@ -135,13 +136,12 @@ void init() {
 }
 
 // Return the replacment definition matching the regular expresssion pattern , return null if not found.
-Def getDefinition(String pattern) {
-  return defs.firstWhere((def) => def.match.pattern == pattern,
-      orElse: () => null);
+Def? getDefinition(String pattern) {
+  return defs!.firstWhereOrNull((def) => def.match!.pattern == pattern);
 }
 
 // Update existing or add new replacement definition.
-void setDefinition(String pattern, String flags, String replacement) {
+void setDefinition(String pattern, String flags, String? replacement) {
   var ignoreCase = flags.contains('i') ? true : false;
   var multiLine = flags.contains('m') ? true : false;
   // Flag properties are read-only so have to create new RegExp.
@@ -154,6 +154,6 @@ void setDefinition(String pattern, String flags, String replacement) {
     def.replacement = replacement;
   } else {
     // Append new definition to end of defs list (custom definitons have lower precedence).
-    defs.add(Def(match: regexp, replacement: replacement));
+    defs!.add(Def(match: regexp, replacement: replacement));
   }
 }

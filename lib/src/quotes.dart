@@ -1,8 +1,10 @@
+import 'package:collection/collection.dart' show IterableExtension;
+
 class Def {
-  String quote; // Single quote character.
-  String openTag;
-  String closeTag;
-  bool spans; // Allow span elements inside quotes.
+  String? quote; // Single quote character.
+  String? openTag;
+  String? closeTag;
+  bool? spans; // Allow span elements inside quotes.
 
   Def({this.quote, this.openTag, this.closeTag, this.spans});
 
@@ -14,7 +16,7 @@ class Def {
   }
 }
 
-List<Def> defs; // Mutable definitions initialized by DEFAULT_DEFS.
+List<Def>? defs; // Mutable definitions initialized by DEFAULT_DEFS.
 
 final List<Def> DEFAULT_DEFS = [
   Def(quote: '**', openTag: '<strong>', closeTag: '</strong>', spans: true),
@@ -26,8 +28,8 @@ final List<Def> DEFAULT_DEFS = [
   Def(quote: '~~', openTag: '<del>', closeTag: '</del>', spans: true),
 ];
 
-RegExp quotesRe; // Searches for quoted text.
-RegExp unescapeRe; // Searches for escaped quotes.
+late RegExp quotesRe; // Searches for quoted text.
+late RegExp unescapeRe; // Searches for escaped quotes.
 
 // Reset definitions to defaults.
 void init() {
@@ -38,7 +40,7 @@ void init() {
 
 // Synthesise re's to find and unescape quotes.
 void initializeRegExps() {
-  var quotes = defs.map((def) => RegExp.escape(def.quote));
+  var quotes = defs!.map((def) => RegExp.escape(def.quote!));
   // $1 is quote character(s), $2 is quoted text.
   // Quoted text cannot begin or end with whitespace.
   // Quoted can span multiple lines.
@@ -50,8 +52,8 @@ void initializeRegExps() {
 }
 
 // Return the quote definition corresponding to 'quote' character, return null if not found.
-Def getDefinition(String quote) {
-  return defs.firstWhere((def) => def.quote == quote, orElse: () => null);
+Def? getDefinition(String? quote) {
+  return defs!.firstWhereOrNull((def) => def.quote == quote);
 }
 
 // Update existing or add new quote definition.
@@ -65,10 +67,10 @@ void setDefinition(Def def) {
   } else {
     // Double-quote definitions are prepended to the array so they are matched
     // before single-quote definitions (which are appended to the array).
-    if (def.quote.length == 2) {
-      defs.insert(0, def);
+    if (def.quote!.length == 2) {
+      defs!.insert(0, def);
     } else {
-      defs.add(def);
+      defs!.add(def);
     }
     initializeRegExps();
   }
@@ -76,5 +78,5 @@ void setDefinition(Def def) {
 
 // Strip backslashes from quote characters.
 String unescape(String s) {
-  return s.replaceAllMapped(unescapeRe, (m) => m[1]);
+  return s.replaceAllMapped(unescapeRe, (m) => m[1]!);
 }

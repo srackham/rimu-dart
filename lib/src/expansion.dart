@@ -5,11 +5,11 @@ class ExpansionOptions {
   // If spans is true then both spans and specials are processed.
   // They are assumed false if they are not explicitly defined.
   // If a custom filter is specified their use depends on the filter.
-  bool macros;
-  bool container;
-  bool skip;
-  bool spans; // Span substitution also expands special characters.
-  bool specials;
+  bool? macros;
+  bool? container;
+  bool? skip;
+  bool? spans; // Span substitution also expands special characters.
+  bool? specials;
 
   @override
   bool operator ==(Object other) =>
@@ -23,11 +23,11 @@ class ExpansionOptions {
   ExpansionOptions(
       {this.macros, this.container, this.skip, this.spans, this.specials});
 
-  ExpansionOptions.from(ExpansionOptions other) {
+  ExpansionOptions.from(ExpansionOptions? other) {
     merge(other);
   }
 
-  void merge(ExpansionOptions from) {
+  void merge(ExpansionOptions? from) {
     if (from == null) {
       return;
     }

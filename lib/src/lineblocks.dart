@@ -9,12 +9,12 @@ import 'quotes.dart' as quotes;
 import 'replacements.dart' as replacements;
 
 class Def {
-  RegExp match;
-  String replacement;
-  String name; // Optional unique identifier.
-  bool Function(RegExpMatch match, io.Reader reader)
+  RegExp? match;
+  String? replacement;
+  String? name; // Optional unique identifier.
+  bool Function(RegExpMatch match, io.Reader reader)?
       verify; // Additional match verification checks.
-  String Function(RegExpMatch match, io.Reader reader, Def def) filter;
+  String Function(RegExpMatch match, io.Reader reader, Def def)? filter;
 
   Def({this.match, this.replacement, this.name, this.verify, this.filter});
 }
@@ -31,19 +31,19 @@ List<Def> defs = [
   Def(
       match: macros.MATCH_LINE,
       verify: (match, reader) {
-        if (macros.DEF_OPEN.hasMatch(match[0])) {
+        if (macros.DEF_OPEN.hasMatch(match[0]!)) {
           // Do not process macro definitions.
           return false;
         }
         // Silent because any macro expansion errors will be subsequently addressed downstream.
-        var value = macros.render(match[0], silent: true);
-        if (value.startsWith(match[0]) || value.contains('\n' + match[0])) {
+        var value = macros.render(match[0], silent: true)!;
+        if (value.startsWith(match[0]!) || value.contains('\n' + match[0]!)) {
           // The leading macro invocation expansion failed or contains itself.
           // This stops infinite recursion.
           return false;
         }
         // Insert the macro value into the reader just ahead of the cursor.
-        reader.lines.insertAll(reader.pos + 1, value.split('\n'));
+        reader.lines.insertAll(reader.pos! + 1, value.split('\n'));
         return true;
       },
       filter: (match, reader, def) {
@@ -87,8 +87,8 @@ List<Def> defs = [
         if (options.isSafeModeNz()) {
           return ''; // Skip if a safe mode is set.
         }
-        var pattern = match[1];
-        var flags = match[2];
+        var pattern = match[1]!;
+        var flags = match[2]!;
         var replacement = match[3];
         replacement =
             utils.replaceInline(replacement, ExpansionOptions(macros: true));
@@ -115,13 +115,13 @@ List<Def> defs = [
         // var headerIds = macros.getValue('--header-ids') ??
         if ((macros.getValue('--header-ids')?.isNotEmpty ?? false) &&
             blockattributes.id == '') {
-          blockattributes.id = blockattributes.slugify(match[2]);
+          blockattributes.id = blockattributes.slugify(match[2]!);
         }
         var result = utils.replaceMatch(
-            match, def.replacement, ExpansionOptions(macros: true));
+            match, def.replacement!, ExpansionOptions(macros: true));
         // Replace $1 with header number e.g. "<h###>" -> "<h3>"
         result =
-            result.replaceAll(match[1] + '>', match[1].length.toString() + '>');
+            result.replaceAll(match[1]! + '>', match[1]!.length.toString() + '>');
         return result;
       }),
   // Block image: <image:src|alt>
@@ -148,7 +148,7 @@ List<Def> defs = [
         } else {
           // Default (non-filter) replacement processing.
           return utils.replaceMatch(
-              match, def.replacement, ExpansionOptions(macros: true));
+              match, def.replacement!, ExpansionOptions(macros: true));
         }
       }),
   // Block Attributes.
@@ -177,7 +177,7 @@ List<Def> defs = [
 
 // If the next element in the reader is a valid line block render it
 // and return true, else return false.
-bool render(io.Reader reader, io.Writer writer, {List<String> allowed}) {
+bool render(io.Reader reader, io.Writer writer, {List<String>? allowed}) {
   if (reader.eof()) {
     options.panic('premature eof');
   }
@@ -186,23 +186,23 @@ bool render(io.Reader reader, io.Writer writer, {List<String> allowed}) {
     if (allowed.isNotEmpty && !allowed.contains(def.name)) {
       continue;
     }
-    var match = def.match.firstMatch(reader.cursor);
+    var match = def.match!.firstMatch(reader.cursor);
     if (match != null) {
-      if (match[0][0] == r'\') {
+      if (match[0]![0] == r'\') {
         // Drop backslash escape and continue.
         reader.cursor = reader.cursor.substring(1);
         continue;
       }
-      if (def.verify != null && !def.verify(match, reader)) {
+      if (def.verify != null && !def.verify!(match, reader)) {
         continue;
       }
       String text;
       if (def.filter != null) {
-        text = def.filter(match, reader, def);
+        text = def.filter!(match, reader, def);
       } else {
         text = (def.replacement != null)
             ? utils.replaceMatch(
-                match, def.replacement, ExpansionOptions(macros: true))
+                match, def.replacement!, ExpansionOptions(macros: true))
             : '';
       }
       if (text.isNotEmpty) {
