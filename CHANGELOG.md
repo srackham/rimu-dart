@@ -1,6 +1,9 @@
 This log contains Dart specific changes, the [full change
 log](https://srackham.github.io/rimu/changelog.html) is on the Rimu website.
 
+## 11.4.1
+- Migrated Rimu package to null safety.
+
 ## 11.4.0
 - Added GFM (GitHub Flavored Markdown) multiline blockquote delimited block syntax.
 - Added `^[caption](url)` link syntax which opens the link in a new browser tab.
