@@ -59,7 +59,7 @@ List<Fragment> fragQuote(Fragment fragment) {
     return [fragment];
   }
   // Find first matched quote in fragment text.
-  String? quote;
+  String quote;
   RegExpMatch? match;
   var startIndex = 0;
   var nextIndex = 0;
@@ -68,11 +68,11 @@ List<Fragment> fragQuote(Fragment fragment) {
     if (match == null) {
       return [fragment];
     }
-    quote = match[1];
+    quote = match[1]!;
     // Check if quote is escaped.
     if (match[0]!.startsWith(r'\')) {
       // Restart search after escaped opening quote.
-      nextIndex += match.start + quote!.length + 1;
+      nextIndex += match.start + quote.length + 1;
       continue;
     }
     startIndex = nextIndex + match.start;
@@ -85,9 +85,9 @@ List<Fragment> fragQuote(Fragment fragment) {
   // Text before the quote, left quote tag, quoted text, right quote tag and text after the quote.
   final def = quotes.getDefinition(match[1])!;
   // Check for same closing quote one character further to the right.
-  var quoted = match[2];
+  var quoted = match[2]!;
   while (nextIndex < fragment.text!.length &&
-      fragment.text![nextIndex] == quote![0]) {
+      fragment.text![nextIndex] == quote[0]) {
     // Move to closing quote one character to right.
     quoted += quote[0];
     nextIndex += 1;
@@ -98,7 +98,7 @@ List<Fragment> fragQuote(Fragment fragment) {
   result.add(Fragment(text: def.openTag, done: true));
   if (!def.spans!) {
     // Spans are disabled so render the quoted text verbatim.
-    quoted = utils.replaceSpecialChars(quoted!);
+    quoted = utils.replaceSpecialChars(quoted);
     quoted = quoted.replaceAll(
         '\u0000', '\u0001'); // Substitute verbatim replacement placeholder.
     result.add(Fragment(text: quoted, done: true));

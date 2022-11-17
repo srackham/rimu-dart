@@ -21,8 +21,8 @@ class CallbackMessage {
 typedef CallbackFunction = Function(CallbackMessage);
 
 // Global option values.
-int? safeMode;
-String? htmlReplacement;
+int safeMode = 0;
+String htmlReplacement = '';
 CallbackFunction? callback;
 
 // Reset options to default values.
@@ -43,12 +43,12 @@ int? getSafeMode() {
 
 // Return true if Block Attribute elements are ignored.
 bool skipBlockAttributes() {
-  return safeMode! & 0x4 != 0;
+  return safeMode & 0x4 != 0;
 }
 
 // Return true if Macro Definitions are ignored.
 bool skipMacroDefs() {
-  return safeMode != 0 && safeMode! & 0x8 == 0;
+  return safeMode != 0 && safeMode & 0x8 == 0;
 }
 
 // Update specified (non-null) options.
@@ -95,8 +95,8 @@ void setOption(String? name, var value) {
 }
 
 // Filter HTML based on current safeMode.
-String? htmlSafeModeFilter(String? html) {
-  switch (safeMode! & 0x3) {
+String htmlSafeModeFilter(String html) {
+  switch (safeMode & 0x3) {
     case 0: // Raw HTML (default behavior).
       return html;
     case 1: // Drop HTML.
@@ -104,7 +104,7 @@ String? htmlSafeModeFilter(String? html) {
     case 2: // Replace HTML with 'htmlReplacement' option string.
       return htmlReplacement;
     case 3: // Render HTML as text.
-      return utils.replaceSpecialChars(html!);
+      return utils.replaceSpecialChars(html);
     default:
       return '';
   }

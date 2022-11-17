@@ -2,11 +2,11 @@ import 'package:rimu/src/expansion.dart';
 import 'package:rimu/src/options.dart';
 import 'package:rimu/src/utils.dart' as utils;
 
-String? classes; // Space separated HTML class names.
-String? id; // HTML element id.
-String? css; // HTML CSS styles.
-String? attributes; // Other HTML element attributes.
-ExpansionOptions? options;
+String classes = ''; // Space separated HTML class names.
+String id = ''; // HTML element id.
+String css = ''; // HTML CSS styles.
+String attributes = ''; // Other HTML element attributes.
+ExpansionOptions options = ExpansionOptions();
 
 List<String?> ids = []; // List of allocated HTML ids.
 
@@ -34,7 +34,7 @@ bool parse(String? attrs) {
     if (m[1]?.isNotEmpty ?? false) {
       // HTML element class names.
       classes += ' ${m[1]!.trim()}';
-      classes = classes!.trim();
+      classes = classes.trim();
     }
     if (m[2]?.isNotEmpty ?? false) {
       // HTML element id.
@@ -42,18 +42,18 @@ bool parse(String? attrs) {
     }
     if (m[3]?.isNotEmpty ?? false) {
       // CSS properties.
-      if (css!.isNotEmpty && !css!.endsWith(';')) {
+      if (css.isNotEmpty && !css.endsWith(';')) {
         css += ';';
       }
       css += ' ' + m[3]!.trim();
-      css = css!.trim();
+      css = css.trim();
     }
     if ((m[4]?.isNotEmpty ?? false) && !isSafeModeNz()) {
       // HTML attributes.
       attributes += ' ' + m[4]!.substring(1, m[4]!.length - 1).trim();
-      attributes = attributes!.trim();
+      attributes = attributes.trim();
     }
-    options!.parse(m[5] ?? '');
+    options.parse(m[5] ?? '');
   }
   return true;
 }
@@ -66,7 +66,7 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
     return result;
   }
   var attrs = '';
-  if (classes!.isNotEmpty) {
+  if (classes.isNotEmpty) {
     var match = RegExp(r'^(<[^>]*class=")(.*?)"', caseSensitive: false)
         .firstMatch(result);
     if (match != null) {
@@ -77,8 +77,8 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
       attrs = 'class="$classes"';
     }
   }
-  if (id!.isNotEmpty) {
-    id = id!.toLowerCase();
+  if (id.isNotEmpty) {
+    id = id.toLowerCase();
     var has_id =
         RegExp(r'^<[^<]*id=".*?"', caseSensitive: false).hasMatch(result);
     if (has_id || ids.contains(id)) {
@@ -90,7 +90,7 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
       attrs += ' id="$id"';
     }
   }
-  if (css!.isNotEmpty) {
+  if (css.isNotEmpty) {
     var match = RegExp(r'^(<[^>]*style=")(.*?)"', caseSensitive: false)
         .firstMatch(result);
     if (match != null) {
@@ -104,7 +104,7 @@ String injectHtmlAttributes(String tag, {bool consume = true}) {
       attrs += ' style="$css"';
     }
   }
-  if (attributes!.isNotEmpty) {
+  if (attributes.isNotEmpty) {
     attrs += ' $attributes';
   }
   attrs = attrs.trim();

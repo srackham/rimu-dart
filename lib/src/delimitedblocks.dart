@@ -13,10 +13,10 @@ final MATCH_INLINE_TAG = RegExp(
 
 typedef Verify = bool Function(
     RegExpMatch match); // Additional match verification checks.
-typedef DelimiterFilter = String? Function(RegExpMatch match,
+typedef DelimiterFilter = String Function(RegExpMatch match,
     Def def); // Process opening delimiter. Return any delimiter content.
-typedef ContentFilter = String? Function(
-    String? text, RegExpMatch match, ExpansionOptions expansionOptions);
+typedef ContentFilter = String Function(
+    String text, RegExpMatch match, ExpansionOptions expansionOptions);
 
 // Multi-line block element definition.
 class Def {
@@ -230,7 +230,7 @@ bool render(io.Reader reader, io.Writer writer, [List<String>? allowed]) {
     }
     // Process opening delimiter.
     var delimiterText =
-        (def.delimiterFilter != null) ? def.delimiterFilter!(match, def)! : '';
+        (def.delimiterFilter != null) ? def.delimiterFilter!(match, def) : '';
     // Read block content into lines.
     var lines = <String?>[];
     if (delimiterText.isNotEmpty) {
@@ -258,13 +258,13 @@ bool render(io.Reader reader, io.Writer writer, [List<String>? allowed]) {
       }
       var opentag = def.openTag;
       if (def.name == 'html') {
-        text = blockattributes.injectHtmlAttributes(text!);
+        text = blockattributes.injectHtmlAttributes(text);
       } else {
         opentag = blockattributes.injectHtmlAttributes(opentag!);
       }
       if (expansionOptions.container ?? false) {
-        blockattributes.options!.container = null; // Consume before recursion.
-        text = api.render(text!);
+        blockattributes.options.container = null; // Consume before recursion.
+        text = api.render(text);
       } else {
         text = utils.replaceInline(text, expansionOptions);
       }
@@ -322,8 +322,8 @@ void setDefinition(String? name, String? value) {
 }
 
 // delimiterFilter that returns opening delimiter line text from match group $1.
-String? delimiterTextFilter(RegExpMatch match, Def def) {
-  return match[1];
+String delimiterTextFilter(RegExpMatch match, Def def) {
+  return match[1]!;
 }
 
 // delimiterFilter for code, division and quote blocks.

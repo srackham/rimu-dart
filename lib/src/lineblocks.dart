@@ -43,7 +43,7 @@ List<Def> defs = [
           return false;
         }
         // Insert the macro value into the reader just ahead of the cursor.
-        reader.lines.insertAll(reader.pos! + 1, value.split('\n'));
+        reader.lines.insertAll(reader.pos + 1, value.split('\n'));
         return true;
       },
       filter: (match, reader, def) {
@@ -120,8 +120,8 @@ List<Def> defs = [
         var result = utils.replaceMatch(
             match, def.replacement!, ExpansionOptions(macros: true));
         // Replace $1 with header number e.g. "<h###>" -> "<h3>"
-        result =
-            result.replaceAll(match[1]! + '>', match[1]!.length.toString() + '>');
+        result = result.replaceAll(
+            match[1]! + '>', match[1]!.length.toString() + '>');
         return result;
       }),
   // Block image: <image:src|alt>

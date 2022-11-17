@@ -95,7 +95,7 @@ final List<Def> DEFAULT_DEFS = [
       replacement: '',
       filter: (match, def) {
         return options.htmlSafeModeFilter(
-            match[1]); // Matched HTML comment or inline tag.
+            match[1]!); // Matched HTML comment or inline tag.
       }),
 
   // Link: <url>

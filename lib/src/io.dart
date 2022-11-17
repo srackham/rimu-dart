@@ -1,6 +1,6 @@
 class Reader {
   late List<String> lines;
-  int? pos; // Line index of current line.
+  int pos = 0; // Line index of current line.
 
   Reader(String text) {
     text = text
@@ -16,17 +16,17 @@ class Reader {
 
   String get cursor {
     assert(!eof());
-    return lines[pos!];
+    return lines[pos];
   }
 
   set cursor(String value) {
     assert(!eof());
-    lines[pos!] = value;
+    lines[pos] = value;
   }
 
   // Return true if the cursor has advanced over all input lines.
   bool eof() {
-    return pos! >= lines.length;
+    return pos >= lines.length;
   }
 
   // Move cursor to next input line.
